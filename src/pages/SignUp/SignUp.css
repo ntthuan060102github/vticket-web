@@ -1,19 +1,19 @@
-.Login__wrapper{
+.Sign_up__wrapper{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     gap: 100px;
     background: var(--nav-top-gradient);
 }
 
-.Login__poster{
+.Sign_up__poster{
     height: 500px;
     object-fit: contain;
 }
 
-.Login{
+.Sign_up{
     display: flex;
     flex-direction: column;
     border-radius: 15px;
@@ -24,14 +24,15 @@
     padding: 20px 40px;
     gap: 20px;
     font-size: 1.6rem;
+    margin: 50px 0;
 }
 
-.Login__logo{
+.Sign_up__logo{
     height: 50px;
     object-fit: contain;
 }
 
-.Login__nav{
+.Sign_up__nav{
     display: flex;
     justify-content: center;
     padding: 10px 20px;
@@ -40,7 +41,7 @@
     border-radius: 20px;
 }
 
-.Login__nav--signin_btn, .Login__nav--signup_btn{
+.Sign_up__nav--signin_btn, .Sign_up__nav--sign_up_btn{
     display: flex;
     justify-content: center;
     background-color: transparent;
@@ -57,7 +58,7 @@
     color: var(--white);
 }
 
-.Login__form{
+.Sign_up__form{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,6 +66,27 @@
     font-size: 1.6rem;
     margin-bottom: 20px;
     width: 100%;
+}
+
+.form__full_name{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form_first_name, .form_last_name{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: fit-content;
+}
+
+.form__input_name{
+    width: 100px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    padding: 10px 20px;
 }
 
 .form__label{
@@ -76,29 +98,22 @@
     border-radius: 5px;
     border: solid 1px var(--black);
     padding: 10px 20px;
-    font-size: 1.6rem;
 }
 
-.Login__form--forgot{
+.Sign_up__form--forgot{
     width: 100%;
     color: var(--purple);
     font-weight: lighter;
 }
 
-.error{
-    font-size: 1.4rem;
-    color: var(--red);
-}
-
-.Login__form--submit_btn{
+.Sign_up__form--submit_btn{
     display: flex;
     justify-content: center;
-    background: var(--purple);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(241,90,36,1) 0%, rgba(251,176,59,1) 100%);
     width: 100px;
     padding: 10px 0;
     border-radius: 10px;
     border: none;
-    color: var(--white);
+    color: var(--purple);
     font-size: 1.6rem;
 }
-

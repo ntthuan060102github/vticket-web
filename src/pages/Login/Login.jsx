@@ -2,6 +2,9 @@ import * as React from "react";
 import { Link} from "react-router-dom";
 import axios from 'axios';
 
+import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
+import { APP_ENV } from "../../configs/app_config"
+
 import './Login.css'
 
 // interface Account {
@@ -27,7 +30,7 @@ function Login() {
     }
 
     const handleSubmit = () =>{
-        axios.post('https://vticket-account-service.onrender.com/apis/doris-account-service/v1/token', {
+        axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
             email: accountInfo.username,
             password: accountInfo.password,
           })
