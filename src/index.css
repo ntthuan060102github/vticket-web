@@ -1,10 +1,13 @@
 :root{
+  --header-height: 80px; 
+  --nav-top-cus-height: 60px;
   --white: #fff;
   --black: #000;
-  --background-color-1: #DADADA;
+  --background-color-1: rgb(241,90,36);
   --blue: #0ea5e9; 
-  --gray: #CCCCCC;
+  --gray: #6e6e6e;
   --pastel: #EF9595;
+  --nav-top-gradient:linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(58,55,193,1) 100%, rgba(0,212,255,1) 100%);
 }
 
 *{
@@ -14,15 +17,16 @@
 }
 
 html{
-  font-family: 'Poppins', sans-serif;
+  font-family: "Tilt Neon", sans-serif;
   font-size: 10px;
   scroll-behavior: smooth;
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   overflow-x: hidden;
   background-color: var(--white);
+  user-select: none;
 }
 
 button{
