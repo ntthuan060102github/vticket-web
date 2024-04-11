@@ -1,19 +1,19 @@
-.Sign_up__wrapper{
+.Login__wrapper{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     gap: 100px;
     background: var(--nav-top-gradient);
 }
 
-.Sign_up__poster{
+.Login__poster{
     height: 500px;
     object-fit: contain;
 }
 
-.Sign_up{
+.Login{
     display: flex;
     flex-direction: column;
     border-radius: 15px;
@@ -24,15 +24,14 @@
     padding: 20px 40px;
     gap: 20px;
     font-size: 1.6rem;
-    margin: 50px 0;
 }
 
-.Sign_up__logo{
+.Login__logo{
     height: 50px;
     object-fit: contain;
 }
 
-.Sign_up__nav{
+.Login__nav{
     display: flex;
     justify-content: center;
     padding: 10px 20px;
@@ -41,7 +40,7 @@
     border-radius: 20px;
 }
 
-.Sign_up__nav--signin_btn, .Sign_up__nav--sign_up_btn{
+.Login__nav--signin_btn, .Login__nav--signup_btn{
     display: flex;
     justify-content: center;
     background-color: transparent;
@@ -58,35 +57,14 @@
     color: var(--white);
 }
 
-.Sign_up__form{
+.Login__form{
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     font-size: 1.6rem;
     margin-bottom: 20px;
-    width: 300px;
-}
-
-.form__full_name{
-    display: flex;
-    justify-content: space-between;
     width: 100%;
-}
-
-.form_first_name, .form_last_name{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: fit-content;
-}
-
-.form__input_name{
-    width: 100px;
-    border-radius: 5px;
-    border: solid 1px var(--black);
-    padding: 10px 20px;
 }
 
 .form__label{
@@ -100,13 +78,13 @@
     padding: 10px 20px;
 }
 
-.Sign_up__form--forgot{
+.Login__form--forgot{
     width: 100%;
     color: var(--purple);
     font-weight: lighter;
 }
 
-.Sign_up__form--submit_btn{
+.Login__form--submit_btn{
     display: flex;
     justify-content: center;
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(241,90,36,1) 0%, rgba(251,176,59,1) 100%);
