@@ -49,7 +49,7 @@ function Login() {
                 <img src="/assets/images/logo.png" alt="logo" className="Login__logo" />
                 <div className="Login__nav">
                     <Link to={'/login'} className="Login__nav--signin_btn active">Đăng nhập</Link>
-                    <Link to={'/signup'} className="Login__nav--signup_btn">Đăng ký</Link>
+                    <Link to={'/sign_up'} className="Login__nav--signup_btn">Đăng ký</Link>
                 </div>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Login__form'>
                     <label htmlFor="username" className='form__label'>Tài khoản</label>
