@@ -45,6 +45,13 @@ function SignUp() {
         }));
     }
 
+    const isValidDate = (currentDate) => {
+        const selectedDate = currentDate.toDate();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
+        return selectedDate <= today;
+    };
+
     const handleSubmit = () =>{
         axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
             email: accountInfo.email,
@@ -97,6 +104,7 @@ function SignUp() {
                         timeFormat={false}
                         closeOnSelect={true}
                         placeholderText="Chọn ngày sinh"
+                        isValidDate={isValidDate}
                         className='form__input'
                     />
                     {/* <input type="text" id="birthday" placeholder='Nhập ngày sinh' /> */}
