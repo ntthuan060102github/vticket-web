@@ -1,0 +1,104 @@
+.Login__wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    gap: 100px;
+    background: var(--nav-top-gradient);
+}
+
+.Login__poster{
+    height: 500px;
+    object-fit: contain;
+}
+
+.Login{
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    border:none;
+    background-color: var(--white);
+    align-items: center;
+    box-shadow: 5px 10px 8px #888888;
+    padding: 20px 40px;
+    gap: 20px;
+    font-size: 1.6rem;
+}
+
+.Login__logo{
+    height: 50px;
+    object-fit: contain;
+}
+
+.Login__nav{
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(241,90,36,1) 0%, rgba(251,176,59,1) 100%);
+    border-radius: 20px;
+}
+
+.Login__nav--signin_btn, .Login__nav--signup_btn{
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--purple);
+    font-size: 1.6rem;
+}
+
+.active{
+    background: var(--nav-top-gradient);
+    color: var(--white);
+}
+
+.Login__form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+.form__label{
+    width: 100%;
+}
+
+.form__input{
+    width: 100%;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.Login__form--forgot{
+    width: 100%;
+    color: var(--purple);
+    font-weight: lighter;
+}
+
+.error{
+    font-size: 1.4rem;
+    color: var(--red);
+}
+
+.Login__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: var(--purple);
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--white);
+    font-size: 1.6rem;
+}
+
