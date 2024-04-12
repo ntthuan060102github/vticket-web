@@ -76,6 +76,7 @@
     border-radius: 5px;
     border: solid 1px var(--black);
     padding: 10px 20px;
+    font-size: 1.6rem;
 }
 
 .Login__form--forgot{
@@ -84,15 +85,20 @@
     font-weight: lighter;
 }
 
+.error{
+    font-size: 1.4rem;
+    color: var(--red);
+}
+
 .Login__form--submit_btn{
     display: flex;
     justify-content: center;
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(241,90,36,1) 0%, rgba(251,176,59,1) 100%);
+    background: var(--purple);
     width: 100px;
     padding: 10px 0;
     border-radius: 10px;
     border: none;
-    color: var(--purple);
+    color: var(--white);
     font-size: 1.6rem;
 }
 
