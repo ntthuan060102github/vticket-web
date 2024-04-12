@@ -2,6 +2,9 @@ import * as React from "react";
 import { Link} from "react-router-dom";
 import axios from 'axios';
 
+import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
+import { APP_ENV } from "../../configs/app_config"
+
 import './Login.css'
 
 // interface Account {
@@ -27,7 +30,7 @@ function Login() {
     }
 
     const handleSubmit = () =>{
-        axios.post('https://vticket-account-service.onrender.com/apis/doris-account-service/v1/token', {
+        axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
             email: accountInfo.username,
             password: accountInfo.password,
           })
@@ -46,7 +49,7 @@ function Login() {
                 <img src="/assets/images/logo.png" alt="logo" className="Login__logo" />
                 <div className="Login__nav">
                     <Link to={'/login'} className="Login__nav--signin_btn active">Đăng nhập</Link>
-                    <Link to={'/signup'} className="Login__nav--signup_btn">Đăng ký</Link>
+                    <Link to={'/sign_up'} className="Login__nav--signup_btn">Đăng ký</Link>
                 </div>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Login__form'>
                     <label htmlFor="username" className='form__label'>Tài khoản</label>

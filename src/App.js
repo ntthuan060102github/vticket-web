@@ -4,7 +4,8 @@ import {
   Routes
 } from "react-router-dom";
 import './App.css'
-import Login from "./pages/Login/Login";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/sign_up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/" element={<HomePage />}>
           <Route index element={<HomePage />} />
