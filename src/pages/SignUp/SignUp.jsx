@@ -7,28 +7,29 @@ import 'react-datetime/css/react-datetime.css';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import './SignUp.css'
+import validator from "validator";
 
 function SignUp() {
-    
 
-    const  [accountInfo, setAccountInfo] = React.useState({
+
+    const [accountInfo, setAccountInfo] = React.useState({
         email: "",
         first_name: "",
         last_name: "",
         gender: 1,
         birthday: "",
         password: "",
-        role: ""
+        re_enter_password: "",
+        role: "customer",
     });
 
-    
 
-    const [error, setError] = React.useState("");
 
-    const handleChange = (event) =>{
-        let value = event.target.value;
-        let name = event.target.name;
- 
+    const [errors, setErrors] = React.useState([]);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
         setAccountInfo((prevalue) => {
             return {
                 ...prevalue,   // Spread Operator               
@@ -52,23 +53,65 @@ function SignUp() {
         return selectedDate <= today;
     };
 
-    const handleSubmit = () =>{
-        axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
-            email: accountInfo.email,
-            first_name: accountInfo.first_name,
-            last_name: accountInfo.first_name,
-            gender: accountInfo.gender,
-            birthday: accountInfo.birthday,
-            password: accountInfo.password,
-            role: accountInfo.role
-          })
-          .then(function (response) {
-            console.log(response);
-            window.location.href = '/OTP'; 
-          })
-          .catch(function (error) {
-            setError(error.message);
-          });
+    const isValidEmail = (email) => {
+        // Biểu thức chính quy kiểm tra định dạng email
+        const emailRegex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+        return emailRegex.test(email);
+    };
+
+    const handleSubmit = () => {
+        console.log(accountInfo);
+        const newErrors = [];
+        if (!accountInfo.first_name) {
+            newErrors.push("Họ không được trống");
+        }
+
+        if (!accountInfo.last_name) {
+            newErrors.push("Tên không được trống");
+        }
+
+        if (!accountInfo.birthday) {
+            newErrors.push("Ngày sinh không được trống");
+        }
+
+        if (!validator.isEmail(accountInfo.email)) {
+            newErrors.push("Email không đúng format");
+        }
+
+        if (accountInfo.password !== accountInfo.re_enter_password) {
+            newErrors.push("Mật khẩu không trùng khớp");
+        };
+        
+        console.log(newErrors);
+
+        if (newErrors.length !== 0) {
+            setErrors(newErrors);
+            return;
+        }
+        else{
+            axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
+                email: accountInfo.email,
+                first_name: accountInfo.first_name,
+                last_name: accountInfo.first_name,
+                gender: accountInfo.gender,
+                birthday: accountInfo.birthday,
+                password: accountInfo.password,
+                role: accountInfo.role
+            })
+            .then(function (response) {
+                console.log(response.status)
+                if (response.data.status === 1 || response.data.status === 7) {
+                    window.location.href = '/OTP';
+                } else {
+                    newErrors.push("Đăng ký thất bại");
+                    setErrors(newErrors);
+                }
+            })
+            .catch(function (error) {
+                newErrors.push(error.message);
+                setErrors(newErrors);
+            });
+        }
     }
     return (
         <div className="Sign_up__wrapper">
@@ -83,17 +126,18 @@ function SignUp() {
                     <div className="form__full_name">
                         <div className="form_first_name">
                             <label htmlFor="firstname" className='form__label'>Họ</label>
-                            <input type="text" id="firstname" placeholder='Nhập họ' className='form__input_name' />
+                            <input type="text" id="firstname" name="first_name" placeholder='Nhập họ' className='form__input_name' onChange={handleChange} />
                         </div>
                         <div className="form_last_name">
                             <label htmlFor="lastname" className='form__label'>Tên</label>
-                            <input type="text" id="lastname" placeholder='Nhập tên' className='form__input_name' />
+                            <input type="text" id="lastname" name="last_name" placeholder='Nhập tên' className='form__input_name' onChange={handleChange} />
                         </div>
                     </div>
                     <label htmlFor="gender" className='form__label'>Giới tính</label>
-                    <select name="gender" className='form__input' >
+                    <select name="gender" className='form__input' value={accountInfo.gender} onChange={handleChange} >
                         <option value="1">Nam</option>
                         <option value="0">Nữ</option>
+                        <option value="-1">Riêng tư</option>
                     </select>
                     <label htmlFor="birthday" className='form__label'>Ngày sinh</label>
                     <Datetime
@@ -107,18 +151,21 @@ function SignUp() {
                         isValidDate={isValidDate}
                         className='form__input'
                     />
-                    {/* <input type="text" id="birthday" placeholder='Nhập ngày sinh' /> */}
                     <label htmlFor="email" className='form__label'>Email</label>
-                    <input type="text" id="email" placeholder='Nhập email' className='form__input' />
+                    <input type="text" id="email" name="email" placeholder='Nhập email' className='form__input' onChange={handleChange} />
                     <label htmlFor="role" className='form__label'>Loại tài khoản</label>
-                    <select name="role" className='form__input' >
-                        <option value="business">Đơn vị tổ chức</option>
+                    <select id="role" name="role" className='form__input' value={accountInfo.role} onChange={handleChange} >
                         <option value="customer">Khách hàng</option>
+                        <option value="business">Đơn vị tổ chức</option>
                     </select>
                     <label htmlFor="password" className='form__label'>Mật khẩu</label>
-                    <input type="text" id="password" placeholder='Nhập mật khẩu' className='form__input' />
-                    <Link to={'/forgot_password'} className="Sign_up__form--forgot">Bạn đã có tài khoản? <b>Đăng nhập</b></Link>
-                    {error != "" && <span className="error">{error}</span>}
+                    <input type="password" id="password" name="password" placeholder='Nhập mật khẩu' className='form__input' onChange={handleChange} />
+                    <label htmlFor="re_enter_password" className='form__label'>Nhập lại mật khẩu</label>
+                    <input type="password" id="re_enter_password" name="re_enter_password" placeholder='Nhập lại mật khẩu' className='form__input' onChange={handleChange} />
+                    <Link to={'/login'} className="Sign_up__form--login_return">Bạn đã có tài khoản? <b>Đăng nhập</b></Link>
+                    {errors.map((error, index) => {
+                        return <span key={index} className="error">{error}</span>;
+                    })}
                     <button className='Sign_up__form--submit_btn' type="submit">Đăng ký</button>
                 </form>
             </div>
