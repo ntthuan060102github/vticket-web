@@ -60,7 +60,6 @@ function SignUp() {
     };
 
     const handleSubmit = () => {
-        console.log(accountInfo);
         const newErrors = [];
         if (!accountInfo.first_name) {
             newErrors.push("Họ không được trống");
@@ -81,8 +80,6 @@ function SignUp() {
         if (accountInfo.password !== accountInfo.re_enter_password) {
             newErrors.push("Mật khẩu không trùng khớp");
         };
-        
-        console.log(newErrors);
 
         if (newErrors.length !== 0) {
             setErrors(newErrors);
@@ -99,7 +96,6 @@ function SignUp() {
                 role: accountInfo.role
             })
             .then(function (response) {
-                console.log(response.status)
                 if (response.data.status === 1 || response.data.status === 7) {
                     window.location.href = '/OTP';
                 } else {

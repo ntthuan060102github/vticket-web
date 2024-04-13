@@ -6,6 +6,7 @@ import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 
 import './Login.css'
+import validator from "validator";
 
 // interface Account {
 //     username: string;
@@ -15,7 +16,7 @@ import './Login.css'
 function Login() {
 
     const  [accountInfo, setAccountInfo] = React.useState({username:"",password:""});
-    const [error, setError] = React.useState("");
+    const [errors, setErrors] = React.useState([]);
 
     const handleChange = (event) =>{
         let value = event.target.value;
@@ -30,17 +31,37 @@ function Login() {
     }
 
     const handleSubmit = () =>{
-        axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
-            email: accountInfo.username,
-            password: accountInfo.password,
-          })
-          .then(function (response) {
-            console.log(response);
-            window.location.href = '/'; 
-          })
-          .catch(function (error) {
-            setError(error.message);
-          });
+        const newErrors = [];
+
+        if (!validator.isEmail(accountInfo.username)) {
+            newErrors.push("Email không đúng format");
+        }
+
+        if (!accountInfo.password) {
+            newErrors.push("Mật khẩu không được để trống");
+        };
+
+        if (newErrors.length !== 0) {
+            setErrors(newErrors);
+            return;
+        }
+        else{
+            axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
+                email: accountInfo.username,
+                password: accountInfo.password,
+            })
+            .then(function (response) {
+                if (response.data.status === 1 || response.data.status === 7) {
+                    window.location.href = '/'; 
+                } else {
+                    newErrors.push("Đăng nhập thất bại");
+                    setErrors(newErrors);
+                }
+            })
+            .catch(function (error) {
+                setErrors(error.message);
+            });
+        }
     }
     return (
         <div className="Login__wrapper">
@@ -71,7 +92,9 @@ function Login() {
                         placeholder='Nhập mật khẩu' 
                         className='form__input' />
                     <Link to={'/forgot_password'} className="Login__form--forgot">Quên mật khẩu?</Link>
-                    {error != "" && <span className="error">{error}</span>}
+                    {errors.map((error, index) => {
+                        return <span key={index} className="error">{error}</span>;
+                    })}
                     <button className='Login__form--submit_btn' type="submit">Đăng nhập</button>
                 </form>
             </div>
