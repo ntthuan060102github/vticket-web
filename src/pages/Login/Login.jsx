@@ -8,11 +8,6 @@ import { APP_ENV } from "../../configs/app_config"
 import './Login.css'
 import validator from "validator";
 
-// interface Account {
-//     username: string;
-//     password: string;
-// }
-
 function Login() {
 
     const  [accountInfo, setAccountInfo] = React.useState({username:"",password:""});
@@ -24,7 +19,7 @@ function Login() {
  
         setAccountInfo((prevalue) => {
             return {
-                ...prevalue,   // Spread Operator               
+                ...prevalue,                
                 [name]: value
             }
         })
@@ -34,7 +29,7 @@ function Login() {
         const newErrors = [];
 
         if (!validator.isEmail(accountInfo.username)) {
-            newErrors.push("Email không đúng format");
+            newErrors.push("Email không đúng định dạng");
         }
 
         if (!accountInfo.password) {
@@ -70,7 +65,7 @@ function Login() {
                 <img src="/assets/images/logo.png" alt="logo" className="Login__logo" />
                 <div className="Login__nav">
                     <Link to={'/login'} className="Login__nav--signin_btn active">Đăng nhập</Link>
-                    <Link to={'/sign_up'} className="Login__nav--signup_btn">Đăng ký</Link>
+                    <Link to={'/sign-up'} className="Login__nav--signup_btn">Đăng ký</Link>
                 </div>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Login__form'>
                     <label htmlFor="username" className='form__label'>Tài khoản</label>

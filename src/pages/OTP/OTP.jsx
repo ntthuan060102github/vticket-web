@@ -8,7 +8,8 @@ import axios from "axios";
 
 function OTP() {
     let { slug } = useParams();
-    const  [OTPInfo, setOTPInfo] = React.useState({email:slug,OTP:""});const [errors, setErrors] = React.useState([]);
+    const  [OTPInfo, setOTPInfo] = React.useState({email:slug,OTP:""});
+    const [errors, setErrors] = React.useState([]);
 
     const handleChange = (event) =>{
         let value = event.target.value;
@@ -16,7 +17,7 @@ function OTP() {
  
         setOTPInfo((prevalue) => {
             return {
-                ...prevalue,   // Spread Operator               
+                ...prevalue,              
                 [name]: value
             }
         })
