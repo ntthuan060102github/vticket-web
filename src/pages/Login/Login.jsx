@@ -6,16 +6,12 @@ import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 
 import './Login.css'
-
-// interface Account {
-//     username: string;
-//     password: string;
-// }
+import validator from "validator";
 
 function Login() {
 
     const  [accountInfo, setAccountInfo] = React.useState({username:"",password:""});
-    const [error, setError] = React.useState("");
+    const [errors, setErrors] = React.useState([]);
 
     const handleChange = (event) =>{
         let value = event.target.value;
@@ -23,24 +19,44 @@ function Login() {
  
         setAccountInfo((prevalue) => {
             return {
-                ...prevalue,   // Spread Operator               
+                ...prevalue,                
                 [name]: value
             }
         })
     }
 
     const handleSubmit = () =>{
-        axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
-            email: accountInfo.username,
-            password: accountInfo.password,
-          })
-          .then(function (response) {
-            console.log(response);
-            window.location.href = '/'; 
-          })
-          .catch(function (error) {
-            setError(error.message);
-          });
+        const newErrors = [];
+
+        if (!validator.isEmail(accountInfo.username)) {
+            newErrors.push("Email không đúng định dạng");
+        }
+
+        if (!accountInfo.password) {
+            newErrors.push("Mật khẩu không được để trống");
+        };
+
+        if (newErrors.length !== 0) {
+            setErrors(newErrors);
+            return;
+        }
+        else{
+            axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
+                email: accountInfo.username,
+                password: accountInfo.password,
+            })
+            .then(function (response) {
+                if (response.data.status === 1 || response.data.status === 7) {
+                    window.location.href = '/'; 
+                } else {
+                    newErrors.push("Đăng nhập thất bại");
+                    setErrors(newErrors);
+                }
+            })
+            .catch(function (error) {
+                setErrors(error.message);
+            });
+        }
     }
     return (
         <div className="Login__wrapper">
@@ -49,7 +65,7 @@ function Login() {
                 <img src="/assets/images/logo.png" alt="logo" className="Login__logo" />
                 <div className="Login__nav">
                     <Link to={'/login'} className="Login__nav--signin_btn active">Đăng nhập</Link>
-                    <Link to={'/sign_up'} className="Login__nav--signup_btn">Đăng ký</Link>
+                    <Link to={'/sign-up'} className="Login__nav--signup_btn">Đăng ký</Link>
                 </div>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Login__form'>
                     <label htmlFor="username" className='form__label'>Tài khoản</label>
@@ -71,7 +87,9 @@ function Login() {
                         placeholder='Nhập mật khẩu' 
                         className='form__input' />
                     <Link to={'/forgot_password'} className="Login__form--forgot">Quên mật khẩu?</Link>
-                    {error != "" && <span className="error">{error}</span>}
+                    {errors.map((error, index) => {
+                        return <span key={index} className="error">{error}</span>;
+                    })}
                     <button className='Login__form--submit_btn' type="submit">Đăng nhập</button>
                 </form>
             </div>
