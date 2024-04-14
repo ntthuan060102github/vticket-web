@@ -9,12 +9,14 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import OTP from "./pages/OTP/OTP";
 import ResetPassword from './pages/ResetPassword';
+import RedirectInterceptor from "./helpers/axios_provider"
 
 
 function App() {
 
   return (
     <BrowserRouter>
+      <RedirectInterceptor/>
       <Routes>
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
