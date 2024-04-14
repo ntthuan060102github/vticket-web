@@ -53,12 +53,6 @@ function SignUp() {
         return selectedDate <= today;
     };
 
-    const isValidEmail = (email) => {
-        // Biểu thức chính quy kiểm tra định dạng email
-        const emailRegex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
-        return emailRegex.test(email);
-    };
-
     const handleSubmit = () => {
         const newErrors = [];
         if (!accountInfo.first_name) {
@@ -86,6 +80,7 @@ function SignUp() {
             return;
         }
         else{
+            console.log(accountInfo);
             axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
                 email: accountInfo.email,
                 first_name: accountInfo.first_name,
@@ -96,8 +91,9 @@ function SignUp() {
                 role: accountInfo.role
             })
             .then(function (response) {
+                console.log(response);
                 if (response.data.status === 1 || response.data.status === 7) {
-                    window.location.href = '/OTP';
+                    window.location.href = `/OTP/${accountInfo.email}`;
                 } else {
                     newErrors.push("Đăng ký thất bại");
                     setErrors(newErrors);

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   BrowserRouter,
   Route,
@@ -6,6 +7,7 @@ import {
 import './App.css'
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
+import OTP from "./pages/OTP/OTP";
 
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/sign_up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/OTP/:slug' element={<OTP />} />
         {/* <Route path="/" element={<HomePage />}>
           <Route index element={<HomePage />} />
           <Route path="blogs" element={<Blogs />} />
