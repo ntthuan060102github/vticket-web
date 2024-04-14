@@ -1,13 +1,57 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root{
+  --header-height: 80px; 
+  --nav-top-cus-height: 60px;
+  --white: #fff;
+  --black: #000;
+  --red: red;
+  --background-color-1: rgb(241,90,36);
+  --purple: rgb(58,55,193) ;
+  --blue: #0ea5e9; 
+  --gray: #6e6e6e;
+  --pastel: #EF9595;
+  --nav-top-gradient:linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(58,55,193,1) 100%, rgba(0,212,255,1) 100%);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+html{
+  font-family: "Tilt Neon", sans-serif;
+  font-size: 10px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--white);
+  user-select: none;
+}
+
+button{
+  user-select: none;
+  cursor: pointer;
+}
+
+a{
+  text-decoration: none;
+}
+
+button,
+input,
+[tabindex] {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* input::placeholder {
+  font-size: 1.6rem;
+}
+
+fa-icon {
+  cursor: pointer;
+} */

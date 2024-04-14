@@ -1,0 +1,79 @@
+.OTP__wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    gap: 100px;
+    background: var(--nav-top-gradient);
+}
+
+.OTP__poster{
+    height: 500px;
+    object-fit: contain;
+}
+
+.OTP{
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    border:none;
+    background-color: var(--white);
+    align-items: center;
+    box-shadow: 5px 10px 8px #888888;
+    padding: 20px 40px;
+    gap: 20px;
+    font-size: 1.6rem;
+}
+
+.OTP__logo{
+    height: 50px;
+    object-fit: contain;
+}
+.OTP__form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+.form__label{
+    width: 100%;
+}
+
+.form__input{
+    width: 100%;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.OTP__form--resend{
+    width: 100%;
+    color: var(--purple);
+    font-weight: lighter;
+}
+
+.error{
+    display: flex;
+    font-size: 1.4rem;
+    color: var(--red);
+    max-width: 300px;
+}
+
+.OTP__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(241,90,36,1) 0%, rgba(251,176,59,1) 100%);
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--purple);
+    font-size: 1.6rem;
+}
+
