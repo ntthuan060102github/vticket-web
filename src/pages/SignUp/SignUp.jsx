@@ -32,7 +32,7 @@ function SignUp() {
 
         setAccountInfo((prevalue) => {
             return {
-                ...prevalue,   // Spread Operator               
+                ...prevalue,           
                 [name]: value
             }
         })

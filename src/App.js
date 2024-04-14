@@ -8,6 +8,7 @@ import './App.css'
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import OTP from "./pages/OTP/OTP";
+import ResetPassword from './pages/ResetPassword';
 
 
 function App() {
@@ -15,9 +16,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/sign_up" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path='/OTP/:slug' element={<OTP />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
         {/* <Route path="/" element={<HomePage />}>
           <Route index element={<HomePage />} />
           <Route path="blogs" element={<Blogs />} />
