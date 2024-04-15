@@ -44,7 +44,7 @@ function AxiosProvider()
     return () => {
       axios.interceptors.response.eject(interceptorId.current);
     };
-  }, []);
+  }, [navigate]);
 
   return <Outlet />;
 }

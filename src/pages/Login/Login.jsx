@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import axios from 'axios';
 
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
@@ -12,6 +12,8 @@ function Login() {
 
     const  [accountInfo, setAccountInfo] = React.useState({username:"",password:""});
     const [errors, setErrors] = React.useState([]);
+    const navigate = useNavigate();
+
 
     const handleChange = (event) =>{
         let value = event.target.value;
@@ -39,15 +41,17 @@ function Login() {
         if (newErrors.length !== 0) {
             setErrors(newErrors);
             return;
-        }
-        else{
+        }else{
+            console.log(1)
             axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
                 email: accountInfo.username,
                 password: accountInfo.password,
             })
             .then(function (response) {
-                if (response.data.status === 1 || response.data.status === 7) {
-                    // window.location.href = '/'; 
+                if (response.data.status === 1) {
+                    navigate('/');
+                    localStorage.setItem('access', response.data.data.access);
+                    localStorage.setItem('refresh', response.data.data.refresh);
                 } else {
                     newErrors.push("Đăng nhập thất bại");
                     setErrors(newErrors);
@@ -87,9 +91,9 @@ function Login() {
                         placeholder='Nhập mật khẩu' 
                         className='form__input' />
                     <Link to={'/forgot_password'} className="Login__form--forgot">Quên mật khẩu?</Link>
-                    {/* {errors.map((error, index) => {
+                    {errors.map((error, index) => {
                         return <span key={index} className="error">{error}</span>;
-                    })} */}
+                    })}
                     <button className='Login__form--submit_btn' type="submit">Đăng nhập</button>
                 </form>
             </div>

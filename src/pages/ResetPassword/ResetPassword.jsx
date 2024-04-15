@@ -6,12 +6,14 @@ import { APP_ENV } from "../../configs/app_config"
 
 import './ResetPassword.css'
 import validator from "validator";
+import { useNavigate } from "react-router-dom";
 
 function Reset_password() {
 
     const  [OTPInfo, setOTPInfo] = React.useState({email:"",OTP:""});
     const [errors1, setErrors1] = React.useState([]);
     const [errors2, setErrors2] = React.useState([]);
+    const navigate = useNavigate();
 
     const [requested, setRequested] = React.useState(false);
 
@@ -64,8 +66,8 @@ function Reset_password() {
             })
             .then(function (response) {
                 console.log(response);
-                if (response.data.status === 1 || response.data.status === 7) {
-                    window.location.href = '/'; 
+                if (response.data.status === 1) {
+                    navigate('/');
                 } else {
                     setErrors2("Xác nhận OTP thất bại");
                 }
