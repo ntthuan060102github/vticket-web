@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
@@ -10,6 +10,7 @@ function OTP() {
     let { slug } = useParams();
     const  [OTPInfo, setOTPInfo] = React.useState({email:slug,OTP:""});
     const [errors, setErrors] = React.useState([]);
+    const navigate = useNavigate();
 
     const handleChange = (event) =>{
         let value = event.target.value;
@@ -38,7 +39,7 @@ function OTP() {
             .then(function (response) {
                 console.log(response);
                 if (response.data.status === 1 || response.data.status === 7) {
-                    window.location.href = '/'; 
+                    navigate('/');
                 } else {
                     setErrors("Xác nhận OTP thất bại");
                 }
