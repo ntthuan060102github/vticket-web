@@ -25,10 +25,10 @@ function OTP() {
     }
 
     const handleSubmit = () =>{
-        console.log(OTPInfo)
-
+        const newError = {};
         if (!OTPInfo.OTP) {
-            setErrors("OTP không được để trống");
+            newError["otp"] = "OTP không được để trống";
+            setErrors(newError);
             return;
         }
         else{
@@ -37,15 +37,16 @@ function OTP() {
                 otp: OTPInfo.OTP,
             })
             .then(function (response) {
-                console.log(response);
-                if (response.data.status === 1 || response.data.status === 7) {
+                if (response.data.status === 1) {
                     navigate('/');
                 } else {
-                    setErrors("Xác nhận OTP thất bại");
+                    newError["error_res"] = response.data.message;
+                    setErrors(newError);
                 }
             })
             .catch(function (error) {
-                setErrors(error.message);
+                newError["error"] = error.message;
+                setErrors(newError);
             });
         }
     }
@@ -55,10 +56,19 @@ function OTP() {
             <div className='OTP'>
                 <img src="/assets/images/logo.png" alt="logo" className="OTP__logo" />
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='OTP__form'>
-                    <label htmlFor="OTP" className='form__label'>OTP</label>
-                    <input type="text" id="OTP" name='OTP' placeholder='Nhập mã OTP' onChange={handleChange} className='form__input' />
-                    <span className="OTP__form--resend">Chưa nhận được mã? <b>Gửi lại mã</b></span>
-                    { errors && <span className="error">{errors}</span>}
+                    <label htmlFor="OTP" className='otp_form__label'>OTP</label>
+                    <input 
+                        type="text" 
+                        id="OTP" 
+                        name='OTP' 
+                        placeholder='Nhập mã OTP' 
+                        onChange={handleChange} 
+                        className={errors["otp"] ? "otp_form__input error-input" : "otp_form__input normal-input"}
+                    />
+                    {/* <span className="OTP__form--resend">Chưa nhận được mã? <b>Gửi lại mã</b></span> */}
+                    { errors["otp"] && <span className="error">{errors["otp"]}</span>}
+                    { errors["error_res"] && <span className="error">{errors["error_res"]}</span>}
+                    { errors["error"] && <span className="error">{errors["error"]}</span>}
                     <button type="submit" className='OTP__form--submit_btn'>Xác nhận</button>
                 </form>
             </div>

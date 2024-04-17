@@ -40,14 +40,12 @@
     width: 300px;
 }
 
-.form__label{
+.otp_form__label{
     width: 100%;
 }
 
-.form__input{
+.otp_form__input{
     width: 100%;
-    border-radius: 5px;
-    border: solid 1px var(--black);
     padding: 10px 20px;
     font-size: 1.6rem;
 }
@@ -56,6 +54,16 @@
     width: 100%;
     color: var(--purple);
     font-weight: lighter;
+}
+
+.normal-input{
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.error-input{
+    border-radius: 5px;
+    border: solid 1px var(--red);
 }
 
 .error{

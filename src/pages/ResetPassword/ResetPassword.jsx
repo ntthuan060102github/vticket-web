@@ -11,8 +11,7 @@ import { useNavigate } from "react-router-dom";
 function Reset_password() {
 
     const  [OTPInfo, setOTPInfo] = React.useState({email:"",OTP:""});
-    const [errors1, setErrors1] = React.useState([]);
-    const [errors2, setErrors2] = React.useState([]);
+    const [errors, setErrors] = React.useState([]);
     const navigate = useNavigate();
 
     const [requested, setRequested] = React.useState(false);
@@ -30,10 +29,11 @@ function Reset_password() {
     }
 
     const handleSubmitRequest = () =>{
-        console.log(OTPInfo)
-;
+        const newErrors = {};
+        
         if (!validator.isEmail(OTPInfo.email)) {
-            setErrors1("Email không đúng định dạng");
+            newErrors["email"] = "Email không đúng định dạng";
+            setErrors(newErrors);
             return;
         }
         else{
@@ -41,22 +41,25 @@ function Reset_password() {
                 email: OTPInfo.email,
             })
             .then(function (response) {
-                console.log(response)
                 if (response.data.status === 1 || response.data.status === 7) {
                     setRequested(true);
                 } else {
-                    setErrors1("Yêu cầu reset mật khẩu thất bại");
+                    newErrors["error_req"] = response.data.message;
+                    setErrors(newErrors);
                 }
             })
             .catch(function (error) {
-                setErrors1(error.message);
+                newErrors["error_email"] = error.message;
+                setErrors(newErrors);
             });
         }
     }
 
     const handleSubmitOTP = () =>{
+        const newErrors = {};
         if (!OTPInfo.OTP) {
-            setErrors2("OTP không được để trống");
+            newErrors["otp"] = "OTP không được để trống";
+            setErrors(newErrors);
             return;
         }
         else{
@@ -65,15 +68,17 @@ function Reset_password() {
                 otp: OTPInfo.OTP,
             })
             .then(function (response) {
-                console.log(response);
+                
                 if (response.data.status === 1) {
                     navigate('/');
                 } else {
-                    setErrors2("Xác nhận OTP thất bại");
+                    newErrors["error_res"] = response.data.message;
+                    setErrors(newErrors);
                 }
             })
             .catch(function (error) {
-                setErrors2(error.message);
+                newErrors["error_otp"] = error.message;
+                setErrors(newErrors);
             });
         }
     }
@@ -83,7 +88,7 @@ function Reset_password() {
             <div className='Reset_password'>
                 <img src="/assets/images/logo.png" alt="logo" className="Reset_password__logo" />
                 {!requested && <form onSubmit={(e) => { e.preventDefault(); handleSubmitRequest(); }} className='Reset_password__form'>
-                    <label htmlFor="email" className='form__label'>Email</label>
+                    <label htmlFor="email" className='reset_password_form__label'>Email</label>
                     <input 
                         type="text" 
                         id="email" 
@@ -91,13 +96,16 @@ function Reset_password() {
                         value={OTPInfo.email}
                         onChange={handleChange}
                         placeholder='Nhập email cần reset mật khẩu' 
-                        className='form__input' />
-                    { errors1 && <span className="error">{errors1}</span>}
+                        className={errors["email"] ? "reset_password_form__input error-input" : "reset_password_form__input normal-input"}
+                    />
+                    { errors["email"] && <span className="error">{errors["email"]}</span>}
+                    { errors["error_req"] && <span className="error">{errors["error_req"]}</span>}
+                    { errors["error_email"] && <span className="error">{errors["error_email"]}</span>}
                     <button className='Reset_password__form--submit_btn' type="submit">Gửi yêu cầu</button>
                 </form>
                 }
                 {requested && <form onSubmit={(e) => { e.preventDefault(); handleSubmitOTP(); }} className='Reset_password__form'>
-                    <label htmlFor="OTP" className='form__label'>OTP</label>
+                    <label htmlFor="OTP" className='reset_password_form__label'>OTP</label>
                     <input 
                         type="OTP" 
                         id="OTP" 
@@ -105,8 +113,11 @@ function Reset_password() {
                         value={OTPInfo.OTP}
                         onChange={handleChange}
                         placeholder='Nhập OTP' 
-                        className='form__input'/>
-                    { errors2 && <span className="error">{errors2}</span>}
+                        className={errors["otp"] ? "reset_password_form__input error-input" : "reset_password_form__input normal-input"}
+                    />
+                    { errors["otp"] && <span className="error">{errors["otp"]}</span>}
+                    { errors["error_req"] && <span className="error">{errors["error_req"]}</span>}
+                    { errors["error_otp"] && <span className="error">{errors["error_otp"]}</span>}
                     <button className='Reset_password__form--submit_btn' type="submit">Xác nhận</button>
                 </form>
                 }
