@@ -28,17 +28,17 @@ function Login() {
     }
 
     const handleSubmit = () =>{
-        const newErrors = [];
+        const newErrors = {};
 
         if (!validator.isEmail(accountInfo.username)) {
-            newErrors.push("Email không đúng định dạng");
+            newErrors["email"] = "Email không đúng định dạng";
         }
 
         if (!accountInfo.password) {
-            newErrors.push("Mật khẩu không được để trống");
+            newErrors["password"] = "Mật khẩu không được để trống";
         };
 
-        if (newErrors.length !== 0) {
+        if (Object.keys(newErrors).length !== 0) {
             setErrors(newErrors);
             return;
         }else{
@@ -53,12 +53,13 @@ function Login() {
                     localStorage.setItem('access', response.data.data.access);
                     localStorage.setItem('refresh', response.data.data.refresh);
                 } else {
-                    newErrors.push("Đăng nhập thất bại");
+                    newErrors["login"] = response.data.message;
                     setErrors(newErrors);
                 }
             })
             .catch(function (error) {
-                setErrors(error.message);
+                newErrors["error"] = error.message;
+                setErrors(newErrors);
             });
         }
     }
@@ -72,7 +73,7 @@ function Login() {
                     <Link to={'/sign-up'} className="Login__nav--signup_btn">Đăng ký</Link>
                 </div>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Login__form'>
-                    <label htmlFor="username" className='form__label'>Tài khoản</label>
+                    <label htmlFor="username" className='Login_form__label'>Tài khoản</label>
                     <input 
                         type="text" 
                         id="username" 
@@ -80,8 +81,10 @@ function Login() {
                         value={accountInfo.username}
                         onChange={handleChange}
                         placeholder='Nhập tài khoản' 
-                        className='form__input' />
-                    <label htmlFor="password" className='form__label'>Mật khẩu</label>
+                        className={errors.email ? "Login_form__input error-input" : "Login_form__input normal-input"}
+                    />
+                    {errors["email"] && <span className="error">{errors["email"]}</span>}
+                    <label htmlFor="password" className='Login_form__label'>Mật khẩu</label>
                     <input 
                         type="password" 
                         id="password" 
@@ -89,11 +92,12 @@ function Login() {
                         value={accountInfo.password}
                         onChange={handleChange}
                         placeholder='Nhập mật khẩu' 
-                        className='form__input' />
+                        className={errors.password ? "Login_form__input error-input" : "Login_form__input normal-input"}
+                    />
+                    {errors["password"] && <span className="error">{errors["password"]}</span>}
                     <Link to={'/forgot_password'} className="Login__form--forgot">Quên mật khẩu?</Link>
-                    {errors.map((error, index) => {
-                        return <span key={index} className="error">{error}</span>;
-                    })}
+                    {errors["login"] && <span className="error">{errors["login"]}</span>}
+                    {errors["error"] && <span className="error">{errors["error"]}</span>}
                     <button className='Login__form--submit_btn' type="submit">Đăng nhập</button>
                 </form>
             </div>
