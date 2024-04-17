@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -26,6 +26,7 @@ function SignUp() {
 
 
     const [errors, setErrors] = React.useState([]);
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -92,8 +93,8 @@ function SignUp() {
             })
             .then(function (response) {
                 console.log(response);
-                if (response.data.status === 1 || response.data.status === 7) {
-                    window.location.href = `/OTP/${accountInfo.email}`;
+                if (response.data.status === 1) {
+                    navigate(`/OTP/${accountInfo.email}`);
                 } else {
                     newErrors.push("Đăng ký thất bại");
                     setErrors(newErrors);
