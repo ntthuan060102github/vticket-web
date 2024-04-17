@@ -67,16 +67,24 @@
     width: 300px;
 }
 
-.form__label{
+.Login_form__label{
     width: 100%;
 }
 
-.form__input{
+.Login_form__input{
     width: 100%;
-    border-radius: 5px;
-    border: solid 1px var(--black);
     padding: 10px 20px;
     font-size: 1.6rem;
+}
+
+.normal-input{
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.error-input{
+    border-radius: 5px;
+    border: solid 1px var(--red);
 }
 
 .Login__form--forgot{
@@ -86,8 +94,10 @@
 }
 
 .error{
+    display: flex;
     font-size: 1.4rem;
     color: var(--red);
+    margin-top: -10px;
 }
 
 .Login__form--submit_btn{

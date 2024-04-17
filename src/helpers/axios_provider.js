@@ -26,17 +26,15 @@ function AxiosProvider()
                 case 4:
                 case 5:
                 case 6:
-                  console.log(data.message);
-                  break;
+                  return response;
                 default:
-                  return response
+                  return response;
               }
             }
           
             return response;
           }, 
           (error) => {
-            console.error('Có lỗi xảy ra:', error);
             return Promise.reject(error);
           }
         );
