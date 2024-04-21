@@ -46,11 +46,12 @@ function SignUp() {
 
     const handleDateChange = (date) => {
         console.log(typeof(date));
-        const formattedDate = date.format("YYYY-MM-DD");
-        console.log(formattedDate);
+        const formattedDate = moment(date).format("YYYY-MM-DD");
+        const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
+        console.log(onlyFormattedDate);
         setAccountInfo((prevValue) => ({
             ...prevValue,
-            birthday: formattedDate
+            birthday: onlyFormattedDate
         }));
     }
 
