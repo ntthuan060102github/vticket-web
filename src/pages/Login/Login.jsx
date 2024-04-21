@@ -95,7 +95,7 @@ function Login() {
                         className={errors.password ? "Login_form__input error-input" : "Login_form__input normal-input"}
                     />
                     {errors["password"] && <span className="error">{errors["password"]}</span>}
-                    <Link to={'/forgot_password'} className="Login__form--forgot">Quên mật khẩu?</Link>
+                    <Link to={'/reset-password'} className="Login__form--reset">Bạn không nhớ mật khẩu?</Link>
                     {errors["login"] && <span className="error">{errors["login"]}</span>}
                     {errors["error"] && <span className="error">{errors["error"]}</span>}
                     <button className='Login__form--submit_btn' type="submit">Đăng nhập</button>
