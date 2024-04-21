@@ -87,7 +87,7 @@
     border: solid 1px var(--red);
 }
 
-.Login__form--forgot{
+.Login__form--reset{
     width: 100%;
     color: var(--purple);
     font-weight: lighter;
