@@ -95,7 +95,7 @@ function Reset_password() {
                         name="email"
                         value={OTPInfo.email}
                         onChange={handleChange}
-                        placeholder='Nhập email cần reset mật khẩu' 
+                        placeholder='Nhập email cần đặt lại mật khẩu' 
                         className={errors["email"] ? "reset_password_form__input error-input" : "reset_password_form__input normal-input"}
                     />
                     { errors["email"] && <span className="error">{errors["email"]}</span>}
@@ -112,7 +112,7 @@ function Reset_password() {
                         name="OTP"
                         value={OTPInfo.OTP}
                         onChange={handleChange}
-                        placeholder='Nhập OTP' 
+                        placeholder='Nhập OTP đã được gửi về email' 
                         className={errors["otp"] ? "reset_password_form__input error-input" : "reset_password_form__input normal-input"}
                     />
                     { errors["otp"] && <span className="error">{errors["otp"]}</span>}
