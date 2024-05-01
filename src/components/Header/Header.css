@@ -1,0 +1,63 @@
+.Header{
+    display: flex;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--white);
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    user-select: none;
+}
+
+.Header__logo{
+    height: 70px;
+    object-fit: contain;
+}
+
+.Header__search{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 350px;
+    border: solid 1px var(--black);
+    border-radius: 5px;
+    font-size: 1.6rem;
+}
+
+.Header__search--input{
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* .Header__search--icon_wrapper{
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+} */
+
+.Header__search--icon{
+    padding: 0 10px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    /* height: 100%;
+    width: calc(10px + 1.6rem + 10px); */
+}
+
+.Header__btn{
+    display: flex;
+    gap:  20px;
+    width: 300px;
+}
+
+.Header__btn--sign_in, .Header__btn--sign_up{
+    background-color: transparent;
+    font-size: 1.6rem;
+    width: 100px;
+}
+
+.Header__btn--sign_in:hover, .Header__btn--sign_up:hover{
+    color: var(--background-color-1);
+}
