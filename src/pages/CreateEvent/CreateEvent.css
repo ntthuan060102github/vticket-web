@@ -1,0 +1,121 @@
+.Create_event__wrapper{
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.Create_event {
+    display: flex;
+    width:100%;
+    justify-content: center;
+    position: relative;
+    clear: both
+}
+
+
+.Create_event__form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 500px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.Create_event__infor_event_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    margin: 20px  auto;
+    width: 350px;
+}
+
+.Create_event_form__label{
+    width: 100%;
+}
+
+.Create_event_form__input{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+#description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.Create_event_form__input_description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.normal-input{
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.error-input{
+    border-radius: 5px;
+    border: solid 1px var(--red);
+}
+
+.Create_event__form--reset{
+    width: 100%;
+    color: var(--purple);
+    font-weight: lighter;
+}
+
+.error{
+    display: flex;
+    font-size: 1.4rem;
+    color: var(--red);
+    margin-top: -10px;
+}
+
+.Create_event__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: var(--purple);
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--white);
+    font-size: 1.6rem;
+}
+
+.List_ticket_type__title{
+
+}
+
+.form__list{
+    display: flex;
+    width: 100%;
+    height: 200px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.form__seat_range{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form__start_seat, .form_last_seat{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form_input_seat{
+    width: 150px;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}

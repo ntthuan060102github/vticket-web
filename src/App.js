@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import OTP from "./pages/OTP/OTP";
 import ResetPassword from './pages/ResetPassword';
 import RedirectInterceptor from "./helpers/axios_provider"
+import CreateEvent from './pages/CreateEvent';
 
 // Hàm kiểm tra token
 const isAuthenticated = () => {
@@ -35,6 +36,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} />
         </Route> */}
+        <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path='/otp/:slug' element={<OTP/>} />
