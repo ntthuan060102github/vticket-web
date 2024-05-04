@@ -61,3 +61,32 @@
 .Header__btn--sign_in:hover, .Header__btn--sign_up:hover{
     color: var(--background-color-1);
 }
+
+.user_action{
+    position: relative;
+}
+
+.btn{
+    background-color: transparent;
+}
+.dropdow_menu{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.6rem;
+    gap: 20px;
+    background-color: var(--white);
+    z-index: 9999;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    position: absolute;
+    top: 120%;
+    width: 200px;
+    left: -200px;
+    padding: 20px;
+}
+
+.user_avt{
+    height: 50px;
+    border-radius: 50%;
+    border: solid 1px var(--black);
+}

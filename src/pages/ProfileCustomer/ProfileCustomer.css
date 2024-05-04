@@ -1,0 +1,168 @@
+.Profile_customer__wrapper{
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.Profile_customer {
+    display: flex;
+    width:100%;
+    gap: 200px;
+    padding: 0 100px;
+    position: relative;
+    clear: both
+}
+
+
+.Profile_customer__form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 500px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.Profile_customer__infor_event_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    margin: 20px  auto;
+    width: 350px;
+}
+
+.Profile_customer_form__label{
+    width: 100%;
+}
+
+.Profile_customer_form__input{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+#description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.Profile_customer_form__input_description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.normal-input{
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.error-input{
+    border-radius: 5px;
+    border: solid 1px var(--red);
+}
+
+.Profile_customer__form--reset{
+    width: 100%;
+    color: var(--purple);
+    font-weight: lighter;
+}
+
+.error{
+    display: flex;
+    font-size: 1.4rem;
+    color: var(--red);
+    margin-top: -10px;
+}
+
+.Profile_customer__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: var(--purple);
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--white);
+    font-size: 1.6rem;
+}
+
+.List_ticket_type__title{
+
+}
+
+.form__list{
+    display: flex;
+    width: 100%;
+    height: 200px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
+.form__seat_range{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form__start_seat, .form_last_seat{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form_input_seat{
+    width: 150px;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.Profile_customer__sidebar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    height: fit-content;
+    padding: 20px 40px;
+    font-size: 1.6rem;
+}
+
+.Sidebar__avt_name{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.Sidebar_avt{
+    height: 80px;
+    border-radius: 50%;
+    border: solid 1px var(--black);
+}
+
+.Sidebar__name{}
+
+
+.Sidebar__menu{
+    list-style: none;
+}
+
+.Sidebar__menu--item{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    width: 200px;
+    color: var(--black);
+}
+
+.user_icon{
+    border-radius: 50%;
+    border: solid 1px var(--black);
+    padding: 5px;
+}

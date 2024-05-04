@@ -52,6 +52,7 @@ function Login() {
                     navigate('/');
                     localStorage.setItem('access', response.data.data.access);
                     localStorage.setItem('refresh', response.data.data.refresh);
+                    localStorage.setItem('profile', response.data.data.profile);
                 } else {
                     newErrors["login"] = response.data.message;
                     setErrors(newErrors);
