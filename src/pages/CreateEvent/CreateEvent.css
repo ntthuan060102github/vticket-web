@@ -17,20 +17,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    width: 500px;
-    border-radius: 5px;
-    border: solid 1px var(--black);
+    margin: 20px 100px 0 100px;
+    width: 100%;
+    padding: 20px 0;
 }
 
-.Create_event__infor_event_input{
+.Create_event__infor_event_input, 
+.Create_event__ticket_type_input,
+.Create_event__service_infor_input,
+.Create_event__seat_class_input{
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     font-size: 1.6rem;
-    margin: 20px  auto;
-    width: 350px;
+    width: 500px;
+    border-radius: 5px;
+    padding: 20px 50px;
+    border: solid 1px var(--black);
+}
+
+.Create_event__service_input{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.Create_event__service_input--top{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .Create_event_form__label{
@@ -100,6 +118,10 @@
     height: 200px;
     border-radius: 5px;
     border: solid 1px var(--black);
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+    overflow: auto; 
 }
 
 .form__seat_range{
@@ -117,5 +139,29 @@
 .form_input_seat{
     width: 150px;
     padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.form__btn{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 40px;
+}
+
+.return{
+    background-color: var(--red);
+}
+
+.Create_event__ticket_type_list{
+    display: flex;
+    width: 500px;
+    height: auto;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+    overflow: auto; 
     font-size: 1.6rem;
 }

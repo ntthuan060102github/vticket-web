@@ -7,6 +7,8 @@
     align-items: center;
     padding: 0 40px;
     user-select: none;
+    box-shadow: 1px 1px 10px var(--gray);
+    margin-bottom: 40px;
 }
 
 .Header__logo{
@@ -89,4 +91,16 @@
     height: 50px;
     border-radius: 50%;
     border: solid 1px var(--black);
+}
+
+.Header_user{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.user_name{
+    display: flex;
+    align-items: center;
 }
