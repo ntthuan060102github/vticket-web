@@ -7,6 +7,8 @@
     align-items: center;
     padding: 0 40px;
     user-select: none;
+    box-shadow: 1px 1px 10px var(--gray);
+    margin-bottom: 40px;
 }
 
 .Header__logo{
@@ -62,31 +64,41 @@
     color: var(--background-color-1);
 }
 
-.user_action{
+.dropdown{
     position: relative;
+    font-size: 1.6rem;
+}
+
+.user_action .dropdown-toggle {
+    background-color: transparent !important; 
+    border: none !important; 
 }
 
 .btn{
     background-color: transparent;
 }
+
 .dropdow_menu{
-    display: flex;
-    flex-direction: column;
-    font-size: 1.6rem;
-    gap: 20px;
-    background-color: var(--white);
-    z-index: 9999;
-    border-radius: 5px;
-    border: solid 1px var(--black);
-    position: absolute;
-    top: 120%;
-    width: 200px;
-    left: -200px;
-    padding: 20px;
+    font-size: 1.6rem !important;
+    padding: 10px !important;
+    margin-left: -20px !important;
 }
 
 .user_avt{
     height: 50px;
     border-radius: 50%;
     border: solid 1px var(--black);
+}
+
+.Header_user{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.user_name{
+    display: flex;
+    align-items: center;
+    font-size: 1.6rem;
 }
