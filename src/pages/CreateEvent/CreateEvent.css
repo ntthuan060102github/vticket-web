@@ -37,6 +37,15 @@
     border: solid 1px var(--black);
 }
 
+.Create_event__infor_event_input--title, 
+.Create_event__ticket_type_input--title,
+.Create_event__service_infor_input--title,
+.Create_event__seat_class_input--title{
+    text-transform: uppercase;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
 .Create_event__service_input{
     display: flex;
     flex-direction: column;
@@ -58,7 +67,15 @@
 .Create_event_form__input{
     width: 100%;
     padding: 10px 20px;
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
+}
+
+.MuiInputBase-input, .MuiButtonBase-root{
+    font-size: 1.6rem !important;
+}
+
+.disable{
+    pointer-events: none;
 }
 
 #description{
@@ -109,7 +126,6 @@
 }
 
 .List_ticket_type__title{
-
 }
 
 .form__list{
@@ -161,7 +177,21 @@
     border: solid 1px var(--black);
     flex-direction: column;
     gap: 10px;
-    padding: 10px 20px;
     overflow: auto; 
     font-size: 1.6rem;
+}
+
+.stt{
+    width: 50px;
+}
+
+.title{
+    text-align: center;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+}
+
+.form-control{
+    border: none !important;
+    font-size: 1.6rem !important;
 }

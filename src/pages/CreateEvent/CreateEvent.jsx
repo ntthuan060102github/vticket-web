@@ -6,6 +6,10 @@ import 'react-datetime/css/react-datetime.css';
 import { format } from 'date-fns';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
@@ -13,23 +17,46 @@ import validator from "validator";
 import './CreateEvent.css'
 import Header from '../../components/Header';
 import TimeInput from "../../components/TimeInput";
+import Table from 'react-bootstrap/Table';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CreateEvent() {
   const accessToken = localStorage.getItem('access');
+
+  const dateCurrent = new Date();
+  const formattedDateCurrent = moment(dateCurrent).format("YYYY-MM-DD");
+  const onlyFormattedDateCurrent = new Date(formattedDateCurrent).toISOString().split('T')[0];
 
   const [eventInfo, setEventInfo] = React.useState({
     "ticket_types": [],
     "event_topics": [],
     "event_name": "",
     "description": "",
-    "start_date": new Date(),
-    "end_date": new Date(),
+    "start_date": onlyFormattedDateCurrent,
+    "end_date": onlyFormattedDateCurrent,
     "start_time": new Date().getHours() + ':' + new Date().getMinutes(),
     "location": "",
     "banner_url": ""
   });
 
-  const [ticketTypes, setTicketTypes] = React.useState([]);
+  const [ticketTypes, setTicketTypes] = React.useState([
+    {
+      description :"",
+      price: 0,
+      seat_configuration:[],
+      seat_configurations:[],
+      ticket_type_details: [],
+      ticket_type_name: "Loại VIP",
+    },
+    {
+      description :"",
+      price: 0,
+      seat_configuration:[],
+      seat_configurations:[],
+      ticket_type_details: [],
+      ticket_type_name: "Loại Premium",
+    }
+  ]);
   const [ticket_Type, setTicket_Type] = React.useState({
     "ticket_type_name": "",
     "description": "",
@@ -76,8 +103,9 @@ function CreateEvent() {
     setTicket_Type({
       ticket_type_name: "",
       description: "",
-      price: ""
-    })
+      price: "0"
+    });
+    console.log(ticketTypes);
   };
 
   const handleNextTask = () => {
@@ -154,7 +182,7 @@ function CreateEvent() {
     const selectedDate = currentDate.toDate();
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
-    return selectedDate <= today;
+    return selectedDate >= today;
   };
 
   const onTimeChangeHandler = (val) => {
@@ -274,13 +302,24 @@ function CreateEvent() {
                 className={errors.birthday ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
               <label htmlFor="start_time" className='Create_event_form__label'>Giờ khai mạc</label>
-              <TimeInput
+              {/* <TimeInput
                 id="start_time"
                 name="start_time"
                 initTime={eventInfo.start_time}
                 className='s-input -time'
                 onTimeChange={onTimeChangeHandler}
-              />
+              /> */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['TimePicker']}>
+                  <TimePicker 
+                    id="start_time"
+                    name="start_time"
+                    val= {eventInfo.start_time}
+                    onChange={onTimeChangeHandler}
+                    className={errors.start_time ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
               {/* <input 
               type="time" 
               id="start_time"
@@ -372,9 +411,29 @@ function CreateEvent() {
             <div className='Create_event__service_input'>
               <div className="Create_event__service_input--top">
                 <div className="Create_event__ticket_type_list">
-                {ticketTypes !== null && ticketTypes.map((ticket, index) => {
-                  return (<span key={index}> {ticket?.ticket_type_name}</span>);
-                })}
+                <Table striped bordered hover>
+
+                  <thead>
+                    <tr>
+                      <th className="title" colSpan={2}>Danh sách các loại vé</th>
+                    </tr>
+                    <tr>
+                      <th className="stt">STT</th>
+                      <th>Tên loại vé</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ticketTypes !== null && ticketTypes.map((ticket, index) => {
+                      return (
+                        <tr  key={index} onClick={() => handleSelected(ticket)}>
+                          <td className="stt">{index}</td>
+                          <td>{ticket?.ticket_type_name}</td>
+                        </tr>
+                    );
+                    })}
+                  </tbody>
+                </Table>
+                
                 </div>
                 {selectedItem && 
                 <div className="Create_event__service_infor_input">
@@ -385,10 +444,11 @@ function CreateEvent() {
                     id="ticket_type_name"
                     name="ticket_type_name"
                     value={selectedItem?.ticket_type_name}
-                    disabled="disabled"
+                    readonly
+                    disabled
                     onChange={handleChange}
                     placeholder='Nhập tên hạng vé'
-                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                    className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
                   />
                   <label htmlFor="service_name" className='Create_event_form__label'>Tên dịch vụ</label>
                   <input

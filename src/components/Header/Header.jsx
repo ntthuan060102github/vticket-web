@@ -41,7 +41,7 @@ function Header() {
       <div className="Header_user">
         <h2 className="user_name">{last_name} {first_name}</h2>
         <Dropdown className='user_action' autoClose="outside">
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
+          <Dropdown.Toggle id="dropdown-basic">
             <img src={!avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
           </Dropdown.Toggle>
 
