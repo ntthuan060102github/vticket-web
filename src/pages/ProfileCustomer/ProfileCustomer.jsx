@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faUser } from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import validator from "validator";
@@ -25,20 +25,35 @@ function TimeInput({ value, onChange }) {
 }
 
 function ProfileCustomer() {
-  const profile = localStorage.getItem('profile');
 
-  const [accountInfo, setAccountInfo] = React.useState({
-    email: profile.email,
-    first_name: profile.first_name || "Võ",
-    last_name: profile.last_name|| "Sơn",
-    gender: profile.gender,
-    birthday: profile.birth || new Date(),
-    phone_number: profile.phone_number || ""
-  });
-
-
+  const email = localStorage.getItem('email');
+  const password = localStorage.getItem('password');
 
   const [errors, setErrors] = React.useState([]);
+
+  
+  const access = localStorage.getItem('access');
+  const first_name = localStorage.getItem('first_name');
+  const last_name = localStorage.getItem('last_name');
+  const avatar_url = localStorage.getItem('avatar_url');
+  const gender = localStorage.getItem('gender');
+  const birthday = localStorage.getItem('birthday');
+  const phone_number = localStorage.getItem('phone_number');
+
+
+  const [accountInfo, setAccountInfo] = React.useState({
+    first_name: first_name,
+    last_name: last_name,
+    gender: gender,
+    birthday: birthday ,
+    phone_number: phone_number,
+    avatar_url : avatar_url
+  });
+
+  const [avatarFile,setAvatarFile] = React.useState([]);
+  const [avatarURL,setAvatarURL] = React.useState(accountInfo.avatar_url);
+  
+
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -51,6 +66,28 @@ function ProfileCustomer() {
       }
     })
   }
+
+  const handleFileChange = (event) => {
+    console.log(1)
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/profile/avatar`, {
+        Authorization: accountInfo.username,
+        image: selectedFile,
+      })
+      .then(function (response) {
+          if (response.data.status === 1) {
+              localStorage.setItem("avatar_url", response.data.data.avatar_url);
+              setAvatarURL(response.data.data.avatar_url)
+          } else {
+              setErrors(...errors, response.data.message);
+          }
+      })
+      .catch(function (error) {
+              setErrors(...errors, error);
+      });
+    }
+  };
 
   const handleDateChange = (date) => {
     console.log(typeof (date));
@@ -85,10 +122,6 @@ function ProfileCustomer() {
       newErrors["birthday"] = "Ngày sinh không được trống";
     }
 
-    if (!validator.isEmail(accountInfo.email)) {
-      newErrors["email"] = "Email không đúng format";
-    }
-
     if (!accountInfo.password) {
       newErrors["password"] = "Mật khẩu không được để trống";
     };
@@ -103,7 +136,6 @@ function ProfileCustomer() {
     }
     else {
       axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
-        email: accountInfo.email,
         first_name: accountInfo.first_name,
         last_name: accountInfo.first_name,
         gender: accountInfo.gender,
@@ -125,14 +157,43 @@ function ProfileCustomer() {
         });
     }
   }
+  useEffect(() => {
+    axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
+      email: email,
+      password: password,
+    })
+    .then(function (response) {
+        if (response.data.status === 1) {
+            localStorage.setItem('access', response.data.data.access);
+            localStorage.setItem('refresh', response.data.data.refresh);
+            localStorage.setItem("id", response.data.data.profile.id);
+            localStorage.setItem("email", response.data.data.profile.email);
+            localStorage.setItem("first_name", response.data.data.profile.first_name);
+            localStorage.setItem("last_name", response.data.data.profile.last_name);
+            localStorage.setItem("gender", response.data.data.profile.gender);
+            localStorage.setItem("birthday", response.data.data.profile.birthday);
+            localStorage.setItem("avatar_url", response.data.data.profile.avatar_url);
+            localStorage.setItem("phone_number", response.data.data.profile.phone_number);
+            localStorage.setItem("status", response.data.data.profile.status);
+            localStorage.setItem("password", password);
+            localStorage.setItem("role", response.data.data.profile.role);
+        } else {
+            setErrors(response.data.message);
+        }
+    })
+    .catch(function (error) {
+        setErrors(error);
+    });
+
+  }, [avatarURL]);
   return (
     <div className="Profile_customer__wrapper">
       <Header />
       <div className="Profile_customer">
         <div className="Profile_customer__sidebar">
           <div className="Sidebar__avt_name">
-            <img src={profile.avatar_url ? profile.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="Sidebar_avt" />
-            <h2 className="Sidebar__name">{profile.last_name} {profile.first_name}</h2>
+            <img src={!accountInfo.avatar_url ? accountInfo.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="Sidebar_avt" />
+            <h2 className="Sidebar__name">{last_name} {first_name}</h2>
           </div>
           <ul class="Sidebar__menu">
             <li><a href="#infor" class="Sidebar__menu--item">
@@ -143,7 +204,21 @@ function ProfileCustomer() {
         </div>
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Profile_customer__form'>
           <div className="Profile_customer__infor_event_input">
-            <h2 className="Profile_customer__infor_event_input--title">Thông tin cá nhân</h2>
+            <h2 className="Profile_customer__infor_event_input--title">Thông tin cá nhân</h2>    
+            <div className='Profile_customer__avatar'>
+              <img src={!avatarURL ? avatarURL : "/assets/images/avatar_default.png"} alt="User Avatar" className="form_avt" />
+              <label htmlFor="avatarInput" style={{ cursor: 'pointer' }} className='import_file_avatar'>
+                <input
+                  id="avatarInput"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                />
+                <FontAwesomeIcon icon={faPencil} className='iconPencil'/>
+              </label>
+              <button className="update_avatar">Đổi ảnh đại diện</button>
+            </div>
             <div className="sign_up_form__full_name">
               <div className="form_first_name">
                 <label htmlFor="first_name" className='sign_up_form__label'>Họ</label>
