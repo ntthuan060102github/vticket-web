@@ -60,6 +60,7 @@ function Login() {
                     localStorage.setItem("avatar_url", response.data.data.profile.avatar_url);
                     localStorage.setItem("phone_number", response.data.data.profile.phone_number);
                     localStorage.setItem("status", response.data.data.profile.status);
+                    localStorage.setItem("password", accountInfo.password);
                     localStorage.setItem("role", response.data.data.profile.role);
                 } else {
                     newErrors["login"] = response.data.message;

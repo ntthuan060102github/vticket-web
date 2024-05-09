@@ -48,7 +48,7 @@ function Header() {
           <Dropdown.Menu className='dropdow_menu'>
             <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
             {/* <Dropdown.Item href="#/action-2">Another action</Dropdown.Item> */}
-            <Dropdown.Item href="logout" onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+            <Dropdown.Item href='' onClick={handleLogout}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>}

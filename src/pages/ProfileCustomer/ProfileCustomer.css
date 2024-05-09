@@ -2,6 +2,7 @@
     display: flex;
     width: 100vw;
     flex-direction: column;
+    background-color: var(--gray);
 }
 
 .Profile_customer {
@@ -13,6 +14,13 @@
     clear: both
 }
 
+.update_avatar{
+    background-color: transparent;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+}
+
 
 .Profile_customer__form{
     display: flex;
@@ -22,6 +30,7 @@
     width: 500px;
     border-radius: 5px;
     border: solid 1px var(--black);
+    background-color: var(--white);
 }
 
 .Profile_customer__infor_event_input{
@@ -130,6 +139,7 @@
     height: fit-content;
     padding: 20px 40px;
     font-size: 1.6rem;
+    background-color: var(--white);
 }
 
 .Sidebar__avt_name{
@@ -137,12 +147,19 @@
     flex-direction: column;
     gap: 20px;
     align-items: center;
+    position: relative;
 }
 
 .Sidebar_avt{
     height: 80px;
+    width: 80px;
+    object-fit: cover;
     border-radius: 50%;
     border: solid 1px var(--black);
+}
+
+.iconPencil{
+    width: 20px;
 }
 
 .Sidebar__name{}
@@ -165,4 +182,33 @@
     border-radius: 50%;
     border: solid 1px var(--black);
     padding: 5px;
+}
+
+.Profile_customer__avatar{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.form_avt{
+    height: 120px;
+    width: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.import_file_avatar{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--white);
+    border: solid 1px var(--black);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

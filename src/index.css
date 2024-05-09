@@ -36,8 +36,8 @@ button{
   cursor: pointer;
 }
 
-a{
-  text-decoration: none;
+Link, buttonm, a{
+  text-decoration: none!important;
 }
 
 button,
