@@ -11,6 +11,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NumericFormat } from "react-number-format";
+import { TextField } from "@mui/material";
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import validator from "validator";
@@ -42,16 +44,14 @@ function CreateEvent() {
   const [ticketTypes, setTicketTypes] = React.useState([
     {
       description :"",
-      price: 0,
-      seat_configuration:[],
+      price: "100,000 VNĐ",
       seat_configurations:[],
       ticket_type_details: [],
       ticket_type_name: "Loại VIP",
     },
     {
       description :"",
-      price: 0,
-      seat_configuration:[],
+      price: "100,000 VNĐ",
       seat_configurations:[],
       ticket_type_details: [],
       ticket_type_name: "Loại Premium",
@@ -63,7 +63,6 @@ function CreateEvent() {
     "price": 0,
     "ticket_type_details": [], // Chi tiết loại vé (thêm từ API Tạo Chi Tiết Loại Vé)
     "seat_configurations": [], // Cấu hình ghế (thêm từ API Tạo Cấu Hình Ghế)
-    "seat_configuration": [], // Cấu hình ghế (thêm từ API Tạo Cấu Hình Ghế)
   });
 
   const [ticketTypeDetails, setTicketTypeDetails] = React.useState([]);
@@ -75,14 +74,8 @@ function CreateEvent() {
     "ticket_type": 0 // ID của loại vé tương ứng
   });
 
-  const [seatConfigurationsList, setSeatConfigurationsList] = React.useState([]);
-  const [seatConfigurations, setSeatConfigurations] = React.useState({
-    "position": "",
-    "seat_number": 0,
-    "ticket_type": 0 // ID của loại vé tương ứng
-  });
 
-  const [seatConfigurationList, setSeatConfigurationList] = React.useState([]);
+  const [seatConfigurations, setSeatConfigurations] = React.useState([]);
   const [seatConfiguration, setSeatConfiguration] = React.useState({
     "position": "",
     "start_seat_number": 1,
@@ -94,22 +87,79 @@ function CreateEvent() {
   const navigate = useNavigate();
   const [taskName, setTaskName] = React.useState("event_input");
   const [selectedItem, setSelectedItem] = React.useState([]);
+  const [selectedIndex, setSelectedIndex] = React.useState("");
 
 
   const addTicketType = () => {
-    console.log(2)
-    const updatedArray = [...ticketTypes, ticket_Type];
-    setTicketTypes(updatedArray);
+    setTicketTypes([...ticketTypes, ticket_Type]);
     setTicket_Type({
-      ticket_type_name: "",
-      description: "",
-      price: "0"
+      "ticket_type_name": "",
+      "description": "",
+      "price": 0,
+      "ticket_type_details": [],
+      "seat_configurations": [],
     });
-    console.log(ticketTypes);
   };
 
+  const handleAddService = () => {
+    setTicketTypeDetails([...ticketTypeDetails, ticketTypeDetail]);
+    setTicketTypeDetail({
+      "service_name": "",
+      "description": "",
+      "fee_type": "",
+      "fee_value": 0,
+      "ticket_type": 0
+    });
+  };
+
+
+  const handleAddSeat = () => {
+    // Cập nhật seatConfigurations
+    const updatedSeatConfigurations = [...seatConfigurations, seatConfiguration];
+    setSeatConfigurations(updatedSeatConfigurations);
+    setSeatConfiguration({
+      "position": "",
+      "start_seat_number": 1,
+      "end_seat_number": 1
+    });
+  };
+
+  React.useEffect(() => {
+    setTicket_Type((prevalue) => {
+      return {
+        ...prevalue,
+        seat_configurations: seatConfigurations
+      }
+    });
+
+    setTicket_Type((prevalue) => {
+      return {
+        ...prevalue,
+        ticket_type_details: ticketTypeDetails
+      }
+    });
+  }, [seatConfigurations,ticketTypeDetails]);
+
+  // Cập nhật ticketTypes sử dụng useEffect
+  React.useEffect(() => {
+    const updatedTickets = [...ticketTypes];
+    for (var i=0; i < updatedTickets.length; i++) {
+      if(i === selectedIndex){
+        updatedTickets[i] = ticket_Type;
+      }
+    }
+    setTicketTypes(updatedTickets);
+    console.log(ticketTypes)
+  }, [ticket_Type]);
+  
+  const handleSelected = (value, index) =>{
+    setTicket_Type(value);
+    setSelectedIndex(index);
+  }
+
+  React.useEffect(() => {setTicketTypeDetails([]);}, [selectedIndex]);
+
   const handleNextTask = () => {
-    console.log(eventInfo);
     if (taskName === "event_input") {
       setTaskName("ticket_type_input")
     } else if (taskName === "ticket_type_input") {
@@ -120,7 +170,6 @@ function CreateEvent() {
   }
 
   const handlePrevTask = () => {
-    console.log(eventInfo);
     if (taskName === "ticket_type_input") {
       setTaskName("event_input")
     } else if (taskName === "service_input") {
@@ -142,7 +191,6 @@ function CreateEvent() {
         }
       })
     } else if (nameObject === 'ticket input') {
-      console.log(name, value);
       setTicket_Type((prevalue) => {
         return {
           ...prevalue,
@@ -152,7 +200,40 @@ function CreateEvent() {
 
 
     } else if (nameObject === 'service input') {
+      setTicketTypeDetail((prevalue) => {
+        return {
+          ...prevalue,
+          [name]: value
+        }
+      })
+    } else if (nameObject === 'seat input') {
       setSeatConfiguration((prevalue) => {
+        return {
+          ...prevalue,
+          [name]: value
+        }
+      })
+    }
+  }
+
+  const handleChangeNumber = (event, nameObject) => {
+    const stringValue = event.target.value;
+    const sanitizedValue = stringValue.replace(/[^0-9.]/g, ''); // Loại bỏ tất cả ký tự không phải số hoặc dấu chấm
+    const value = parseFloat(sanitizedValue);
+    let name = event.target.name;
+
+    if (nameObject === 'ticket input') {
+      console.log(name, value);   
+      setTicket_Type((prevalue) => {
+        return {
+          ...prevalue,
+          [name]: value
+        }
+      });
+
+
+    } else if (nameObject === 'service input') {
+      setTicketTypeDetail((prevalue) => {
         return {
           ...prevalue,
           [name]: value
@@ -190,10 +271,6 @@ function CreateEvent() {
       ...prevValue,
       start_time: val
     }));
-  }
-
-  const handleSelected = (value) => {
-    setSelectedItem(value);
   }
 
 
@@ -386,12 +463,22 @@ function CreateEvent() {
                 cols={40}
               />
               <label htmlFor="ticket_price" className='Create_event_form__label'>Giá vé</label>
-              <input
+              {/* <input
                 type="text"
                 id="ticket_price"
                 name="price"
                 value={ticket_Type.price}
                 onChange={(event) => handleChange(event, 'ticket input')}
+                placeholder='Nhập giá vé'
+                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+              /> */}
+              <NumericFormat
+                id="ticket_price"
+                name="price"
+                value={ticket_Type.price}
+                thousandSeparator = {true}
+                customInput={TextField}
+                onChange={(event) => handleChangeNumber(event, 'ticket input')}
                 placeholder='Nhập giá vé'
                 className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
@@ -425,7 +512,7 @@ function CreateEvent() {
                   <tbody>
                     {ticketTypes !== null && ticketTypes.map((ticket, index) => {
                       return (
-                        <tr  key={index} onClick={() => handleSelected(ticket)}>
+                        <tr  key={index} onClick={() => handleSelected(ticket, index)}>
                           <td className="stt">{index}</td>
                           <td>{ticket?.ticket_type_name}</td>
                         </tr>
@@ -435,7 +522,7 @@ function CreateEvent() {
                 </Table>
                 
                 </div>
-                {selectedItem && 
+                {ticket_Type && 
                 <div className="Create_event__service_infor_input">
                   <h2 className="Create_event__service_input--title">Thêm các dịch vụ gia tăng</h2>
                   <label htmlFor="ticket_type_name" className='Create_event_form__label'>Tên hạng vé</label>
@@ -443,11 +530,9 @@ function CreateEvent() {
                     type="text"
                     id="ticket_type_name"
                     name="ticket_type_name"
-                    value={selectedItem?.ticket_type_name}
-                    readonly
+                    value={ticket_Type?.ticket_type_name}
+                    readOnly
                     disabled
-                    onChange={handleChange}
-                    placeholder='Nhập tên hạng vé'
                     className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
                   />
                   <label htmlFor="service_name" className='Create_event_form__label'>Tên dịch vụ</label>
@@ -456,7 +541,7 @@ function CreateEvent() {
                     id="service_name"
                     name="service_name"
                     value={ticketTypeDetail.service_name}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange(event, 'service input')}
                     placeholder='Nhập tên dịch vụ'
                     className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                   />
@@ -467,7 +552,7 @@ function CreateEvent() {
                     id="description"
                     name="description"
                     value={ticketTypeDetail.description}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange(event, 'service input')}
                     placeholder='Nhập mô tả sự kiện'
                     className={errors.password ? "Create_event_form__input_description error-input" : "Create_event_form__input_descriptio normal-input"}
                     rows={4}
@@ -479,24 +564,36 @@ function CreateEvent() {
                     id="fee_type"
                     name="fee_type"
                     value={ticketTypeDetail.fee_type}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange(event, 'service input')}
                     placeholder='Nhập loại giá dịch vụ'
                     className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                   />
                   <label htmlFor="fee_value" className='Create_event_form__label'>Giá dịch vụ</label>
-                  <input
+                  {/* <input
                     type="text"
                     id="fee_value"
                     name="fee_value"
                     value={ticketTypeDetail.fee_value}
-                    onChange={handleChange}
+                    onChange={(event) => handleChange(event, 'service input')}
                     placeholder='Nhập giá dịch vụ'
                     className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                  /> */}
+                  <NumericFormat
+                    id="fee_value"
+                    name="fee_value"
+                    value={ticketTypeDetail.fee_value}
+                    thousandSeparator = {true}
+                    customInput={TextField}
+                    onChange={(event) => handleChangeNumber(event, 'service input')}
+                    placeholder='Nhập giá vé'
+                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                   />
-                  <button type="button" className='Create_event__form--submit_btn'>Thêm</button>
+                  <button type="button" className='Create_event__form--submit_btn' onClick={handleAddService}>Thêm</button>
                   <h3 className="form__list--title">Danh sách các dịch vụ</h3>
                   <div className="form__list">
-  
+                    {ticketTypeDetails !== null && ticketTypeDetails.map((ticket, index) => {
+                      return (<span key={index}> {ticket?.service_name}</span>);
+                    })}
                   </div>
                 </div>
                 }
@@ -508,58 +605,114 @@ function CreateEvent() {
             </div>}
           {taskName === 'seat_class_input' &&
             <div className="Create_event__seat_class_input">
-              <h2 className="Create_event__infor_event_input--title">Thêm các hàng ghế</h2>
-              <label htmlFor="event_name" className='Create_event_form__label'>Tên hạng vé</label>
-              <input
-                type="text"
-                id="event_name"
-                name="name"
-                value={eventInfo.name}
-                onChange={handleChange}
-                placeholder='Nhập tên hạng vé'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-              />
-              <label htmlFor="event_name" className='Create_event_form__label'>Hàng ghế</label>
-              <input
-                type="text"
-                id="event_name"
-                name="name"
-                value={eventInfo.name}
-                onChange={handleChange}
-                placeholder='Nhập hàng ghế'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-              />
-              <div className="form__seat_range">
-                <div className="form__start_seat">
-                  <label htmlFor="start_seat" className='sign_up_form__label'>Số ghế bắt đầu</label>
-                  <input
-                    type="text"
-                    id="start_seat"
-                    name="start_seat"
-                    placeholder='Ghế bắt đầu'
-                    className={errors.first_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
-                    onChange={handleChange} />
-                  {errors["first_name"] && <span className="error">{errors["first_name"]}</span>}
+              <div className="Create_event__seat_class_input--top">
+                <div className="Create_event__ticket_type_list">
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th className="title" colSpan={2}>Danh sách các loại vé</th>
+                      </tr>
+                      <tr>
+                        <th className="stt">STT</th>
+                        <th>Tên loại vé</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ticketTypes !== null && ticketTypes.map((ticket, index) => {
+                        return (
+                          <tr  key={index} onClick={() => handleSelected(ticket, index)}>
+                            <td className="stt">{index}</td>
+                            <td>{ticket?.ticket_type_name}</td>
+                          </tr>
+                      );
+                      })}
+                    </tbody>
+                  </Table>
                 </div>
-                <div className="form_last_seat">
-                  <label htmlFor="last_seat" className='sign_up_form__label'>Số ghế kết thúc</label>
-                  <input
-                    type="text"
-                    id="last_seat"
-                    name="last_seat"
-                    placeholder='Ghế kết thúc'
-                    className={errors.last_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
-                    onChange={handleChange}
-                  />
-                  {errors["last_name"] && <span className="error">{errors["last_name"]}</span>}
-                </div>
+                {ticket_Type && 
+                  <div className="Create_event__seat_infor_input">
+                    <h2 className="Create_event__seat_config_input--title">Thêm các hàng ghế</h2>
+                    <label htmlFor="ticket_type_name" className='Create_event_form__label'>Tên hạng vé</label>
+                    <input
+                      type="text"
+                      id="ticket_type_name"
+                      name="ticket_type_name"
+                      value={ticket_Type?.ticket_type_name}
+                      readOnly
+                      disabled
+                      className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
+                    />
+                    <label htmlFor="position" className='Create_event_form__label'>Hàng ghế</label>
+                    <input
+                      type="text"
+                      id="position"
+                      name="position"
+                      value={seatConfiguration.position}
+                      onChange={(event) => handleChange(event, 'seat input')}
+                      placeholder='Nhập hàng ghế'
+                      className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                    />
+                    <div className="form__seat_range">
+                      <div className="form__start_seat">
+                        <label htmlFor="start_seat_number" className='sign_up_form__label'>Số ghế bắt đầu</label>
+                        <input
+                          type="text"
+                          id="start_seat_number"
+                          name="start_seat_number"
+                          placeholder='Ghế bắt đầu'
+                          value={seatConfiguration.start_seat_number}
+                          className={errors.first_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                          onChange={(event) => handleChange(event, 'seat input')}
+                          />
+                        {errors["first_name"] && <span className="error">{errors["first_name"]}</span>}
+                      </div>
+                      <div className="form_last_seat">
+                        <label htmlFor="end_seat_number" className='sign_up_form__label'>Số ghế kết thúc</label>
+                        <input
+                          type="text"
+                          id="end_seat_number"
+                          name="end_seat_number"
+                          placeholder='Ghế kết thúc'
+                          value={seatConfiguration.end_seat_number}
+                          className={errors.last_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                          onChange={(event) => handleChange(event, 'seat input')}
+                        />
+                        {errors["last_name"] && <span className="error">{errors["last_name"]}</span>}
+                      </div>
+                    </div>
+                    <button type="button" className='Create_event__form--submit_btn' onClick={handleAddSeat}>Thêm</button>
+                    <h3 className="form__list--title">Danh sách các hàng ghế</h3>
+                    <div className="form__list_full">
+                      {seatConfigurations !== null && 
+                      <Table striped bordered hover>
+                      <thead>
+                        <tr>
+                          <th className="title" colSpan={4}>Danh sách các loại vé</th>
+                        </tr>
+                        <tr>
+                          <th className="stt">STT</th>
+                          <th>Hàng ghế</th>
+                          <th>Ghế bắt đầu</th>
+                          <th>Ghế kết thúc</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {seatConfigurations.map((seat, index) => {
+                          return (
+                            <tr  key={index}>
+                              <td className="stt">{index + 1}</td>
+                              <td>{seat?.position}</td>
+                              <td>{seat?.start_seat_number}</td>
+                              <td>{seat?.end_seat_number}</td>
+                            </tr>
+                        );
+                        })}
+                      </tbody>
+                      </Table>}
+                    </div>
+                  </div>
+                }
               </div>
-              <button type="button" className='Create_event__form--submit_btn'>Thêm</button>
-              <h3 className="form__list--title">Danh sách các hàng ghế</h3>
-              <div className="form__list">
-
-              </div>
-
               <div className="form__btn">
                 <button type="button" className='Create_event__form--submit_btn return' onClick={handlePrevTask}>Trở về</button>
                 <button type="submit" className='Create_event__form--submit_btn' onClick={handleSubmit}>Gửi sự kiện</button>
