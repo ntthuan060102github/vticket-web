@@ -10,20 +10,21 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Select from 'react-select'
 import { NumericFormat } from "react-number-format";
 import { TextField } from "@mui/material";
+import validator from "validator";
+import dayjs from 'dayjs';
+import 'moment/locale/vi';
+import './CreateEvent.css'
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
-import validator from "validator";
-import './CreateEvent.css'
 import Header from '../../components/Header';
-import TimeInput from "../../components/TimeInput";
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CreateEvent() {
-  const accessToken = localStorage.getItem('access');
+  const refresh = localStorage.getItem('refresh');
 
   const dateCurrent = new Date();
   const formattedDateCurrent = moment(dateCurrent).format("YYYY-MM-DD");
@@ -32,7 +33,7 @@ function CreateEvent() {
   const [eventInfo, setEventInfo] = React.useState({
     "ticket_types": [],
     "event_topics": [],
-    "event_name": "",
+    "name": "",
     "description": "",
     "start_date": onlyFormattedDateCurrent,
     "end_date": onlyFormattedDateCurrent,
@@ -41,24 +42,26 @@ function CreateEvent() {
     "banner_url": ""
   });
 
+  const [eventTopic, setEventTopic] = React.useState([]);
+
   const [ticketTypes, setTicketTypes] = React.useState([
     {
-      description :"",
-      price: "100,000 VNĐ",
-      seat_configurations:[],
+      description: "VIP",
+      price: "100000",
+      seat_configurations: [],
       ticket_type_details: [],
-      ticket_type_name: "Loại VIP",
+      name: "Loại VIP",
     },
     {
-      description :"",
-      price: "100,000 VNĐ",
-      seat_configurations:[],
+      description: "Premium",
+      price: "100000",
+      seat_configurations: [],
       ticket_type_details: [],
-      ticket_type_name: "Loại Premium",
+      name: "Loại Premium",
     }
   ]);
   const [ticket_Type, setTicket_Type] = React.useState({
-    "ticket_type_name": "",
+    "name": "",
     "description": "",
     "price": 0,
     "ticket_type_details": [], // Chi tiết loại vé (thêm từ API Tạo Chi Tiết Loại Vé)
@@ -67,11 +70,10 @@ function CreateEvent() {
 
   const [ticketTypeDetails, setTicketTypeDetails] = React.useState([]);
   const [ticketTypeDetail, setTicketTypeDetail] = React.useState({
-    "service_name": "",
+    "name": "",
     "description": "",
     "fee_type": "",
     "fee_value": 0,
-    "ticket_type": 0 // ID của loại vé tương ứng
   });
 
 
@@ -83,87 +85,294 @@ function CreateEvent() {
   });
 
 
-  const [errors, setErrors] = React.useState([]);
+  const [errors, setErrors] = React.useState({});
   const navigate = useNavigate();
   const [taskName, setTaskName] = React.useState("event_input");
-  const [selectedItem, setSelectedItem] = React.useState([]);
   const [selectedIndex, setSelectedIndex] = React.useState("");
 
 
   const addTicketType = () => {
-    setTicketTypes([...ticketTypes, ticket_Type]);
-    setTicket_Type({
-      "ticket_type_name": "",
-      "description": "",
-      "price": 0,
-      "ticket_type_details": [],
-      "seat_configurations": [],
-    });
+    const newErrors = {};
+    setErrors([]);
+
+    if (!ticket_Type.name) {
+      newErrors["ticket_type_name_error"] = "Tên loại vé không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_name_error: "Tên loại vé không được để trống"
+        }
+      });
+    }
+
+    if (!ticket_Type.description) {
+      newErrors["ticket_type_description_error"] = "Mô tả loại vé không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_description_error: "Mô tả loại vé không được để trống"
+        }
+      });
+    }
+
+    if (!ticket_Type.price || ticket_Type.price === 0) {
+      newErrors["ticket_type_price_error"] = "Giá loại vé không hợp lệ";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_price_error: "Giá loại vé không hợp lệ"
+        }
+      });
+    }
+    
+    if (Object.values(newErrors).length === 0) {
+      setTicketTypes([...ticketTypes, ticket_Type]);
+      setTicket_Type({
+        "name": "",
+        "description": "",
+        "price": 0,
+        "ticket_type_details": [],
+        "seat_configurations": [],
+      });
+    }
   };
 
   const handleAddService = () => {
-    setTicketTypeDetails([...ticketTypeDetails, ticketTypeDetail]);
-    setTicketTypeDetail({
-      "service_name": "",
-      "description": "",
-      "fee_type": "",
-      "fee_value": 0,
-      "ticket_type": 0
-    });
+    const newErrors = {};
+    setErrors([]);
+
+    if (!ticketTypeDetail.name) {
+      newErrors["ticket_type_detail_name_error"] = "Tên dịch vụ không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_detail_name_error: "Tên dịch vụ không được để trống"
+        }
+      });
+    }
+
+    if (!ticketTypeDetail.description) {
+      newErrors["ticket_type_detail_description_error"] = "Mô tả dịch vụ không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_detail_description_error: "Mô tả dịch vụ không được để trống"
+        }
+      });
+    }
+
+    if (!ticketTypeDetail.fee_type) {
+      newErrors["ticket_type_detail_fee_type_error"] = "Loại phí dịch vụ không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_detail_fee_type_error: "Loại phí dịch vụ không được để trống"
+        }
+      });
+    }
+
+    if (ticketTypeDetail.fee_value < 0) {
+      newErrors["ticket_type_detail_fee_value_error"] = "Phí dịch vụ không hợp lệ";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          ticket_type_detail_fee_value_error: "Phí dịch vụ không hợp lệ"
+        }
+      });
+    }
+
+    if (Object.values(newErrors).length === 0) {
+      setTicketTypeDetails([...ticketTypeDetails, ticketTypeDetail]);
+      setTicketTypeDetail({
+        "name": "",
+        "description": "",
+        "fee_type": "",
+        "fee_value": 0,
+      });
+    }
   };
 
 
   const handleAddSeat = () => {
-    // Cập nhật seatConfigurations
-    const updatedSeatConfigurations = [...seatConfigurations, seatConfiguration];
-    setSeatConfigurations(updatedSeatConfigurations);
-    setSeatConfiguration({
-      "position": "",
-      "start_seat_number": 1,
-      "end_seat_number": 1
-    });
+    const newErrors = {};
+    setErrors([]);   
+
+    if (!seatConfiguration.position) {
+      newErrors["seat_configuration_position_error"] = "Ví trị ghế không được để trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          seat_configuration_position_error: "Ví trị ghế không được để trống"
+        }
+      });
+    }
+
+    const seatConfigurationList = [...seatConfigurations];
+    for (var i = 0; i < seatConfigurationList.length; i++) {
+      if (seatConfigurationList[i]?.position === seatConfiguration.position) {
+        if (seatConfiguration.start_seat_number === seatConfigurationList[i]?.end_seat_number || seatConfiguration.start_seat_number < seatConfigurationList[i]?.end_seat_number) {
+          newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
+          setErrors((prevalue) => {
+            return {
+              ...prevalue,
+              seat_configuration_start_seat_error: "Ví trị ghế bắt đầu không hợp lệ"
+            }
+          });
+        }
+      }
+    }
+
+    if (seatConfiguration.start_seat_number >= seatConfiguration.end_seat_number) {
+      newErrors["seat_configuration_end_seat_error"] = "Ví trị ghế kết thúc không nhỏ hơn ghế bắt đầu";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          seat_configuration_end_seat_error: "Ví trị ghế kết thúc không nhỏ hơn ghế bắt đầu"
+        }
+      });
+    }
+    
+
+    if (Object.values(newErrors).length === 0) {
+      setSeatConfigurations([...seatConfigurations, seatConfiguration]);
+      setSeatConfiguration({
+        "position": "",
+        "start_seat_number": 1,
+        "end_seat_number": 1
+      });
+    }
   };
 
   React.useEffect(() => {
-    setTicket_Type((prevalue) => {
-      return {
-        ...prevalue,
-        seat_configurations: seatConfigurations
-      }
-    });
+    setTicket_Type((prevState) => ({
+      ...prevState,
+      seat_configurations: seatConfigurations,
+      ticket_type_details: ticketTypeDetails
+    }));
+  }, [seatConfigurations, ticketTypeDetails]);
 
-    setTicket_Type((prevalue) => {
-      return {
-        ...prevalue,
-        ticket_type_details: ticketTypeDetails
-      }
-    });
-  }, [seatConfigurations,ticketTypeDetails]);
-
-  // Cập nhật ticketTypes sử dụng useEffect
   React.useEffect(() => {
     const updatedTickets = [...ticketTypes];
-    for (var i=0; i < updatedTickets.length; i++) {
-      if(i === selectedIndex){
+    for (var i = 0; i < updatedTickets.length; i++) {
+      if (i === selectedIndex) {
         updatedTickets[i] = ticket_Type;
       }
     }
     setTicketTypes(updatedTickets);
-    console.log(ticketTypes)
   }, [ticket_Type]);
-  
-  const handleSelected = (value, index) =>{
+
+  const handleSelected = (value, index) => {
     setTicket_Type(value);
     setSelectedIndex(index);
   }
 
-  React.useEffect(() => {setTicketTypeDetails([]);}, [selectedIndex]);
+  React.useEffect(() => {
+    setSeatConfigurations(ticket_Type.seat_configurations);
+    setTicketTypeDetails(ticket_Type.ticket_type_details);
+  }, [selectedIndex]);
+
+  React.useEffect(() => {
+    setEventInfo((prevalue) => {
+      return {
+        ...prevalue,
+        ticket_types: ticketTypes
+      }
+    });
+  }, [ticketTypes]);
+
 
   const handleNextTask = () => {
+    const newErrors = {};
+    setErrors([]);
     if (taskName === "event_input") {
-      setTaskName("ticket_type_input")
+      if (!eventInfo.name) {
+        newErrors["event_name_error"] = "Tên sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_name_error: "Tên sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (!eventInfo.description) {
+        newErrors["event_description_error"] = "Mô tả sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_description_error: "Mô tả sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (eventInfo.start_date > eventInfo.end_date) {
+        newErrors["event_date_error"] = "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_date_error: "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc"
+          }
+        });
+      }
+
+      if (!eventInfo.start_time) {
+        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_time_error: "Thời gian bắt đầu sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (!eventInfo.location) {
+        newErrors["event_location_error"] = "Nơi diễn ra sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_location_error: "Nơi diễn ra sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (!eventInfo.banner_url) {
+        newErrors["event_banner_error"] = "Banner sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_banner_error: "Banner sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (!eventInfo.event_topics) {
+        newErrors["event_topics_error"] = "Chủ đề sự kiện không được để trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_topics_error: "Chủ đề sự kiện không được để trống"
+          }
+        });
+      }
+
+      if (Object.values(newErrors).length === 0) {
+        setTaskName("ticket_type_input")
+      }
+
     } else if (taskName === "ticket_type_input") {
-      setTaskName("service_input")
+      if(ticketTypes.length === 0)
+      {
+        newErrors["ticket_type_list_error"] = "Danh sách loại vé không được trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            ticket_type_list_error: "Danh sách loại vé không được trống"
+          }
+        });
+      }
+      if (Object.values(newErrors).length === 0) {
+        setTaskName("service_input")
+      }
     } else if (taskName === "service_input") {
       setTaskName("seat_class_input")
     }
@@ -216,6 +425,35 @@ function CreateEvent() {
     }
   }
 
+  const handleChangeName = (event, nameObject) => {
+    let value = event.target.value;
+
+    if (nameObject === 'event input') {
+      setEventInfo((prevalue) => {
+        return {
+          ...prevalue,
+          name: value
+        }
+      })
+    } else if (nameObject === 'ticket input') {
+      setTicket_Type((prevalue) => {
+        return {
+          ...prevalue,
+          name: value
+        }
+      });
+
+
+    } else if (nameObject === 'service input') {
+      setTicketTypeDetail((prevalue) => {
+        return {
+          ...prevalue,
+          name: value
+        }
+      })
+    }
+  }
+
   const handleChangeNumber = (event, nameObject) => {
     const stringValue = event.target.value;
     const sanitizedValue = stringValue.replace(/[^0-9.]/g, ''); // Loại bỏ tất cả ký tự không phải số hoặc dấu chấm
@@ -223,7 +461,6 @@ function CreateEvent() {
     let name = event.target.name;
 
     if (nameObject === 'ticket input') {
-      console.log(name, value);   
       setTicket_Type((prevalue) => {
         return {
           ...prevalue,
@@ -252,7 +489,6 @@ function CreateEvent() {
   const handleDateChange = (date, name) => {
     const formattedDate = moment(date).format("YYYY-MM-DD");
     const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
-    console.log(onlyFormattedDate);
     setEventInfo((prevValue) => ({
       ...prevValue,
       [name]: onlyFormattedDate
@@ -267,56 +503,132 @@ function CreateEvent() {
   };
 
   const onTimeChangeHandler = (val) => {
+    const formattedTime = dayjs(val).format('HH:mm:ss');
     setEventInfo((prevValue) => ({
       ...prevValue,
-      start_time: val
+      start_time: formattedTime
     }));
   }
 
-
   const handleSubmit = () => {
     const newErrors = {};
+    setErrors([]);
 
-    if (!validator.isEmail(eventInfo.username)) {
-      newErrors["email"] = "Email không đúng định dạng";
+    if(seatConfigurations.length === 0)
+    {
+      newErrors["seat_list_error"] = "Danh sách ghế không được trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          seat_list_error: "Danh sách ghế không được trống"
+        }
+      });
     }
 
-    if (!eventInfo.password) {
-      newErrors["password"] = "Mật khẩu không được để trống";
-    };
-
-    if (Object.keys(newErrors).length !== 0) {
-      setErrors(newErrors);
-      return;
-    } else {
-      console.log(1)
-      axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
-        email: eventInfo.username,
-        password: eventInfo.password,
+    if (Object.keys(newErrors).length === 0) {
+      axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event`, {
+        ticket_types: eventInfo.ticket_types,
+        event_topics: eventInfo.event_topics,
+        name: eventInfo.name,
+        description: eventInfo.description,
+        start_date: eventInfo.start_date,
+        end_date: eventInfo.end_date,
+        start_time: eventInfo.start_time,
+        location: eventInfo.location,
+        banner_url: eventInfo.banner_url,
       })
-        .then(function (response) {
-          if (response.data.status === 1) {
-            navigate('/');
-            localStorage.setItem('access', response.data.data.access);
-            localStorage.setItem('refresh', response.data.data.refresh);
-          } else {
-            newErrors["Create_event"] = response.data.message;
-            setErrors(newErrors);
+      .then(function (response) {
+        if (response.data.status === 1) {
+          console.log(200);
+        } else {
+          setErrors((prevalue) => {
+            return {
+              ...prevalue,
+              create_event_error: response.data.message
+            }
+          });
+          console.log(response)
+        }
+      })
+      .catch(function (error) {
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            error_submit: error.message
           }
-        })
-        .catch(function (error) {
-          newErrors["error"] = error.message;
-          setErrors(newErrors);
         });
+      });
     }
   }
 
   React.useEffect(() => {
     setEventInfo(prevState => ({
       ...prevState,
-      start_time: moment(new Date()).format("HH:mm") // Tính toán giá trị start_time ở đây
+      start_time: dayjs()// Tính toán giá trị start_time ở đây
     }));
+
+    // axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
+    //   refresh: refresh,
+    // })
+    // .then(function (response) {
+    //     if (response.data.status === 1) {
+    //         localStorage.setItem('access', response.data.data.access);
+    //         localStorage.setItem('refresh', response.data.data.refresh);
+    //     } else {
+    //       setErrors((prevalue) => {
+    //         return {
+    //           ...prevalue,
+    //           login_data_error: response.data.message
+    //         }
+    //       });
+    //     }
+    // })
+    // .catch(function (error) {
+    //   setErrors((prevalue) => {
+    //     return {
+    //       ...prevalue,
+    //       login_error: error
+    //     }
+    //   });
+    // });
+
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event-topic`, {
+    })
+      .then(function (response) {
+        if (response.data.status === 1) {
+          setEventTopic(response.data.data)
+        } else {
+          setErrors((prevalue) => {
+            return {
+              ...prevalue,
+              get_event_topic_data_error: response.data.message
+            }
+          });
+        }
+      })
+      .catch(function (error) {
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            get_event_topic_error: error
+          }
+        });
+      });
+
   }, []);
+
+  const eventTopicsOption = eventTopic.map(topic => ({
+    value: topic?.id,
+    label: topic?.name
+  }));
+
+  const handleTopicChange = (selectedOptions) => {
+    setEventInfo(prevEventInfo => ({
+      ...prevEventInfo,
+      event_topics: selectedOptions.map(option => option.value)
+    }));
+  };
+
   return (
     <div className="Create_event__wrapper">
       <Header />
@@ -329,13 +641,12 @@ function CreateEvent() {
               <input
                 type="text"
                 id="event_name"
-                name="event_name"
-                value={eventInfo.event_name}
-                onChange={(event) => handleChange(event, 'event input')}
+                value={eventInfo.name}
+                onChange={(event) => handleChangeName(event, 'event input')}
                 placeholder='Nhập tên sự kiện'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.event_name_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
-              {errors["email"] && <span className="error">{errors["email"]}</span>}
+              {errors["event_name_error"] && <span className="error">{errors["event_name_error"]}</span>}
               <label htmlFor="description" className='Create_event_form__label'>Mô tả</label>
               <textarea
                 type="text"
@@ -344,10 +655,11 @@ function CreateEvent() {
                 value={eventInfo.description}
                 onChange={(event) => handleChange(event, 'event input')}
                 placeholder='Nhập mô tả sự kiện'
-                className={errors.password ? "Create_event_form__input_description error-input" : "Create_event_form__input_descriptio normal-input"}
+                className={errors.event_description_error ? "Create_event_form__input_description error-input" : "Create_event_form__input_descriptio normal-input"}
                 rows={4}
                 cols={40}
               />
+              {errors["event_description_error"] && <span className="error">{errors["event_description_error"]}</span>}
               <label htmlFor="start_date" className='Create_event_form__label'>Ngày bắt đầu</label>
               <Datetime
                 id="start_date"
@@ -376,34 +688,23 @@ function CreateEvent() {
                 renderMonth={(props, month) => <td {...props}>Thg {month + 1}</td>}
                 placeholderText="Chọn ngày kết thúc"
                 isValidDate={isValidDate}
-                className={errors.birthday ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.event_date_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
+              {errors["event_date_error"] && <span className="error">{errors["event_date_error"]}</span>}
               <label htmlFor="start_time" className='Create_event_form__label'>Giờ khai mạc</label>
-              {/* <TimeInput
-                id="start_time"
-                name="start_time"
-                initTime={eventInfo.start_time}
-                className='s-input -time'
-                onTimeChange={onTimeChangeHandler}
-              /> */}
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={['TimePicker']}>
-                  <TimePicker 
+                  <TimePicker
                     id="start_time"
                     name="start_time"
-                    val= {eventInfo.start_time}
+                    views={['hours', 'minutes', 'seconds']}
+                    value={dayjs(eventInfo.start_time)}
                     onChange={onTimeChangeHandler}
-                    className={errors.start_time ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                    className={errors.event_time_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                   />
                 </DemoContainer>
               </LocalizationProvider>
-              {/* <input 
-              type="time" 
-              id="start_time"
-              name="start_time"
-              value={eventInfo.start_time} 
-              onChange={handleTimeChange} 
-            /> */}
+              {errors["event_time_error"] && <span className="error">{errors["event_time_error"]}</span>}
               <label htmlFor="location" className='Create_event_form__label'>Địa điểm</label>
               <input
                 type="text"
@@ -412,8 +713,9 @@ function CreateEvent() {
                 value={eventInfo.location}
                 onChange={(event) => handleChange(event, 'event input')}
                 placeholder='Nhập địa điểm tổ chức'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.event_location_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
+              {errors["event_location_error"] && <span className="error">{errors["event_location_error"]}</span>}
               <label htmlFor="banner_url" className='Create_event_form__label'>Banner</label>
               <input
                 type="text"
@@ -422,18 +724,20 @@ function CreateEvent() {
                 value={eventInfo.banner_url}
                 onChange={(event) => handleChange(event, 'event input')}
                 placeholder='Chọn banner'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.event_banner_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
+              {errors["event_banner_error"] && <span className="error">{errors["event_banner_error"]}</span>}
               <label htmlFor="event_topics" className='Create_event_form__label'>Chủ đề sự kiện</label>
-              <input
-                type="text"
+              <Select
                 id="event_topics"
                 name="event_topics"
-                value={eventInfo.event_topics}
-                onChange={(event) => handleChange(event, 'event input')}
+                isMulti
+                className={errors.event_topics_error ? "Create_event_form__select error-input" : "Create_event_form__select normal-input"}
+                onChange={handleTopicChange}
                 placeholder='Chọn chủ đề sự kiện'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                options={eventTopicsOption}
               />
+              {errors["event_topics_error"] && <span className="error">{errors["event_topics_error"]}</span>}
               <button type="button" className='Create_event__form--submit_btn' onClick={handleNextTask}>Tiếp theo</button>
             </div>}
           {taskName === 'ticket_type_input' &&
@@ -443,13 +747,12 @@ function CreateEvent() {
               <input
                 type="text"
                 id="ticket_type_name"
-                name="ticket_type_name"
-                value={ticket_Type.ticket_type_name}
-                onChange={(event) => handleChange(event, 'ticket input')}
+                value={ticket_Type.name}
+                onChange={(event) => handleChangeName(event, 'ticket input')}
                 placeholder='Nhập tên loại vé'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.ticket_type_name_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
-              {errors["email"] && <span className="error">{errors["email"]}</span>}
+              {errors["ticket_type_name_error"] && <span className="error">{errors["ticket_type_name_error"]}</span>}
               <label htmlFor="ticket_description" className='Create_event_form__label'>Mô tả</label>
               <textarea
                 type="text"
@@ -458,37 +761,31 @@ function CreateEvent() {
                 value={ticket_Type.description}
                 onChange={(event) => handleChange(event, 'ticket input')}
                 placeholder='Nhập mô tả loại vé'
-                className={errors.password ? "Create_event_form__input_description error-input" : "Create_event_form__input_description normal-input"}
+                className={errors.ticket_type_description_error ? "Create_event_form__input_description error-input" : "Create_event_form__input_description normal-input"}
                 rows={4}
                 cols={40}
               />
+              {errors["ticket_type_description_error"] && <span className="error">{errors["ticket_type_description_error"]}</span>}
               <label htmlFor="ticket_price" className='Create_event_form__label'>Giá vé</label>
-              {/* <input
-                type="text"
-                id="ticket_price"
-                name="price"
-                value={ticket_Type.price}
-                onChange={(event) => handleChange(event, 'ticket input')}
-                placeholder='Nhập giá vé'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-              /> */}
               <NumericFormat
                 id="ticket_price"
                 name="price"
                 value={ticket_Type.price}
-                thousandSeparator = {true}
+                thousandSeparator={true}
                 customInput={TextField}
                 onChange={(event) => handleChangeNumber(event, 'ticket input')}
                 placeholder='Nhập giá vé'
-                className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                className={errors.ticket_type_price_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
+              {errors["ticket_type_price_error"] && <span className="error">{errors["ticket_type_price_error"]}</span>}
               <button type="button" className='Create_event__form--submit_btn' onClick={addTicketType}>Thêm</button>
               <h3 className="List_ticket_type__title">Danh sách các loại vé</h3>
               <div className="form__list">
                 {ticketTypes !== null && ticketTypes.map((ticket, index) => {
-                  return (<span key={index}> {ticket?.ticket_type_name}</span>);
+                  return (<span key={index}> {ticket?.name}</span>);
                 })}
               </div>
+              {errors["ticket_type_list_error"] && <span className="error">{errors["ticket_type_list_error"]}</span>}
               <div className="form__btn">
                 <button type="button" className='Create_event__form--submit_btn return' onClick={handlePrevTask}>Trở về</button>
                 <button type="button" className='Create_event__form--submit_btn' onClick={handleNextTask}>Tiếp theo</button>
@@ -498,104 +795,96 @@ function CreateEvent() {
             <div className='Create_event__service_input'>
               <div className="Create_event__service_input--top">
                 <div className="Create_event__ticket_type_list">
-                <Table striped bordered hover>
-
-                  <thead>
-                    <tr>
-                      <th className="title" colSpan={2}>Danh sách các loại vé</th>
-                    </tr>
-                    <tr>
-                      <th className="stt">STT</th>
-                      <th>Tên loại vé</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ticketTypes !== null && ticketTypes.map((ticket, index) => {
-                      return (
-                        <tr  key={index} onClick={() => handleSelected(ticket, index)}>
-                          <td className="stt">{index}</td>
-                          <td>{ticket?.ticket_type_name}</td>
-                        </tr>
-                    );
-                    })}
-                  </tbody>
-                </Table>
-                
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th className="title" colSpan={2}>Danh sách các loại vé</th>
+                      </tr>
+                      <tr>
+                        <th className="stt">STT</th>
+                        <th>Tên loại vé</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ticketTypes !== null && ticketTypes.map((ticket, index) => {
+                        return (
+                          <tr key={index} onClick={() => handleSelected(ticket, index)}>
+                            <td className="stt">{index}</td>
+                            <td>{ticket?.name}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
                 </div>
-                {ticket_Type && 
-                <div className="Create_event__service_infor_input">
-                  <h2 className="Create_event__service_input--title">Thêm các dịch vụ gia tăng</h2>
-                  <label htmlFor="ticket_type_name" className='Create_event_form__label'>Tên hạng vé</label>
-                  <input
-                    type="text"
-                    id="ticket_type_name"
-                    name="ticket_type_name"
-                    value={ticket_Type?.ticket_type_name}
-                    readOnly
-                    disabled
-                    className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
-                  />
-                  <label htmlFor="service_name" className='Create_event_form__label'>Tên dịch vụ</label>
-                  <input
-                    type="text"
-                    id="service_name"
-                    name="service_name"
-                    value={ticketTypeDetail.service_name}
-                    onChange={(event) => handleChange(event, 'service input')}
-                    placeholder='Nhập tên dịch vụ'
-                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-                  />
-                  {errors["email"] && <span className="error">{errors["email"]}</span>}
-                  <label htmlFor="description" className='Create_event_form__label'>Mô tả</label>
-                  <textarea
-                    type="text"
-                    id="description"
-                    name="description"
-                    value={ticketTypeDetail.description}
-                    onChange={(event) => handleChange(event, 'service input')}
-                    placeholder='Nhập mô tả sự kiện'
-                    className={errors.password ? "Create_event_form__input_description error-input" : "Create_event_form__input_descriptio normal-input"}
-                    rows={4}
-                    cols={40}
-                  />
-                  <label htmlFor="fee_type" className='Create_event_form__label'>Loại giá dịch vụ</label>
-                  <input
-                    type="text"
-                    id="fee_type"
-                    name="fee_type"
-                    value={ticketTypeDetail.fee_type}
-                    onChange={(event) => handleChange(event, 'service input')}
-                    placeholder='Nhập loại giá dịch vụ'
-                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-                  />
-                  <label htmlFor="fee_value" className='Create_event_form__label'>Giá dịch vụ</label>
-                  {/* <input
-                    type="text"
-                    id="fee_value"
-                    name="fee_value"
-                    value={ticketTypeDetail.fee_value}
-                    onChange={(event) => handleChange(event, 'service input')}
-                    placeholder='Nhập giá dịch vụ'
-                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-                  /> */}
-                  <NumericFormat
-                    id="fee_value"
-                    name="fee_value"
-                    value={ticketTypeDetail.fee_value}
-                    thousandSeparator = {true}
-                    customInput={TextField}
-                    onChange={(event) => handleChangeNumber(event, 'service input')}
-                    placeholder='Nhập giá vé'
-                    className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-                  />
-                  <button type="button" className='Create_event__form--submit_btn' onClick={handleAddService}>Thêm</button>
-                  <h3 className="form__list--title">Danh sách các dịch vụ</h3>
-                  <div className="form__list">
-                    {ticketTypeDetails !== null && ticketTypeDetails.map((ticket, index) => {
-                      return (<span key={index}> {ticket?.service_name}</span>);
-                    })}
+                {ticket_Type &&
+                  <div className="Create_event__service_infor_input">
+                    <h2 className="Create_event__service_input--title">Thêm các dịch vụ gia tăng</h2>
+                    <label htmlFor="ticket_type_name" className='Create_event_form__label'>Tên hạng vé</label>
+                    <input
+                      type="text"
+                      id="ticket_type_name"
+                      value={ticket_Type?.name}
+                      readOnly
+                      disabled
+                      className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
+                    />
+                    <label htmlFor="service_name" className='Create_event_form__label'>Tên dịch vụ</label>
+                    <input
+                      type="text"
+                      id="service_name"
+                      value={ticketTypeDetail.name}
+                      onChange={(event) => handleChangeName(event, 'service input')}
+                      placeholder='Nhập tên dịch vụ'
+                      className={errors.ticket_type_detail_name_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                    />
+                    {errors["ticket_type_detail_name_error"] && <span className="error">{errors["ticket_type_detail_name_error"]}</span>}
+                    <label htmlFor="description" className='Create_event_form__label'>Mô tả</label>
+                    <textarea
+                      type="text"
+                      id="description"
+                      name="description"
+                      value={ticketTypeDetail.description}
+                      onChange={(event) => handleChange(event, 'service input')}
+                      placeholder='Nhập mô tả sự kiện'
+                      className={errors.ticket_type_detail_description_error ? "Create_event_form__input_description error-input" : "Create_event_form__input_descriptio normal-input"}
+                      rows={4}
+                      cols={40}
+                    />
+                    {errors["ticket_type_detail_description_error"] && <span className="error">{errors["ticket_type_detail_description_error"]}</span>}
+                    <label htmlFor="fee_type" className='Create_event_form__label'>Loại giá dịch vụ</label>
+                    <select 
+                      id="fee_type"
+                      name="fee_type"
+                      className={errors.ticket_type_detail_fee_type_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                      value={ticketTypeDetail.fee_type} 
+                      placeholder='Chọn loại giá dịch vụ'
+                      onChange={(event) => handleChange(event, 'service input')}
+                    >
+                      <option value="persent">Tính theo phần trăm</option>
+                      <option value="cash">Tính theo giá trị cố định</option>
+                    </select>
+                    {errors["ticket_type_detail_fee_type_error"] && <span className="error">{errors["ticket_type_detail_fee_type_error"]}</span>}
+                    <label htmlFor="fee_value" className='Create_event_form__label'>Giá dịch vụ</label>
+                    <NumericFormat
+                      id="fee_value"
+                      name="fee_value"
+                      value={ticketTypeDetail.fee_value}
+                      thousandSeparator={true}
+                      customInput={TextField}
+                      onChange={(event) => handleChangeNumber(event, 'service input')}
+                      placeholder='Nhập giá vé'
+                      className={errors.ticket_type_detail_fee_value_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                    />
+                    {errors["ticket_type_detail_fee_value_error"] && <span className="error">{errors["ticket_type_detail_fee_value_error"]}</span>}
+                    <button type="button" className='Create_event__form--submit_btn' onClick={handleAddService}>Thêm</button>
+                    <h3 className="form__list--title">Danh sách các dịch vụ</h3>
+                    <div className="form__list">
+                      {ticketTypeDetails !== null && ticketTypeDetails.map((ticket, index) => {
+                        return (<span key={index}> {ticket?.name}</span>);
+                      })}
+                    </div>
                   </div>
-                </div>
                 }
               </div>
               <div className="form__btn">
@@ -603,7 +892,7 @@ function CreateEvent() {
                 <button type="button" className='Create_event__form--submit_btn' onClick={handleNextTask}>Tiếp theo</button>
               </div>
             </div>}
-          {taskName === 'seat_class_input' &&
+            {taskName === 'seat_class_input' &&
             <div className="Create_event__seat_class_input">
               <div className="Create_event__seat_class_input--top">
                 <div className="Create_event__ticket_type_list">
@@ -620,24 +909,23 @@ function CreateEvent() {
                     <tbody>
                       {ticketTypes !== null && ticketTypes.map((ticket, index) => {
                         return (
-                          <tr  key={index} onClick={() => handleSelected(ticket, index)}>
+                          <tr key={index} onClick={() => handleSelected(ticket, index)}>
                             <td className="stt">{index}</td>
-                            <td>{ticket?.ticket_type_name}</td>
+                            <td>{ticket?.name}</td>
                           </tr>
-                      );
+                        );
                       })}
                     </tbody>
                   </Table>
                 </div>
-                {ticket_Type && 
+                {ticket_Type &&
                   <div className="Create_event__seat_infor_input">
                     <h2 className="Create_event__seat_config_input--title">Thêm các hàng ghế</h2>
                     <label htmlFor="ticket_type_name" className='Create_event_form__label'>Tên hạng vé</label>
                     <input
                       type="text"
                       id="ticket_type_name"
-                      name="ticket_type_name"
-                      value={ticket_Type?.ticket_type_name}
+                      value={ticket_Type?.name}
                       readOnly
                       disabled
                       className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
@@ -650,8 +938,9 @@ function CreateEvent() {
                       value={seatConfiguration.position}
                       onChange={(event) => handleChange(event, 'seat input')}
                       placeholder='Nhập hàng ghế'
-                      className={errors.email ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
+                      className={errors.seat_configuration_position_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                     />
+                    {errors["seat_configuration_position_error"] && <span className="error">{errors["seat_configuration_position_error"]}</span>}
                     <div className="form__seat_range">
                       <div className="form__start_seat">
                         <label htmlFor="start_seat_number" className='sign_up_form__label'>Số ghế bắt đầu</label>
@@ -661,10 +950,10 @@ function CreateEvent() {
                           name="start_seat_number"
                           placeholder='Ghế bắt đầu'
                           value={seatConfiguration.start_seat_number}
-                          className={errors.first_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                          className={errors.seat_configuration_start_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
                           onChange={(event) => handleChange(event, 'seat input')}
-                          />
-                        {errors["first_name"] && <span className="error">{errors["first_name"]}</span>}
+                        />
+                        {errors["seat_configuration_start_seat_error"] && <span className="error">{errors["seat_configuration_start_seat_error"]}</span>}
                       </div>
                       <div className="form_last_seat">
                         <label htmlFor="end_seat_number" className='sign_up_form__label'>Số ghế kết thúc</label>
@@ -674,42 +963,43 @@ function CreateEvent() {
                           name="end_seat_number"
                           placeholder='Ghế kết thúc'
                           value={seatConfiguration.end_seat_number}
-                          className={errors.last_name ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                          className={errors.seat_configuration_end_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
                           onChange={(event) => handleChange(event, 'seat input')}
                         />
-                        {errors["last_name"] && <span className="error">{errors["last_name"]}</span>}
+                        {errors["seat_configuration_end_seat_error"] && <span className="error">{errors["seat_configuration_end_seat_error"]}</span>}
                       </div>
                     </div>
                     <button type="button" className='Create_event__form--submit_btn' onClick={handleAddSeat}>Thêm</button>
                     <h3 className="form__list--title">Danh sách các hàng ghế</h3>
-                    <div className="form__list_full">
-                      {seatConfigurations !== null && 
-                      <Table striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th className="title" colSpan={4}>Danh sách các loại vé</th>
-                        </tr>
-                        <tr>
-                          <th className="stt">STT</th>
-                          <th>Hàng ghế</th>
-                          <th>Ghế bắt đầu</th>
-                          <th>Ghế kết thúc</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {seatConfigurations.map((seat, index) => {
-                          return (
-                            <tr  key={index}>
-                              <td className="stt">{index + 1}</td>
-                              <td>{seat?.position}</td>
-                              <td>{seat?.start_seat_number}</td>
-                              <td>{seat?.end_seat_number}</td>
+                    <div className={errors.seat_list_error ? "form__list_full error-input" : "form__list_full"}>
+                      {seatConfigurations !== null &&
+                        <Table striped bordered hover>
+                          <thead>
+                            <tr>
+                              <th className="title" colSpan={4}>Danh sách các loại vé</th>
                             </tr>
-                        );
-                        })}
-                      </tbody>
-                      </Table>}
+                            <tr>
+                              <th className="stt">STT</th>
+                              <th>Hàng ghế</th>
+                              <th>Ghế bắt đầu</th>
+                              <th>Ghế kết thúc</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {seatConfigurations.map((seat, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td className="stt">{index + 1}</td>
+                                  <td>{seat?.position}</td>
+                                  <td>{seat?.start_seat_number}</td>
+                                  <td>{seat?.end_seat_number}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </Table>}
                     </div>
+                    {errors["seat_list_error"] && <span className="error">{errors["seat_list_error"]}</span>}
                   </div>
                 }
               </div>
@@ -724,5 +1014,6 @@ function CreateEvent() {
     </div>
   );
 }
+
 
 export default CreateEvent;

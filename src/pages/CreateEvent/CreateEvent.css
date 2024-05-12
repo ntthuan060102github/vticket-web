@@ -66,8 +66,15 @@
 }
 
 .Create_event_form__input{
+    display: flex;
     width: 100%;
     padding: 10px 20px;
+    font-size: 1.6rem !important;
+    border-radius: 5px !important;
+}
+
+.Create_event_form__select{
+    width: 100%;
     font-size: 1.6rem !important;
 }
 
@@ -92,13 +99,11 @@
 }
 
 .normal-input{
-    border-radius: 5px;
     border: solid 1px var(--black);
 }
 
 .error-input{
-    border-radius: 5px;
-    border: solid 1px var(--red);
+    border: solid 1px var(--red) !important;
 }
 
 .Create_event__form--reset{
@@ -112,6 +117,8 @@
     font-size: 1.4rem;
     color: var(--red);
     margin-top: -10px;
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .Create_event__form--submit_btn{
@@ -204,4 +211,8 @@
 .form-control{
     border: none !important;
     font-size: 1.6rem !important;
+}
+.css-13cymwt-control{
+    width: 100% !important;
+    height: 100% !important;
 }

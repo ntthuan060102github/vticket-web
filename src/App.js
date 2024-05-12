@@ -18,7 +18,9 @@ import ProfileCustomer from './pages/ProfileCustomer';
 const isAuthenticated = () => {
   const accessToken = localStorage.getItem('access');
   // return true nếu có token
-  return !!accessToken;
+  if(accessToken !== null)
+    return true;
+  return false;
 };
 
 
