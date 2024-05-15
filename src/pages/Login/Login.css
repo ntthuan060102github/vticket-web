@@ -50,6 +50,7 @@
     border: none;
     color: var(--purple);
     font-size: 1.6rem;
+    text-decoration: none;
 }
 
 .active{

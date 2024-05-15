@@ -15,7 +15,10 @@ const isAuthenticated = () => {
 };
 
 function Header() {
-  const profile = localStorage.getItem('profile');
+  const first_name = localStorage.getItem('first_name');
+  const last_name = localStorage.getItem('last_name');
+  const avatar_url = localStorage.getItem('avatar_url');
+
   const navigate = useNavigate();
 
   const handleLogout = () =>{
@@ -36,16 +39,16 @@ function Header() {
         <button className="Header__btn--sign_up">Đăng ký</button>
       </div> :
       <div className="Header_user">
-        <h2 className="user_name">{profile.last_name} {profile.first_name}</h2>
-        <Dropdown className='user_action'>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <img src={profile.avatar_url ? profile.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
+        <h2 className="user_name">{last_name} {first_name}</h2>
+        <Dropdown className='user_action' autoClose="outside">
+          <Dropdown.Toggle id="dropdown-basic">
+            <img src={!avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
           </Dropdown.Toggle>
 
           <Dropdown.Menu className='dropdow_menu'>
             <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
             {/* <Dropdown.Item href="#/action-2">Another action</Dropdown.Item> */}
-            <Dropdown.Item href="logout" onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+            <Dropdown.Item href='' onClick={handleLogout}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>}
