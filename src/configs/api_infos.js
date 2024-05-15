@@ -12,13 +12,13 @@ const VTICKET_API_SERVICE_INFOS = {
     },
     event: {
         staging: {
-            domain: "https://vticket-account-service.onrender.com/apis"
+            domain: "https://vticket-event-service.onrender.com/apis/doris-event-service/v1"
         },
         production: {
-            domain: "https://vticket-account-service.onrender.com/apis"
+            domain: "https://vticket-event-service.onrender.com/apis/doris-event-service/v1"
         },
         local: {
-            domain: "https://vticket-account-service.onrender.com/apis"
+            domain: "https://vticket-event-service.onrender.com/apis/doris-event-service/v1"
         }
     },
     logging: {

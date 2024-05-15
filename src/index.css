@@ -7,7 +7,7 @@
   --background-color-1: rgb(241,90,36);
   --purple: rgb(58,55,193) ;
   --blue: #0ea5e9; 
-  --gray: #6e6e6e;
+  --gray: #9e9e9e;
   --pastel: #EF9595;
   --nav-top-gradient:linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(58,55,193,1) 100%, rgba(0,212,255,1) 100%);
 }
@@ -36,8 +36,8 @@ button{
   cursor: pointer;
 }
 
-a{
-  text-decoration: none;
+Link, buttonm, a{
+  text-decoration: none!important;
 }
 
 button,
