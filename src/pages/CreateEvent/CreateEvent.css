@@ -1,0 +1,233 @@
+.Create_event__wrapper{
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.Create_event {
+    display: flex;
+    width:100%;
+    justify-content: center;
+    position: relative;
+    clear: both
+}
+
+
+.Create_event__form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 100px 0 100px;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.Create_event__infor_event_input, 
+.Create_event__ticket_type_input,
+.Create_event__service_infor_input,
+.Create_event__seat_infor_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    width: 500px;
+    border-radius: 5px;
+    padding: 20px 50px;
+    border: solid 1px var(--black);
+}
+
+.Create_event__infor_event_input--title, 
+.Create_event__ticket_type_input--title,
+.Create_event__service_infor_input--title,
+.Create_event__seat_class_input--title,
+.Create_event__seat_config_input--title{
+    text-transform: uppercase;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.Create_event__service_input,
+.Create_event__seat_class_input{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.Create_event__service_input--top, .Create_event__seat_class_input--top{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.Create_event_form__label{
+    width: 100%;
+}
+
+.Create_event_form__input{
+    display: flex;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem !important;
+    border-radius: 5px !important;
+}
+
+.Create_event_form__select{
+    width: 100%;
+    font-size: 1.6rem !important;
+}
+
+.MuiInputBase-input, .MuiButtonBase-root{
+    font-size: 1.6rem !important;
+}
+
+.disable{
+    pointer-events: none;
+}
+
+#description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.Create_event_form__input_description{
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.normal-input{
+    border: solid 1px var(--black);
+}
+
+.error-input{
+    border: solid 1px var(--red) !important;
+}
+
+.Create_event__form--reset{
+    width: 100%;
+    color: var(--purple);
+    font-weight: lighter;
+}
+
+.error{
+    display: flex;
+    font-size: 1.4rem;
+    color: var(--red);
+    margin-top: -10px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.Create_event__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: var(--purple);
+    width: 100px;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    color: var(--white);
+    font-size: 1.6rem;
+}
+
+.List_ticket_type__title{
+}
+
+.form__list{
+    display: flex;
+    width: 100%;
+    height: 200px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 20px;
+    overflow: auto; 
+}
+
+.form__list_full{
+    display: flex;
+    width: 100%;
+    height: 200px;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    overflow: auto; 
+}
+
+.form__seat_range{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.form__start_seat, .form_last_seat{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 150px;
+}
+
+.form_input_seat{
+    width: 150px;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+}
+
+.form__btn{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 40px;
+}
+
+.return{
+    background-color: var(--red);
+}
+
+.Create_event__ticket_type_list{
+    display: flex;
+    width: 500px;
+    height: auto;
+    border-radius: 5px;
+    border: solid 1px var(--black);
+    flex-direction: column;
+    gap: 10px;
+    overflow: auto; 
+    font-size: 1.6rem;
+}
+
+.stt{
+    width: 50px;
+}
+
+.title{
+    text-align: center;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+}
+
+.form-control{
+    border: none !important;
+    font-size: 1.6rem !important;
+}
+
+.css-13cymwt-control{
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.css-10o2lyd-MuiStack-root{
+    width: 100% !important;
+}
+
+/* .MuiMultiSectionDigitalClockSection-item{
+    width: 80% !important;
+} */
+
+.MuiMultiSectionDigitalClockSection-root{
+    width: 100px !important;
+}

@@ -42,7 +42,6 @@ function Login() {
             setErrors(newErrors);
             return;
         }else{
-            console.log(1)
             axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
                 email: accountInfo.username,
                 password: accountInfo.password,
@@ -52,6 +51,16 @@ function Login() {
                     navigate('/');
                     localStorage.setItem('access', response.data.data.access);
                     localStorage.setItem('refresh', response.data.data.refresh);
+                    localStorage.setItem("id", response.data.data.profile.id);
+                    localStorage.setItem("email", response.data.data.profile.email);
+                    localStorage.setItem("first_name", response.data.data.profile.first_name);
+                    localStorage.setItem("last_name", response.data.data.profile.last_name);
+                    localStorage.setItem("gender", response.data.data.profile.gender);
+                    localStorage.setItem("birthday", response.data.data.profile.birthday);
+                    localStorage.setItem("avatar_url", response.data.data.profile.avatar_url);
+                    localStorage.setItem("phone_number", response.data.data.profile.phone_number);
+                    localStorage.setItem("status", response.data.data.profile.status);
+                    localStorage.setItem("role", response.data.data.profile.role);
                 } else {
                     newErrors["login"] = response.data.message;
                     setErrors(newErrors);
