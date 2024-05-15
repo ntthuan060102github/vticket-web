@@ -40,7 +40,8 @@
 .Create_event__infor_event_input--title, 
 .Create_event__ticket_type_input--title,
 .Create_event__service_infor_input--title,
-.Create_event__seat_class_input--title{
+.Create_event__seat_class_input--title,
+.Create_event__seat_config_input--title{
     text-transform: uppercase;
     font-size: 1.8rem;
     font-weight: bold;
@@ -167,6 +168,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 150px;
 }
 
 .form_input_seat{
@@ -212,7 +214,20 @@
     border: none !important;
     font-size: 1.6rem !important;
 }
+
 .css-13cymwt-control{
     width: 100% !important;
     height: 100% !important;
+}
+
+.css-10o2lyd-MuiStack-root{
+    width: 100% !important;
+}
+
+/* .MuiMultiSectionDigitalClockSection-item{
+    width: 80% !important;
+} */
+
+.MuiMultiSectionDigitalClockSection-root{
+    width: 100px !important;
 }

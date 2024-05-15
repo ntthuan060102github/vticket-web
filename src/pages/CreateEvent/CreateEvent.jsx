@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -13,7 +13,6 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import Select from 'react-select'
 import { NumericFormat } from "react-number-format";
 import { TextField } from "@mui/material";
-import validator from "validator";
 import dayjs from 'dayjs';
 import 'moment/locale/vi';
 import './CreateEvent.css'
@@ -27,6 +26,9 @@ function CreateEvent() {
   const refresh = localStorage.getItem('refresh');
 
   const dateCurrent = new Date();
+  var now = dayjs();
+  const [startTimeDayjs, setStartTimeDayjs] = React.useState(now);
+  const defaultTimeFormat = now.format('HH:mm:ss');
   const formattedDateCurrent = moment(dateCurrent).format("YYYY-MM-DD");
   const onlyFormattedDateCurrent = new Date(formattedDateCurrent).toISOString().split('T')[0];
 
@@ -37,7 +39,7 @@ function CreateEvent() {
     "description": "",
     "start_date": onlyFormattedDateCurrent,
     "end_date": onlyFormattedDateCurrent,
-    "start_time": new Date().getHours() + ':' + new Date().getMinutes(),
+    "start_time": defaultTimeFormat,
     "location": "",
     "banner_url": ""
   });
@@ -45,20 +47,20 @@ function CreateEvent() {
   const [eventTopic, setEventTopic] = React.useState([]);
 
   const [ticketTypes, setTicketTypes] = React.useState([
-    {
-      description: "VIP",
-      price: "100000",
-      seat_configurations: [],
-      ticket_type_details: [],
-      name: "Loại VIP",
-    },
-    {
-      description: "Premium",
-      price: "100000",
-      seat_configurations: [],
-      ticket_type_details: [],
-      name: "Loại Premium",
-    }
+    // {
+    //   description: "VIP",
+    //   price: "100000",
+    //   seat_configurations: [],
+    //   ticket_type_details: [],
+    //   name: "Loại VIP",
+    // },
+    // {
+    //   description: "Premium",
+    //   price: "100000",
+    //   seat_configurations: [],
+    //   ticket_type_details: [],
+    //   name: "Loại Premium",
+    // }
   ]);
   const [ticket_Type, setTicket_Type] = React.useState({
     "name": "",
@@ -78,6 +80,7 @@ function CreateEvent() {
 
 
   const [seatConfigurations, setSeatConfigurations] = React.useState([]);
+  const [seatConfigurationList, setSeatConfigurationList] = React.useState([]);
   const [seatConfiguration, setSeatConfiguration] = React.useState({
     "position": "",
     "start_seat_number": 1,
@@ -86,7 +89,6 @@ function CreateEvent() {
 
 
   const [errors, setErrors] = React.useState({});
-  const navigate = useNavigate();
   const [taskName, setTaskName] = React.useState("event_input");
   const [selectedIndex, setSelectedIndex] = React.useState("");
 
@@ -94,6 +96,21 @@ function CreateEvent() {
   const addTicketType = () => {
     const newErrors = {};
     setErrors([]);
+
+    const listTicket = [...ticketTypes]
+
+    for (var i = 0; i < listTicket.length; i++) {
+      if (listTicket[i]?.name === ticket_Type.name) {
+        newErrors["ticket_type_name_error"] = "Tên loại vé không được trùng";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            ticket_type_name_error: "Tên loại vé không được trùng"
+          }
+        });
+      }
+    }
+
 
     if (!ticket_Type.name) {
       newErrors["ticket_type_name_error"] = "Tên loại vé không được để trống";
@@ -124,7 +141,7 @@ function CreateEvent() {
         }
       });
     }
-    
+
     if (Object.values(newErrors).length === 0) {
       setTicketTypes([...ticketTypes, ticket_Type]);
       setTicket_Type({
@@ -195,7 +212,18 @@ function CreateEvent() {
 
   const handleAddSeat = () => {
     const newErrors = {};
-    setErrors([]);   
+    setErrors([]);
+
+    if (!ticket_Type.name) {
+      newErrors["selected_ticket_type_error"] = "Loại vé không được trống";
+      setErrors((prevalue) => {
+        return {
+          ...prevalue,
+          selected_ticket_type_error: "Loại vé không được trống"
+        }
+      });
+
+    }
 
     if (!seatConfiguration.position) {
       newErrors["seat_configuration_position_error"] = "Ví trị ghế không được để trống";
@@ -207,10 +235,20 @@ function CreateEvent() {
       });
     }
 
-    const seatConfigurationList = [...seatConfigurations];
-    for (var i = 0; i < seatConfigurationList.length; i++) {
-      if (seatConfigurationList[i]?.position === seatConfiguration.position) {
-        if (seatConfiguration.start_seat_number === seatConfigurationList[i]?.end_seat_number || seatConfiguration.start_seat_number < seatConfigurationList[i]?.end_seat_number) {
+    const seatConfigurationArray = [...seatConfigurationList];
+    for (var i = 0; i < seatConfigurationArray.length; i++) {
+      if (seatConfigurationArray[i]?.position === seatConfiguration.position) {
+        if (seatConfiguration.start_seat_number === seatConfigurationArray[i]?.end_seat_number) {
+          newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
+          setErrors((prevalue) => {
+            return {
+              ...prevalue,
+              seat_configuration_start_seat_error: "Ví trị ghế bắt đầu không hợp lệ"
+            }
+          });
+        }
+
+        if (seatConfiguration.start_seat_number < seatConfigurationArray[i]?.end_seat_number) {
           newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
           setErrors((prevalue) => {
             return {
@@ -220,9 +258,32 @@ function CreateEvent() {
           });
         }
       }
+      console.log(seatConfiguration.start_seat_number);
+      console.log(seatConfigurationArray[seatConfigurationArray.length - 1]?.end_seat_number);
+      console.log(seatConfigurationArray[i]?.start_seat_number);
+
+      if (seatConfigurationArray[i]?.start_seat_number === seatConfiguration.start_seat_number) {
+        newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            seat_configuration_start_seat_error: "Ví trị ghế bắt đầu không hợp lệ"
+          }
+        });
+      }
+
+      if (seatConfiguration.start_seat_number < seatConfigurationArray[seatConfigurationArray.length - 1]?.end_seat_number) {
+        newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            seat_configuration_start_seat_error: "Ví trị ghế bắt đầu không hợp lệ"
+          }
+        });
+      }
     }
 
-    if (seatConfiguration.start_seat_number >= seatConfiguration.end_seat_number) {
+    if (seatConfiguration.start_seat_number > seatConfiguration.end_seat_number) {
       newErrors["seat_configuration_end_seat_error"] = "Ví trị ghế kết thúc không nhỏ hơn ghế bắt đầu";
       setErrors((prevalue) => {
         return {
@@ -231,10 +292,10 @@ function CreateEvent() {
         }
       });
     }
-    
 
     if (Object.values(newErrors).length === 0) {
       setSeatConfigurations([...seatConfigurations, seatConfiguration]);
+      setSeatConfigurationList([...seatConfigurationList, seatConfiguration]);
       setSeatConfiguration({
         "position": "",
         "start_seat_number": 1,
@@ -325,6 +386,19 @@ function CreateEvent() {
         });
       }
 
+      const currentTime = dayjs();
+      const startTime = dayjs(`${eventInfo.start_date} ${eventInfo.start_time}`, 'YYYY-MM-DD HH:mm:ss');
+
+      if (eventInfo.start_date === onlyFormattedDateCurrent && startTime.isBefore(currentTime)) {
+        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            event_time_error: "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại"
+          }
+        });
+      }
+
       if (!eventInfo.location) {
         newErrors["event_location_error"] = "Nơi diễn ra sự kiện không được để trống";
         setErrors((prevalue) => {
@@ -345,7 +419,7 @@ function CreateEvent() {
         });
       }
 
-      if (!eventInfo.event_topics) {
+      if (Object.values(eventInfo.event_topics).length === 0) {
         newErrors["event_topics_error"] = "Chủ đề sự kiện không được để trống";
         setErrors((prevalue) => {
           return {
@@ -360,8 +434,7 @@ function CreateEvent() {
       }
 
     } else if (taskName === "ticket_type_input") {
-      if(ticketTypes.length === 0)
-      {
+      if (ticketTypes.length === 0) {
         newErrors["ticket_type_list_error"] = "Danh sách loại vé không được trống";
         setErrors((prevalue) => {
           return {
@@ -503,10 +576,11 @@ function CreateEvent() {
   };
 
   const onTimeChangeHandler = (val) => {
-    const formattedTime = dayjs(val).format('HH:mm:ss');
+    const formattedTime = val.format('HH:mm:ss');
+    setStartTimeDayjs(val);
     setEventInfo((prevValue) => ({
       ...prevValue,
-      start_time: formattedTime
+      start_time: formattedTime,
     }));
   }
 
@@ -514,8 +588,7 @@ function CreateEvent() {
     const newErrors = {};
     setErrors([]);
 
-    if(seatConfigurations.length === 0)
-    {
+    if (seatConfigurations.length === 0) {
       newErrors["seat_list_error"] = "Danh sách ghế không được trống";
       setErrors((prevalue) => {
         return {
@@ -533,31 +606,31 @@ function CreateEvent() {
         description: eventInfo.description,
         start_date: eventInfo.start_date,
         end_date: eventInfo.end_date,
-        start_time: eventInfo.start_time,
+        start_time: (eventInfo.start_time).format('HH:mm:ss'),
         location: eventInfo.location,
         banner_url: eventInfo.banner_url,
       })
-      .then(function (response) {
-        if (response.data.status === 1) {
-          console.log(200);
-        } else {
+        .then(function (response) {
+          if (response.data.status === 1) {
+            console.log(200);
+          } else {
+            setErrors((prevalue) => {
+              return {
+                ...prevalue,
+                create_event_error: response.data.message
+              }
+            });
+            console.log(response)
+          }
+        })
+        .catch(function (error) {
           setErrors((prevalue) => {
             return {
               ...prevalue,
-              create_event_error: response.data.message
+              error_submit: error.message
             }
           });
-          console.log(response)
-        }
-      })
-      .catch(function (error) {
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            error_submit: error.message
-          }
         });
-      });
     }
   }
 
@@ -698,7 +771,7 @@ function CreateEvent() {
                     id="start_time"
                     name="start_time"
                     views={['hours', 'minutes', 'seconds']}
-                    value={dayjs(eventInfo.start_time)}
+                    value={startTimeDayjs}
                     onChange={onTimeChangeHandler}
                     className={errors.event_time_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
                   />
@@ -853,11 +926,11 @@ function CreateEvent() {
                     />
                     {errors["ticket_type_detail_description_error"] && <span className="error">{errors["ticket_type_detail_description_error"]}</span>}
                     <label htmlFor="fee_type" className='Create_event_form__label'>Loại giá dịch vụ</label>
-                    <select 
+                    <select
                       id="fee_type"
                       name="fee_type"
                       className={errors.ticket_type_detail_fee_type_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
-                      value={ticketTypeDetail.fee_type} 
+                      value={ticketTypeDetail.fee_type}
                       placeholder='Chọn loại giá dịch vụ'
                       onChange={(event) => handleChange(event, 'service input')}
                     >
@@ -892,7 +965,7 @@ function CreateEvent() {
                 <button type="button" className='Create_event__form--submit_btn' onClick={handleNextTask}>Tiếp theo</button>
               </div>
             </div>}
-            {taskName === 'seat_class_input' &&
+          {taskName === 'seat_class_input' &&
             <div className="Create_event__seat_class_input">
               <div className="Create_event__seat_class_input--top">
                 <div className="Create_event__ticket_type_list">
@@ -928,8 +1001,9 @@ function CreateEvent() {
                       value={ticket_Type?.name}
                       readOnly
                       disabled
-                      className={errors.email ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
+                      className={errors.selected_ticket_type_error ? "Create_event_form__input error-input disable" : "Create_event_form__input normal-input disable"}
                     />
+                    {errors["selected_ticket_type_error"] && <span className="error">{errors["selected_ticket_type_error"]}</span>}
                     <label htmlFor="position" className='Create_event_form__label'>Hàng ghế</label>
                     <input
                       type="text"
@@ -944,7 +1018,17 @@ function CreateEvent() {
                     <div className="form__seat_range">
                       <div className="form__start_seat">
                         <label htmlFor="start_seat_number" className='sign_up_form__label'>Số ghế bắt đầu</label>
-                        <input
+                        <NumericFormat
+                          id="start_seat_number"
+                          name="start_seat_number"
+                          value={seatConfiguration.start_seat_number}
+                          thousandSeparator={true}
+                          customInput={TextField}
+                          onChange={(event) => handleChangeNumber(event, 'seat input')}
+                          placeholder='Ghế bắt đầu'
+                          className={errors.seat_configuration_start_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                        />
+                        {/* <input
                           type="text"
                           id="start_seat_number"
                           name="start_seat_number"
@@ -952,12 +1036,22 @@ function CreateEvent() {
                           value={seatConfiguration.start_seat_number}
                           className={errors.seat_configuration_start_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
                           onChange={(event) => handleChange(event, 'seat input')}
-                        />
+                        /> */}
                         {errors["seat_configuration_start_seat_error"] && <span className="error">{errors["seat_configuration_start_seat_error"]}</span>}
                       </div>
                       <div className="form_last_seat">
                         <label htmlFor="end_seat_number" className='sign_up_form__label'>Số ghế kết thúc</label>
-                        <input
+                        <NumericFormat
+                          id="end_seat_number"
+                          name="end_seat_number"
+                          value={seatConfiguration.end_seat_number}
+                          thousandSeparator={true}
+                          customInput={TextField}
+                          onChange={(event) => handleChangeNumber(event, 'seat input')}
+                          placeholder='Ghế bắt đầu'
+                          className={errors.seat_configuration_end_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
+                        />
+                        {/* <input
                           type="text"
                           id="end_seat_number"
                           name="end_seat_number"
@@ -965,7 +1059,7 @@ function CreateEvent() {
                           value={seatConfiguration.end_seat_number}
                           className={errors.seat_configuration_end_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
                           onChange={(event) => handleChange(event, 'seat input')}
-                        />
+                        /> */}
                         {errors["seat_configuration_end_seat_error"] && <span className="error">{errors["seat_configuration_end_seat_error"]}</span>}
                       </div>
                     </div>
