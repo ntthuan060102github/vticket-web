@@ -175,7 +175,7 @@ function SignUp() {
                         renderMonth={(props, month) => <td {...props}>Thg {month + 1}</td>}
                         placeholderText="Chọn ngày sinh"
                         isValidDate={isValidDate}
-                        className={errors.birthday ? "sign_up_form__input error-input" : "sign_up_form__input normal-input"}
+                        className={errors.birthday ? "sign_up_form__input_date error-input" : "sign_up_form__input_date normal-input"}
                     />
                     {errors["birthday"] && <span className="error">{errors["birthday"]}</span>}
                     <label htmlFor="email" className='sign_up_form__label'>Email</label>
