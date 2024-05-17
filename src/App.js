@@ -3,7 +3,8 @@ import {
   BrowserRouter,
   Navigate,
   Route,
-  Routes
+  Routes, 
+  Outlet
 } from "react-router-dom";
 import './App.css'
 import SignUp from "./pages/SignUp";
@@ -12,6 +13,7 @@ import OTP from "./pages/OTP/OTP";
 import ResetPassword from './pages/ResetPassword';
 import RedirectInterceptor from "./helpers/axios_provider"
 import CreateEvent from './pages/CreateEvent';
+import HomePage from './pages/HomePage';
 import ProfileCustomer from './pages/ProfileCustomer';
 
 // Hàm kiểm tra token
@@ -21,6 +23,11 @@ const isAuthenticated = () => {
   return !!accessToken;
 };
 
+const role = localStorage.getItem('role');
+
+const PrivateRoute = ({ isAuthenticated }) => {
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+};
 
 function App() {
 
@@ -28,11 +35,8 @@ function App() {
     <BrowserRouter>
       <RedirectInterceptor/>
       <Routes>
-        <Route
-          path="/"
-          element={isAuthenticated() ? <Navigate to="/" replace /> : <Navigate to="/login" replace />}
-        >
-          {/* <Route index element={<HomePage />} /> */}
+        <Route element={<PrivateRoute isAuthenticated={isAuthenticated()} />}>
+          <Route path='/' element={role === 'customer' && <HomePage />} />
           {/* <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} /> */}
         </Route>

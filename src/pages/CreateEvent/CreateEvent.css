@@ -9,7 +9,8 @@
     width:100%;
     justify-content: center;
     position: relative;
-    clear: both
+    clear: both;
+    margin-top: 400px;
 }
 
 
