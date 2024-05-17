@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   BrowserRouter,
   Navigate,
@@ -16,20 +16,21 @@ import CreateEvent from './pages/CreateEvent';
 import HomePage from './pages/HomePage';
 import ProfileCustomer from './pages/ProfileCustomer';
 
-// Hàm kiểm tra token
-const isAuthenticated = () => {
-  const accessToken = localStorage.getItem('access');
-  // return true nếu có token
-  return !!accessToken;
-};
-
-const role = localStorage.getItem('role');
-
 const PrivateRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 function App() {
+  const [accessToken,setAccessToken] = React.useState('');
+  React.useEffect(()=>{
+    setAccessToken(localStorage.getItem('access'))
+  },([]))
+
+  const isAuthenticated = () => {
+    return accessToken !== '';
+  };
+
+  const role = localStorage.getItem('role');
 
   return (
     <BrowserRouter>
@@ -42,8 +43,8 @@ function App() {
         </Route>
         <Route path="/profile" element={isAuthenticated() ? <ProfileCustomer /> : <Navigate to="/login" replace />} />
         <Route path="/create-event" element={isAuthenticated() ? <CreateEvent /> : <Navigate to="/login" replace />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={!isAuthenticated() ? <SignUp /> : <Navigate to="/" replace />} />
+        <Route path="/login" element={!isAuthenticated()  ? <Login /> : <Navigate to="/" replace />} />
         <Route path='/otp/:slug' element={<OTP/>} />
         <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
