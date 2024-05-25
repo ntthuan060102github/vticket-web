@@ -1,0 +1,120 @@
+.Footer{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    background-color: var(--gray);
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    gap: 10px;
+    user-select: none;
+
+}
+
+.Footer__logo{
+    height: 70px;
+    object-fit: contain;
+}
+
+.Footer__description{
+    font-size: 1.6rem;
+    color: var(--white);
+    text-align: center;
+    text-shadow: 2px 2px 8px var(--black);
+}
+
+.Footer__license{
+    font-size: 1.4rem;
+    color: var(--white);
+    text-align: center;
+    text-shadow: 2px 2px 8px var(--black);
+}
+/* .Footer__search{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 350px;
+    border: solid 1px var(--black);
+    border-radius: 5px;
+    font-size: 1.6rem;
+}
+
+.Footer__search--input{
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.Footer__search--icon_wrapper{
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+}
+
+.Footer__search--icon{
+    padding: 0 10px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    height: 100%;
+    width: calc(10px + 1.6rem + 10px);
+}
+
+.Footer__btn{
+    display: flex;
+    gap:  20px;
+    width: 300px;
+}
+
+.Footer__btn--sign_in, .Footer__btn--sign_up{
+    background-color: transparent;
+    font-size: 1.6rem;
+    width: 100px;
+}
+
+.Footer__btn--sign_in:hover, .Footer__btn--sign_up:hover{
+    color: var(--background-color-1);
+}
+
+.dropdown{
+    position: relative;
+    font-size: 1.6rem;
+}
+
+.user_action .dropdown-toggle {
+    background-color: transparent !important; 
+    border: none !important; 
+}
+
+.btn{
+    background-color: transparent;
+}
+
+.dropdow_menu{
+    font-size: 1.6rem !important;
+    padding: 10px !important;
+    margin-left: -20px !important;
+}
+
+.user_avt{
+    height: 50px;
+    border-radius: 50%;
+    border: solid 1px var(--black);
+}
+
+.Footer_user{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.user_name{
+    display: flex;
+    align-items: center;
+    font-size: 1.6rem;
+    width: 140px;
+    text-overflow: ellipsis;
+    justify-content: flex-end;
+} */

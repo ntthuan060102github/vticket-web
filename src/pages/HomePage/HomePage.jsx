@@ -23,6 +23,7 @@ import { APP_ENV } from "../../configs/app_config"
 import Header from '../../components/Header';
 import NavTopCus from '../../components/NavTopCus';
 import axios from 'axios';
+import Footer from '../../components/Footer';
 
 SwiperCore.use([EffectCards]);
 
@@ -181,8 +182,12 @@ function HomePage() {
             </div>
           )})}
         </div>
-
+        <button className="Homepage__somming_soon_events--more_btn">
+          <FontAwesomeIcon icon={faBars} className="icon_plus"/>
+          Xem thêm các thể loại sự kiện
+        </button>
       </div>
+      <Footer/>
     </div>
   );
 }
