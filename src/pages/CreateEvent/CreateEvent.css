@@ -9,7 +9,7 @@
     width:100%;
     justify-content: center;
     position: relative;
-    clear: both
+    clear: both;
 }
 
 
@@ -210,7 +210,7 @@
     text-transform: uppercase;
 }
 
-.form-control{
+.Create_event_form__input > .form-control{
     border: none !important;
     font-size: 1.6rem !important;
 }

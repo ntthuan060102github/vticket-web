@@ -22,8 +22,8 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () =>{
-    navigate('/login');
     localStorage.clear();
+    navigate('/login');
   }
 
   return (
@@ -39,7 +39,7 @@ function Header() {
         <button className="Header__btn--sign_up">Đăng ký</button>
       </div> :
       <div className="Header_user">
-        <h2 className="user_name">{last_name} {first_name}</h2>
+        <h2 className="user_name">{first_name} {last_name}</h2>
         <Dropdown className='user_action' autoClose="outside">
           <Dropdown.Toggle id="dropdown-basic">
             <img src={!avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>

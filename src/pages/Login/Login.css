@@ -69,36 +69,38 @@
 }
 
 .Login_form__label{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     width: 100%;
 }
 
 .Login_form__input{
     width: 100%;
-    padding: 10px 20px;
-    font-size: 1.6rem;
+    padding: 10px 20px !important;
+    height: 40px !important;
+    font-size: 1.6rem !important;
 }
 
 .normal-input{
-    border-radius: 5px;
-    border: solid 1px var(--black);
+    border-radius: 5px !important;
+    border: solid 1px var(--black) !important;
 }
 
 .error-input{
-    border-radius: 5px;
-    border: solid 1px var(--red);
+    border-radius: 5px !important;
+    border: solid 1px var(--red) !important;
 }
 
 .Login__form--reset{
     width: 100%;
     color: var(--purple);
-    font-weight: lighter;
 }
 
 .error{
     display: flex;
     font-size: 1.4rem;
     color: var(--red);
-    margin-top: -10px;
 }
 
 .Login__form--submit_btn{
@@ -113,3 +115,10 @@
     font-size: 1.6rem;
 }
 
+.Login_form__label >label {
+    top: -1.2rem !important;
+}
+
+.Login_form__label > .form-control{
+    border: none;
+}

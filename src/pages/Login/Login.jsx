@@ -48,7 +48,6 @@ function Login() {
             })
             .then(function (response) {
                 if (response.data.status === 1) {
-                    navigate('/');
                     localStorage.setItem('access', response.data.data.access);
                     localStorage.setItem('refresh', response.data.data.refresh);
                     localStorage.setItem("id", response.data.data.profile.id);
@@ -61,6 +60,7 @@ function Login() {
                     localStorage.setItem("phone_number", response.data.data.profile.phone_number);
                     localStorage.setItem("status", response.data.data.profile.status);
                     localStorage.setItem("role", response.data.data.profile.role);
+                    navigate('/');
                 } else {
                     newErrors["login"] = response.data.message;
                     setErrors(newErrors);
