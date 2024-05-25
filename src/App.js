@@ -27,7 +27,7 @@ function App() {
   },([]))
 
   const isAuthenticated = () => {
-    return accessToken !== '';
+    return !!accessToken;
   };
 
   const role = localStorage.getItem('role');

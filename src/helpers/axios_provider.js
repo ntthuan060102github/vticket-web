@@ -2,10 +2,28 @@ import axios from 'axios';
 import { useEffect, useRef } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 
+import VTICKET_API_SERVICE_INFOS from '../configs/api_infos'
+import { APP_ENV } from "../configs/app_config"
+
 function AxiosProvider() {
   const requestInterceptorId = useRef(null);
   const responseInterceptorId = useRef(null);
   const navigate = useNavigate();
+  const refresh = localStorage.getItem('refresh');
+
+  useEffect(() => {
+    axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
+        refresh: refresh,
+      })
+      .then(function (response) {
+          if (response.data.status === 1) {
+              localStorage.setItem('access', response.data.data.access);
+              localStorage.setItem('refresh', response.data.data.refresh);
+          } else {
+            return response;
+          }
+      })
+  }, []);
 
   useEffect(() => {
     // Thiết lập interceptor cho các yêu cầu

@@ -88,6 +88,10 @@
     margin-top: 40px;
 }
 
+.Homepage__event_topics{
+    margin-bottom: 40px;
+}
+
 .Homepage__outstanding_events--top{
     display: flex;
     justify-content: space-between;
@@ -132,7 +136,17 @@
     justify-content: space-between;
 }
 
-.Homepage__somming_soon_events--container, .Homepage__event_topics--container{
+.Homepage__somming_soon_events--container{
+    display: flex;
+    margin-top: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+    grid-template-columns: repeat(4);
+    row-gap: auto;
+    grid-gap: 20px;
+}
+
+.Homepage__event_topics--container{
     display: flex;
     margin-top: 20px;
     width: 100%;
