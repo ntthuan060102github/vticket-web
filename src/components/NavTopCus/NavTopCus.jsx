@@ -19,12 +19,7 @@ function NavTopCus() {
           <Nav className="me-auto">
             <Nav.Link href="#home">Vé ca nhạc</Nav.Link>
             <Nav.Link href="#link">Văn hóa nghệ thuật</Nav.Link>
-            <Nav.Link href="#link">Tour</Nav.Link>
             <Nav.Link href="#link">Thể thao</Nav.Link>
-            <Nav.Link href="#link">Vé máy bay / Khách sạn</Nav.Link>
-            <Nav.Link href="#link">Vé xem phim</Nav.Link>
-            <Nav.Link href="#link">Tin tức</Nav.Link>
-            <Nav.Link href="#link">Video</Nav.Link>
             <Dropdown className='nav_dropdown'>
               <Dropdown.Toggle id="dropdown-basic">
                 Chọn địa điểm
