@@ -15,11 +15,11 @@ const isAuthenticated = () => {
 };
 
 function Header() {
+  const navigate = useNavigate();
+
   const first_name = localStorage.getItem('first_name');
   const last_name = localStorage.getItem('last_name');
   const avatar_url = localStorage.getItem('avatar_url');
-
-  const navigate = useNavigate();
 
   const handleLogout = () =>{
     localStorage.clear();
@@ -47,8 +47,7 @@ function Header() {
 
           <Dropdown.Menu className='dropdow_menu'>
             <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
-            {/* <Dropdown.Item href="#/action-2">Another action</Dropdown.Item> */}
-            <Dropdown.Item href='' onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>}

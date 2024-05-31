@@ -39,10 +39,7 @@ function HomePage() {
     })
     .then(function (response) {
       if (response.data.status === 1) {
-        console.log(response.data.data.outstanding_events);
-        console.log(response.data.data.upcoming_events);
-        console.log(response.data.data.topic_types);
-        
+                                
         setBanners(response.data.data.banners)
         setOutstandingEvents(response.data.data.outstanding_events)
         setUpcomingEvents(response.data.data.upcoming_events)
