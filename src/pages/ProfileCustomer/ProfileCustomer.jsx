@@ -26,31 +26,35 @@ function TimeInput({ value, onChange }) {
 
 function ProfileCustomer() {
 
-  const email = localStorage.getItem('email');
-  const password = localStorage.getItem('password');
-
   const [errors, setErrors] = React.useState([]);
 
-  
-  const access = localStorage.getItem('access');
-  const first_name = localStorage.getItem('first_name');
-  const last_name = localStorage.getItem('last_name');
-  const avatar_url = localStorage.getItem('avatar_url');
-  const gender = localStorage.getItem('gender');
-  const birthday = localStorage.getItem('birthday');
-  const phone_number = localStorage.getItem('phone_number');
+  const [changedIndex, setChangedIndex] = React.useState(0);
 
+  const [firstName, setFirstName] = React.useState(localStorage.getItem('first_name'));
+  const [lastName, setLastName] = React.useState(localStorage.getItem('last_name'));
+  const [avatarUrl, setAvatarUrl] = React.useState(localStorage.getItem('avatar_url'));
+  const [gender, setGender] = React.useState(localStorage.getItem('gender'));
+  const [birthday, setBirthday] = React.useState(localStorage.getItem('birthday'));
+  const [phoneNumber, setPhoneNumber] = React.useState(localStorage.getItem('phone_number'));
+
+  React.useEffect(()=>{
+    setFirstName(localStorage.getItem('first_name'));
+    setLastName(localStorage.getItem('last_name'));
+    setAvatarUrl(localStorage.getItem('avatar_url'));
+    setGender(localStorage.getItem('gender'));
+    setBirthday(localStorage.getItem('birthday'));
+    setPhoneNumber(localStorage.getItem('phone_number'));
+  },[changedIndex]);
 
   const [accountInfo, setAccountInfo] = React.useState({
-    first_name: first_name,
-    last_name: last_name,
+    first_name: firstName,
+    last_name: lastName,
     gender: gender,
     birthday: birthday ,
-    phone_number: phone_number,
-    avatar_url : avatar_url
+    phone_number: phoneNumber,
+    avatar_url : avatarUrl
   });
 
-  const [avatarFile,setAvatarFile] = React.useState([]);
   const [avatarURL,setAvatarURL] = React.useState(accountInfo.avatar_url);
   
 
@@ -68,26 +72,33 @@ function ProfileCustomer() {
   }
 
   const handleFileChange = (event) => {
-    console.log(1)
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/profile/avatar`, {
-        Authorization: accountInfo.username,
-        image: selectedFile,
-      })
-      .then(function (response) {
-          if (response.data.status === 1) {
-              localStorage.setItem("avatar_url", response.data.data.avatar_url);
-              setAvatarURL(response.data.data.avatar_url)
-          } else {
-              setErrors(...errors, response.data.message);
-          }
-      })
-      .catch(function (error) {
-              setErrors(...errors, error);
-      });
-    }
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    axios({
+      method: 'post',
+      url: `${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/profile/avatar`,
+      data: {image: formData.get("file")},
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(function (response) {
+        if (response.data.status === 1) {
+            console.log(response)
+            setAvatarURL(response.data.data.avatar_url)
+        } else {
+            console.log(response)
+            setErrors(...errors, response.data.message);
+        }
+    })
+    .catch(function (error) {
+            setErrors(...errors, error);
+    });
   };
+
+  const handleChangeAvatar = () =>{
+  }
 
   const handleDateChange = (date) => {
     console.log(typeof (date));
@@ -107,6 +118,12 @@ function ProfileCustomer() {
     return selectedDate <= today;
   };
 
+  const phoneRegex = /^\+?(\d{1,3})?[-.\s]?(\(?\d{1,4}\)?)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+
+  function validatePhoneNumber(phoneNumber) {
+    return phoneRegex.test(phoneNumber);
+  }
+
   const handleSubmit = () => {
     console.log(accountInfo);
     const newErrors = {};
@@ -122,12 +139,12 @@ function ProfileCustomer() {
       newErrors["birthday"] = "Ngày sinh không được trống";
     }
 
-    if (!accountInfo.password) {
-      newErrors["password"] = "Mật khẩu không được để trống";
+    if (!accountInfo.gender) {
+      newErrors["gender"] = "Giới tính không được để trống";
     };
 
-    if (accountInfo.password !== accountInfo.re_enter_password) {
-      newErrors["re_enter_password"] = "Mật khẩu không trùng khớp";
+    if (!validatePhoneNumber(accountInfo.phone_number)) {
+      newErrors["phone_number"] = "Số điện thoại không hợp lệ";
     };
 
     if (Object.keys(newErrors).length !== 0) {
@@ -135,7 +152,7 @@ function ProfileCustomer() {
       return;
     }
     else {
-      axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
+      axios.patch(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/profile/me`, {
         first_name: accountInfo.first_name,
         last_name: accountInfo.first_name,
         gender: accountInfo.gender,
@@ -145,9 +162,21 @@ function ProfileCustomer() {
         .then(function (response) {
           console.log(response);
           if (response.data.status === 1) {
-            navigate(`/otp/${accountInfo.email}`);
+            console.log("Thành công")
+            localStorage.setItem("first_name", accountInfo.first_name);
+            localStorage.setItem("last_name", accountInfo.last_name);
+            localStorage.setItem("gender", accountInfo.gender);
+            localStorage.setItem("birthday", accountInfo.birthday);
+            localStorage.setItem("phone_number", accountInfo.phone_number);
+            localStorage.setItem("avatar_url", avatarURL);
+            setAccountInfo((prevValue) => ({
+              ...prevValue,
+              avatar_url: avatarURL,
+            }));
+            setChangedIndex((prev) => prev + 1);
           } else {
-            newErrors["sign-up"] = response.data.message;
+            console.log(response);
+            newErrors["change_info"] = response.data.message;
             setErrors(newErrors);
           }
         })
@@ -157,43 +186,15 @@ function ProfileCustomer() {
         });
     }
   }
-  useEffect(() => {
-    axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token`, {
-      email: email,
-      password: password,
-    })
-    .then(function (response) {
-        if (response.data.status === 1) {
-            localStorage.setItem('access', response.data.data.access);
-            localStorage.setItem('refresh', response.data.data.refresh);
-            localStorage.setItem("id", response.data.data.profile.id);
-            localStorage.setItem("email", response.data.data.profile.email);
-            localStorage.setItem("first_name", response.data.data.profile.first_name);
-            localStorage.setItem("last_name", response.data.data.profile.last_name);
-            localStorage.setItem("gender", response.data.data.profile.gender);
-            localStorage.setItem("birthday", response.data.data.profile.birthday);
-            localStorage.setItem("avatar_url", response.data.data.profile.avatar_url);
-            localStorage.setItem("phone_number", response.data.data.profile.phone_number);
-            localStorage.setItem("status", response.data.data.profile.status);
-            localStorage.setItem("password", password);
-            localStorage.setItem("role", response.data.data.profile.role);
-        } else {
-            setErrors(response.data.message);
-        }
-    })
-    .catch(function (error) {
-        setErrors(error);
-    });
 
-  }, [avatarURL]);
   return (
     <div className="Profile_customer__wrapper">
       <Header />
       <div className="Profile_customer">
         <div className="Profile_customer__sidebar">
           <div className="Sidebar__avt_name">
-            <img src={!accountInfo.avatar_url ? accountInfo.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="Sidebar_avt" />
-            <h2 className="Sidebar__name">{last_name} {first_name}</h2>
+            <img src={accountInfo.avatar_url ? accountInfo.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="Sidebar_avt" />
+            <h2 className="Sidebar__name">{firstName} {lastName}</h2>
           </div>
           <ul class="Sidebar__menu">
             <li><a href="#infor" class="Sidebar__menu--item">
@@ -206,55 +207,56 @@ function ProfileCustomer() {
           <div className="Profile_customer__infor_event_input">
             <h2 className="Profile_customer__infor_event_input--title">Thông tin cá nhân</h2>    
             <div className='Profile_customer__avatar'>
-              <img src={!avatarURL ? avatarURL : "/assets/images/avatar_default.png"} alt="User Avatar" className="form_avt" />
+              <img src={avatarURL ? avatarURL : "/assets/images/avatar_default.png"} alt="User Avatar" className="form_avt" />
               <label htmlFor="avatarInput" style={{ cursor: 'pointer' }} className='import_file_avatar'>
                 <input
                   id="avatarInput"
                   type="file"
+                  name='image'
                   onChange={handleFileChange}
                   accept="image/*"
                   style={{ display: 'none' }}
                 />
                 <FontAwesomeIcon icon={faPencil} className='iconPencil'/>
               </label>
-              <button className="update_avatar">Đổi ảnh đại diện</button>
+              {/* <button className="update_avatar" onClick={handleChangeAvatar}>Đổi ảnh đại diện</button> */}
             </div>
-            <div className="sign_up_form__full_name">
+            <div className="Profile_customer_form__full_name">
               <div className="form_first_name">
-                <label htmlFor="first_name" className='sign_up_form__label'>Họ</label>
+                <label htmlFor="first_name" className='Profile_customer_form__label'>Họ</label>
                 <input
                   type="text"
                   id="first_name"
                   value={accountInfo.first_name}
                   name="first_name"
-                  className={errors.first_name ? "sign_up_form__input_name error-input" : "sign_up_form__input_name normal-input"}
+                  className={errors.first_name ? "Profile_customer_form__input_name error-input" : "Profile_customer_form__input_name normal-input"}
                   onChange={handleChange} />
                 {errors["first_name"] && <span className="error">{errors["first_name"]}</span>}
               </div>
               <div className="form_last_name">
-                <label htmlFor="last_name" className='sign_up_form__label'>Tên</label>
+                <label htmlFor="last_name" className='Profile_customer_form__label'>Tên</label>
                 <input
                   type="text"
                   id="last_name"
                   value={accountInfo.last_name}
                   name="last_name"
-                  className={errors.last_name ? "sign_up_form__input_name error-input" : "sign_up_form__input_name normal-input"}
+                  className={errors.last_name ? "Profile_customer_form__input_name error-input" : "Profile_customer_form__input_name normal-input"}
                   onChange={handleChange}
                 />
                 {errors["last_name"] && <span className="error">{errors["last_name"]}</span>}
               </div>
             </div>
-            <label htmlFor="gender" className='sign_up_form__label'>Giới tính</label>
+            <label htmlFor="gender" className='Profile_customer_form__label'>Giới tính</label>
             <select
               name="gender"
-              className='sign_up_form__input'
+              className='Profile_customer_form__input'
               value={accountInfo.gender}
               onChange={handleChange} >
               <option value="1">Nam</option>
               <option value="0">Nữ</option>
               <option value="-1">Riêng tư</option>
             </select>
-            <label htmlFor="birthday" className='sign_up_form__label'>Ngày sinh</label>
+            <label htmlFor="birthday" className='Profile_customer_form__label'>Ngày sinh</label>
             <Datetime
               id="birthday"
               value={format(accountInfo.birthday, "dd-MM-yyyy")}
@@ -266,19 +268,19 @@ function ProfileCustomer() {
               renderMonth={(props, month) => <td {...props}>Thg {month + 1}</td>}
               placeholderText="Chọn ngày sinh"
               isValidDate={isValidDate}
-              className={errors.birthday ? "sign_up_form__input error-input" : "sign_up_form__input normal-input"}
+              className={errors.birthday ? "Profile_customer_form__input_date error-input" : "Profile_customer_form__input_date normal-input"}
             />
             {errors["birthday"] && <span className="error">{errors["birthday"]}</span>}
-            <label htmlFor="phone_number" className='sign_up_form__label'>SĐT</label>
+            <label htmlFor="phone_number" className='Profile_customer_form__label'>SĐT</label>
             <input
               type="text"
               id="phone_number"
               name="phone_number"
-              value={accountInfo.phone_number}
-              className={errors.email ? "sign_up_form__input error-input" : "sign_up_form__input normal-input"}
-              onChange={handleChange} />
-            {errors["email"] && <span className="error">{errors["email"]}</span>}
-            <button className='Profile_customer__form--submit_btn' type='submit'>Lưu</button>
+              value={accountInfo.phone_number !== 'null' ? accountInfo.phone_number : ''}
+              onChange={handleChange}
+              className={errors.phone_number ? "Profile_customer_form__input error-input" : "Profile_customer_form__input normal-input"} />
+            {errors["phone_number"] && <span className="error">{errors["phone_number"]}</span>}
+            <button className='Profile_customer__form--submit_btn' onClick={handleSubmit}>Lưu</button>
           </div>
         </form>
       </div>

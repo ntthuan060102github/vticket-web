@@ -9,10 +9,10 @@ import './Login.css'
 import validator from "validator";
 
 function Login() {
+    const navigate = useNavigate();
 
     const  [accountInfo, setAccountInfo] = React.useState({username:"",password:""});
     const [errors, setErrors] = React.useState([]);
-    const navigate = useNavigate();
 
 
     const handleChange = (event) =>{
