@@ -12,17 +12,14 @@ function AxiosProvider() {
   
   useEffect(()=>{
     let refresh = localStorage.getItem('refresh');
-    console.log(refresh);
     axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
         refresh: refresh,
       })
       .then(function (response) {
           if (response.data.status === 1) {
-              console.log(response);
               localStorage.setItem('access', response.data.data.access);
               localStorage.setItem('refresh', response.data.data.refresh);
           } else {
-            console.log(response);
             return response;
           }
       })

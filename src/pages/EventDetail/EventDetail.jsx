@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCalendarDays, faClock, faEye, faHandHoldingDollar, faLocationDot, faPaperPlane, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button, Modal } from 'react-bootstrap';
+import { faBars, faCalendarDays, faClock, faEye, faHandHoldingDollar, faLocationDot, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { Modal } from 'react-bootstrap';
 import TicketSelectionForm from '../../components/TicketSelectionForm';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -26,7 +26,6 @@ import Header from '../../components/Header';
 import NavTopCus from '../../components/NavTopCus';
 import axios from 'axios';
 import Footer from '../../components/Footer';
-import { faClockFour } from '@fortawesome/free-regular-svg-icons';
 import { useParams } from 'react-router-dom';
 
 SwiperCore.use([EffectCards]);
@@ -86,8 +85,7 @@ function EventDetail() {
     axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${slug}`, {
     })
     .then(function (response) {
-      if (response.data.status === 1) { 
-        console.log(response)                             
+      if (response.data.status === 1) {                        
         setEventDetail((prev)=>{
           return {
             ...prev,
@@ -103,8 +101,7 @@ function EventDetail() {
             banner_url: response.data.data.event.banner_url
           }
         })
-      } else {
-        console.log(response)  
+      } else { 
         setErrors((prevalue) => {
           return {
             ...prevalue,
@@ -149,26 +146,6 @@ function EventDetail() {
         >
           <SwiperSlide>
             <img src={eventDetail?.banner_url} alt={'event banner'} className="banner__img" />
-            {/* <div className="Slide__info">
-              <h2 className="Slide__title">{banner?.name}</h2>
-              <div className="Slide__location">
-                  <div className="Slide__date">
-                    <span className="Slide__month">Tháng {month}</span>
-                    <span className="Slide__day">{day}</span>
-                    <span className="Slide__year">{year}</span>
-                  </div>
-                  <div className="Slide__address">
-                    <span className="Slide__time">
-                      <FontAwesomeIcon icon={faClock} className="Header__search--icon"/>
-                      {banner?.start_time}
-                    </span>
-                    <span className="Slide__place">
-                      <FontAwesomeIcon icon={faLocationDot} className="Header__search--icon"/>
-                      {banner?.location}
-                    </span>
-                  </div>
-              </div>
-            </div> */}
           </SwiperSlide>
         </Swiper>
       </div>
@@ -217,23 +194,13 @@ function EventDetail() {
             {eventDetail.ticket_types.map((ticketType)=>{
               let formattedNumber = ticketType.price.toLocaleString('en-US'); 
               return(
-                <button className="ticket" key={ticketType.id}>
+                <div className="ticket" key={ticketType.id}>
                   <FontAwesomeIcon icon={faPaperPlane} className="icon_buy_now"/>
                   <span className='ticket__type'>{ticketType.name}</span>
                   <span className='ticket__price'>{formattedNumber} VNĐ</span>
-                </button>
+                </div>
               )
             })}
-            {/* <button className="ticket">
-              <FontAwesomeIcon icon={faPaperPlane} className="icon_buy_now"/>
-              <span className='ticket__type'>Vé người lớn (cao từ 1m4 trở lên)</span>
-              <span className='ticket__price'>120,000 VNĐ</span>
-            </button>
-            <button className="ticket">
-              <FontAwesomeIcon icon={faPaperPlane} className="icon_buy_now"/>
-              <span className='ticket__type'>Vé trẻ em (cao từ 1m đến dưới 1m4)</span>
-              <span className='ticket__price'>90,000 VNĐ</span>
-            </button> */}
         </div>
       </div>
       <div className="EventDetail__business_infor">
@@ -283,79 +250,6 @@ function EventDetail() {
             </button>
         </div>
       </div>
-      {/* <div className="EventDetail__outstanding_events">
-        <div className="EventDetail__outstanding_events--top">
-          <h2 className="EventDetail__outstanding_events--title">Sự kiện nổi bật</h2>
-          <div className='EventDetail__outstanding_events--btn'>
-            <button className="EventDetail__outstanding_events--calendar">
-              <FontAwesomeIcon icon={faCalendarDays} className="icon_calendar"/>
-              Lịch sự kiện
-            </button>
-            <button className="EventDetail__outstanding_events--send">
-              <FontAwesomeIcon icon={faPlus} className="icon_plus"/>
-              Gửi sự kiện
-            </button>
-          </div>
-        </div>
-        <div className="EventDetail__outstanding_events--container">
-          {outstandingEvents.map((outstandingEvent,index)=>(
-            <img src={outstandingEvent.banner_url} alt={`poster + ${index + 1}`} className={index < 1 ? 'poster__top' : 'poster__bottom'} />
-          ))}
-        </div>
-      </div>
-      <div className="EventDetail__comming_soon_events">
-        <h2 className="EventDetail__comming_soon_events--title">Sự kiện sắp diễn ra</h2>
-        <div className="EventDetail__somming_soon_events--container">
-          {upcomingEvents.map((upcomingEvent,index)=>{
-            let [year, month, day] = upcomingEvent.start_date.split('-');
-            return (
-            <div className="event">
-                <img src={upcomingEvent?.src} alt="banner event" className="event__banner" />
-                <div className="event__date">
-                    <span className="event__month">Tháng {month}</span>
-                    <span className="event__day">{day}</span>
-                    <span className="event__year">{year}</span>
-                </div>
-                <div className='event__info'>
-                  <span className="event__sales">
-                    <FontAwesomeIcon icon={faEye} className="event--icon" />
-                    {upcomingEvent?.sales}
-                  </span>
-                  <span className="event__address">
-                    <FontAwesomeIcon icon={faLocationDot} className="event--icon" />
-                    {upcomingEvent?.location}
-                  </span>
-                  <span className="event__price">
-                    <FontAwesomeIcon icon={faHandHoldingDollar} className="event--icon" />
-                    {upcomingEvent?.price}
-                  </span>
-                </div>
-                <div className="event__title">{upcomingEvent?.name}</div>
-            </div>
-          )})}
-        </div>
-        <button className="EventDetail__somming_soon_events--more_btn">
-          <FontAwesomeIcon icon={faBars} className="icon_plus"/>
-          Xem thêm các sự kiện sắp diễn ra
-        </button>
-      </div>
-      <div className="EventDetail__event_topics">
-        <h2 className="EventDetail__event_topics--title">Thể loại sự kiện</h2>
-        <div className="EventDetail__event_topics--container">
-          {topicTypes.map((eventTopic,index)=>{
-            const class_name = (index === 1 || index === 5) ? 'event_topic_big' : 'event_topic_small';
-            return (
-            <div className={class_name}>
-                <img src={eventTopic?.symbolic_image_url} alt="banner eventTopic" className="event_topic__banner" />
-                <div className="event_topic__title">{eventTopic?.name}</div>
-            </div>
-          )})}
-        </div>
-        <button className="EventDetail__somming_soon_events--more_btn">
-          <FontAwesomeIcon icon={faBars} className="icon_plus"/>
-          Xem thêm các thể loại sự kiện
-        </button>
-      </div> */}
       <Footer/>
     </div>
   );

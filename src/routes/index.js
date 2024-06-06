@@ -19,7 +19,7 @@ const privateRoutes = [
     {path: '/profile', component: <ProfileCustomer/>},
     {path: '/create-event', component: <CreateEvent/>},
     {path: '/event-detail/:slug', component: <EventDetail/>},
-    {path: '/payment-result/:slug', component: <PaymentResult/>},
+    {path: '/payment-result', component: <PaymentResult/>},
 ];
 
 export {publicRoutes, privateRoutes};
