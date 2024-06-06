@@ -132,7 +132,7 @@ function ProfileCustomer() {
     else {
       axios.patch(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/profile/me`, {
         first_name: accountInfo.first_name,
-        last_name: accountInfo.first_name,
+        last_name: accountInfo.last_name,
         gender: accountInfo.gender,
         birthday: accountInfo.birthday,
         phone_number: accountInfo.phone_number
