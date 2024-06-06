@@ -24,22 +24,22 @@ import Header from '../../components/Header';
 import NavTopCus from '../../components/NavTopCus';
 import axios from 'axios';
 import Footer from '../../components/Footer';
+import { Link } from 'react-router-dom';
 
 SwiperCore.use([EffectCards]);
 
 function HomePage() {
   const [errors, setErrors] = React.useState({});
   const [banners, setBanners] = React.useState([])
-  const [outstandingEvents, setOutstandingEvents] = React.useState([])
-  const [upcomingEvents, setUpcomingEvents] = React.useState([])
-  const [topicTypes, setTopicTypes] =React.useState([])
+  const [outstandingEvents, setOutstandingEvents] = React.useState([]);
+  const [upcomingEvents, setUpcomingEvents] = React.useState([]);
+  const [topicTypes, setTopicTypes] =React.useState([]);
 
   React.useEffect(() => {
     axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/client-page/home`, {
     })
     .then(function (response) {
       if (response.data.status === 1) {
-                                
         setBanners(response.data.data.banners)
         setOutstandingEvents(response.data.data.outstanding_events)
         setUpcomingEvents(response.data.data.upcoming_events)
@@ -85,29 +85,32 @@ function HomePage() {
           {banners.map((banner, index) => {
             let [year, month, day] = banner.start_date.split('-');
             return (
-            <SwiperSlide key={index}>
-              <img src={banner?.banner_url} alt={`comic img ${index + 1}`} className="banner__img" />
-              <div className="Slide__info">
-                <h2 className="Slide__title">{banner?.name}</h2>
-                <div className="Slide__location">
-                    <div className="Slide__date">
-                      <span className="Slide__month">Tháng {month}</span>
-                      <span className="Slide__day">{day}</span>
-                      <span className="Slide__year">{year}</span>
+              <SwiperSlide key={index}>
+                <img src={banner?.banner_url} alt={`comic img ${index + 1}`} className="banner__img" />
+                <div className="Slide__info">
+                  <div className='Slide__info--top'>
+                    <h2 className="Slide__title">{banner?.name}</h2>
+                    <div className="Slide__location">
+                        <div className="Slide__date">
+                          <span className="Slide__month">Tháng {month}</span>
+                          <span className="Slide__day">{day}</span>
+                          <span className="Slide__year">{year}</span>
+                        </div>
+                        <div className="Slide__address">
+                          <span className="Slide__time">
+                            <FontAwesomeIcon icon={faClock} className="Header__search--icon"/>
+                            {banner?.start_time}
+                          </span>
+                          <span className="Slide__place">
+                            <FontAwesomeIcon icon={faLocationDot} className="Header__search--icon"/>
+                            {banner?.location}
+                          </span>
+                        </div>
                     </div>
-                    <div className="Slide__address">
-                      <span className="Slide__time">
-                        <FontAwesomeIcon icon={faClock} className="Header__search--icon"/>
-                        {banner?.start_time}
-                      </span>
-                      <span className="Slide__place">
-                        <FontAwesomeIcon icon={faLocationDot} className="Header__search--icon"/>
-                        {banner?.location}
-                      </span>
-                    </div>
+                  </div>
+                  <Link to={`/event-detail/${banner.id}`} className='more_btn'>Xem thêm</Link>
                 </div>
-              </div>
-            </SwiperSlide>
+              </SwiperSlide>
           )})}
         </Swiper>
       </div>
@@ -126,43 +129,53 @@ function HomePage() {
           </div>
         </div>
         <div className="Homepage__outstanding_events--container">
-          {outstandingEvents.map((outstandingEvent,index)=>(
-            <img src={outstandingEvent.banner_url} alt={`poster + ${index + 1}`} className={index < 1 ? 'poster__top' : 'poster__bottom'} />
+          {outstandingEvents.map((outstandingEvent,index)=>(          
+            <Link to={`/event-detail/${outstandingEvent.id}`} key={index}  
+              className={index < 2 ? 'poster__top' : 'poster__bottom'} >
+              <img 
+                src={outstandingEvent.banner_url} 
+                alt={`poster + ${index + 1}`} 
+                // className={index < 2 ? 'poster__top' : 'poster__bottom'} 
+                // onClick={handleNavigateEventDetail(outstandingEvents?.id)}
+              />
+            </Link>
           ))}
         </div>
       </div>
       <div className="Homepage__comming_soon_events">
         <h2 className="Homepage__comming_soon_events--title">Sự kiện sắp diễn ra</h2>
-        <div className="Homepage__somming_soon_events--container">
-          {upcomingEvents.map((upcomingEvent,index)=>{
+        <div className="Homepage__comming_soon_events--container">
+          {upcomingEvents.map((upcomingEvent)=>{
             let [year, month, day] = upcomingEvent.start_date.split('-');
             return (
-            <div className="event">
-                <img src={upcomingEvent?.src} alt="banner event" className="event__banner" />
+              <Link to={`/event-detail/${upcomingEvent.id}`} key={upcomingEvent?.id} className="event">
+                <img src={upcomingEvent?.banner_url} alt="banner event" className="event__banner" />
                 <div className="event__date">
                     <span className="event__month">Tháng {month}</span>
                     <span className="event__day">{day}</span>
                     <span className="event__year">{year}</span>
                 </div>
                 <div className='event__info'>
-                  <span className="event__sales">
-                    <FontAwesomeIcon icon={faEye} className="event--icon" />
-                    {upcomingEvent?.sales}
-                  </span>
+                  {upcomingEvent.sales && 
+                    <span className="event__sales">
+                      <FontAwesomeIcon icon={faEye} className="event--icon" />
+                      {upcomingEvent?.sales}
+                    </span>
+                  }
                   <span className="event__address">
                     <FontAwesomeIcon icon={faLocationDot} className="event--icon" />
                     {upcomingEvent?.location}
                   </span>
-                  <span className="event__price">
+                  {/* <span className="event__price">
                     <FontAwesomeIcon icon={faHandHoldingDollar} className="event--icon" />
                     {upcomingEvent?.price}
-                  </span>
+                  </span> */}
                 </div>
                 <div className="event__title">{upcomingEvent?.name}</div>
-            </div>
+              </Link>
           )})}
         </div>
-        <button className="Homepage__somming_soon_events--more_btn">
+        <button className="Homepage__comming_soon_events--more_btn">
           <FontAwesomeIcon icon={faBars} className="icon_plus"/>
           Xem thêm các sự kiện sắp diễn ra
         </button>
@@ -179,7 +192,7 @@ function HomePage() {
             </div>
           )})}
         </div>
-        <button className="Homepage__somming_soon_events--more_btn">
+        <button className="Homepage__comming_soon_events--more_btn">
           <FontAwesomeIcon icon={faBars} className="icon_plus"/>
           Xem thêm các thể loại sự kiện
         </button>

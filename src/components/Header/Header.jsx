@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 import './Header.css'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Hàm kiểm tra token
 const isAuthenticated = () => {
@@ -28,7 +28,7 @@ function Header() {
 
   return (
     <div className="Header">
-      <img src="/assets/images/logo.png" alt="logo" className="Header__logo" />
+      <Link to={'/'}><img src="/assets/images/logo.png" alt="logo" className="Header__logo" /></Link>
       <div className="Header__search">
         <input type="text" className="Header__search--input" placeholder='Tìm kiếm...'/>
         <FontAwesomeIcon icon={faMagnifyingGlass} className="Header__search--icon"/>
@@ -42,7 +42,7 @@ function Header() {
         <h2 className="user_name">{first_name} {last_name}</h2>
         <Dropdown className='user_action' autoClose="outside">
           <Dropdown.Toggle id="dropdown-basic">
-            <img src={!avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
+            <img src={avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
           </Dropdown.Toggle>
 
           <Dropdown.Menu className='dropdow_menu'>
