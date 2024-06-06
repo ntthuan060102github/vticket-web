@@ -9,9 +9,9 @@ function AxiosProvider() {
   const requestInterceptorId = useRef(null);
   const responseInterceptorId = useRef(null);
   const navigate = useNavigate();
-  const refresh = localStorage.getItem('refresh');
-
-  useEffect(() => {
+  
+  useEffect(()=>{
+    let refresh = localStorage.getItem('refresh');
     axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
         refresh: refresh,
       })
@@ -23,13 +23,13 @@ function AxiosProvider() {
             return response;
           }
       })
-  }, []);
+  },[]);
 
   useEffect(() => {
     // Thiết lập interceptor cho các yêu cầu
     requestInterceptorId.current = axios.interceptors.request.use((config) => {
       // Thêm header vào config của yêu cầu
-      const accessToken = localStorage.getItem('access');
+      let accessToken = localStorage.getItem('access');
       if (accessToken) {
         config.headers['Authorization'] = localStorage.getItem('access');
       }
@@ -48,7 +48,7 @@ function AxiosProvider() {
             case 1:
               return response;
             case 7:
-              navigate(data?.data?.target);
+              navigate(data?.data?.target, { replace: true });
               break;
             case 3:
             case 0:

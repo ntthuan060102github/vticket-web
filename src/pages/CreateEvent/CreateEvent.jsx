@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -23,7 +22,6 @@ import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CreateEvent() {
-  const refresh = localStorage.getItem('refresh');
 
   const dateCurrent = new Date();
   var now = dayjs();
@@ -43,6 +41,7 @@ function CreateEvent() {
     "location": "",
     "banner_url": ""
   });
+  const [bannerFile, setBannerFile] = React.useState();
 
   const [eventTopic, setEventTopic] = React.useState([]);
 
@@ -65,7 +64,7 @@ function CreateEvent() {
   const [ticket_Type, setTicket_Type] = React.useState({
     "name": "",
     "description": "",
-    "price": 0,
+    "price": 5000,
     "ticket_type_details": [], // Chi tiết loại vé (thêm từ API Tạo Chi Tiết Loại Vé)
     "seat_configurations": [], // Cấu hình ghế (thêm từ API Tạo Cấu Hình Ghế)
   });
@@ -147,7 +146,7 @@ function CreateEvent() {
       setTicket_Type({
         "name": "",
         "description": "",
-        "price": 0,
+        "price": 5000,
         "ticket_type_details": [],
         "seat_configurations": [],
       });
@@ -209,6 +208,45 @@ function CreateEvent() {
     }
   };
 
+  const isWithinRange = (values) => {
+    const { floatValue } = values;
+    return floatValue >= 5000 && floatValue <= 1000000000;
+  };
+
+  const handleAddBanner = (event) =>{
+    const file = event.target.files[0];
+    
+    console.log(file);
+    const formData = new FormData();
+    formData.append('file', file);
+    console.log(formData.get("file"));
+    axios({
+      method: 'post',
+      url: `${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/image`,
+      data: {image: formData.get("file")},
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(function (response) {
+        if (response.data.status === 1) {
+          console.log(response);
+          setEventInfo((prevalue) => {
+            return {
+              ...prevalue,
+              banner_url: response.data.data.url
+            }
+          })
+        } else {
+            console.log(response);
+            return response.data.message;
+        }
+      })
+      .catch(function (error) {
+          console.log(error);
+          return error;
+      });
+  }
 
   const handleAddSeat = () => {
     const newErrors = {};
@@ -258,9 +296,6 @@ function CreateEvent() {
           });
         }
       }
-      console.log(seatConfiguration.start_seat_number);
-      console.log(seatConfigurationArray[seatConfigurationArray.length - 1]?.end_seat_number);
-      console.log(seatConfigurationArray[i]?.start_seat_number);
 
       if (seatConfigurationArray[i]?.start_seat_number === seatConfiguration.start_seat_number) {
         newErrors["seat_configuration_start_seat_error"] = "Ví trị ghế bắt đầu không hợp lệ";
@@ -612,7 +647,6 @@ function CreateEvent() {
       })
         .then(function (response) {
           if (response.data.status === 1) {
-            console.log(200);
           } else {
             setErrors((prevalue) => {
               return {
@@ -620,7 +654,6 @@ function CreateEvent() {
                 create_event_error: response.data.message
               }
             });
-            console.log(response)
           }
         })
         .catch(function (error) {
@@ -640,37 +673,13 @@ function CreateEvent() {
       start_time: dayjs()// Tính toán giá trị start_time ở đây
     }));
 
-    // axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
-    //   refresh: refresh,
-    // })
-    // .then(function (response) {
-    //     if (response.data.status === 1) {
-    //         localStorage.setItem('access', response.data.data.access);
-    //         localStorage.setItem('refresh', response.data.data.refresh);
-    //     } else {
-    //       setErrors((prevalue) => {
-    //         return {
-    //           ...prevalue,
-    //           login_data_error: response.data.message
-    //         }
-    //       });
-    //     }
-    // })
-    // .catch(function (error) {
-    //   setErrors((prevalue) => {
-    //     return {
-    //       ...prevalue,
-    //       login_error: error
-    //     }
-    //   });
-    // });
-
     axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event-topic`, {
     })
       .then(function (response) {
         if (response.data.status === 1) {
-          setEventTopic(response.data.data)
+          setEventTopic(response.data.data);
         } else {
+          console.log(response);
           setErrors((prevalue) => {
             return {
               ...prevalue,
@@ -789,13 +798,13 @@ function CreateEvent() {
                 className={errors.event_location_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
               {errors["event_location_error"] && <span className="error">{errors["event_location_error"]}</span>}
-              <label htmlFor="banner_url" className='Create_event_form__label'>Banner</label>
+              <label htmlFor="bannerFile" className='Create_event_form__label'>Banner</label>
               <input
-                type="text"
-                id="banner_url"
-                name="banner_url"
-                value={eventInfo.banner_url}
-                onChange={(event) => handleChange(event, 'event input')}
+                type="file"
+                id="bannerFile"
+                name="image"
+                accept="image/*"
+                onChange={(event) => handleAddBanner(event)}
                 placeholder='Chọn banner'
                 className={errors.event_banner_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
               />
@@ -846,6 +855,7 @@ function CreateEvent() {
                 value={ticket_Type.price}
                 thousandSeparator={true}
                 customInput={TextField}
+                isAllowed={isWithinRange}
                 onChange={(event) => handleChangeNumber(event, 'ticket input')}
                 placeholder='Nhập giá vé'
                 className={errors.ticket_type_price_error ? "Create_event_form__input error-input" : "Create_event_form__input normal-input"}
