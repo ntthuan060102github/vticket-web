@@ -26,9 +26,17 @@
     position: absolute;
     bottom: 20px;
     display: flex;
+    flex-direction: column;
     padding: 0 40px;
-    justify-content: space-between;
     width: 100%;
+    align-items: center;
+    gap: 10px;
+}
+
+.Slide__info--top{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -129,14 +137,15 @@
 .icon_calendar, .icon_plus{}
 
 .Homepage__outstanding_events--container{
-    display: flex;
+    display: grid;
     margin-top: 20px;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
     width: 100%;
-    flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.Homepage__somming_soon_events--container{
+.Homepage__comming_soon_events--container{
     display: flex;
     margin-top: 20px;
     width: 100%;
@@ -157,22 +166,25 @@
 }
 
 .poster__top{
-    width: 100%;
-    height: 500px;
-    object-position: center center;
-    object-fit: cover;
+    grid-column: span 2;
+    height: 300px;
     border-radius: 0.5rem;
     border: none;
 }
 
 .poster__bottom{
-    width: 400px;
+    grid-column: span 1;
     height: 200px;
-    object-position: center center;
-    object-fit: cover;
     border-radius: 0.3rem;
     border: none;
-    margin-top: 10px;
+}
+
+.poster__top> img, .poster__bottom > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-position: center center;
+    object-fit: cover;/* Hoặc bất kỳ kiểu viền nào bạn muốn */
 }
 
 .event{
@@ -181,6 +193,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    color: var(--black);
 }
 
 .event__banner{
@@ -219,7 +232,7 @@
 
 .event__info{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     padding: 10px 10px;
     overflow: hidden;
     align-items: center;
@@ -244,7 +257,7 @@
 
 .event__address {
     align-items: center;
-    width: 90px; 
+    max-width: 180px; 
     text-overflow: ellipsis;  
     display: inline-block;
     white-space: nowrap;
@@ -272,7 +285,7 @@
     padding: 0 10px;
 }
 
-.Homepage__somming_soon_events--more_btn{
+.Homepage__comming_soon_events--more_btn{
     background-color: var(--background-color-1);
     display: flex;
     gap: 10px;
@@ -343,3 +356,13 @@
     text-shadow: 2px 2px 8px var(--gray);
 }
 
+.more_btn{
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6rem;
+    color: var(--white);
+    background-color: rgba(51,51,51,.55);
+    border-radius: 5px;
+    border: none;
+    padding: 10px 20px;
+}

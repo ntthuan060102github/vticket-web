@@ -51,7 +51,7 @@ function AxiosProvider() {
             case 1:
               return response;
             case 7:
-              navigate(data?.data?.target);
+              navigate(data?.data?.target, { replace: true });
               break;
             case 3:
             case 0:

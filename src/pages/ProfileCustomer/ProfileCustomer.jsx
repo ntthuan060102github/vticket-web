@@ -1,5 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react';
 import axios from 'axios';
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
@@ -10,19 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faUser } from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
-import validator from "validator";
 import './ProfileCustomer.css'
 import Header from '../../components/Header';
-
-function TimeInput({ value, onChange }) {
-  return (
-    <input
-      type="time"
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
 
 function ProfileCustomer() {
 
@@ -56,9 +44,6 @@ function ProfileCustomer() {
   });
 
   const [avatarURL,setAvatarURL] = React.useState(accountInfo.avatar_url);
-  
-
-  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -85,10 +70,8 @@ function ProfileCustomer() {
     })
     .then(function (response) {
         if (response.data.status === 1) {
-            console.log(response)
             setAvatarURL(response.data.data.avatar_url)
         } else {
-            console.log(response)
             setErrors(...errors, response.data.message);
         }
     })
@@ -97,14 +80,9 @@ function ProfileCustomer() {
     });
   };
 
-  const handleChangeAvatar = () =>{
-  }
-
   const handleDateChange = (date) => {
-    console.log(typeof (date));
     const formattedDate = moment(date).format("YYYY-MM-DD");
     const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
-    console.log(onlyFormattedDate);
     setAccountInfo((prevValue) => ({
       ...prevValue,
       birthday: onlyFormattedDate
@@ -125,8 +103,8 @@ function ProfileCustomer() {
   }
 
   const handleSubmit = () => {
-    console.log(accountInfo);
     const newErrors = {};
+    setErrors([]);
     if (!accountInfo.first_name) {
       newErrors["first_name"] = "Họ không được trống";
     }
@@ -160,9 +138,7 @@ function ProfileCustomer() {
         phone_number: accountInfo.phone_number
       })
         .then(function (response) {
-          console.log(response);
           if (response.data.status === 1) {
-            console.log("Thành công")
             localStorage.setItem("first_name", accountInfo.first_name);
             localStorage.setItem("last_name", accountInfo.last_name);
             localStorage.setItem("gender", accountInfo.gender);
@@ -175,7 +151,6 @@ function ProfileCustomer() {
             }));
             setChangedIndex((prev) => prev + 1);
           } else {
-            console.log(response);
             newErrors["change_info"] = response.data.message;
             setErrors(newErrors);
           }

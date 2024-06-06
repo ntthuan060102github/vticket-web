@@ -85,6 +85,9 @@
 
 .user_avt{
     height: 50px;
+    width: 50px;
+    object-fit: cover;
+    object-position: center center;
     border-radius: 50%;
     border: solid 1px var(--black);
 }
