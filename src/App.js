@@ -4,8 +4,11 @@ import {
   Navigate,
   Route,
   Routes, 
-  Outlet
+  Outlet,
+  Router
 } from "react-router-dom";
+import axios from 'axios';
+
 import './App.css'
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
@@ -16,15 +19,16 @@ import CreateEvent from './pages/CreateEvent';
 import HomePage from './pages/HomePage';
 import ProfileCustomer from './pages/ProfileCustomer';
 
+
+import { publicRoutes, privateRoutes } from './routes';
+
 const PrivateRoute = ({ isAuthenticated }) => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
+
 function App() {
-  const [accessToken,setAccessToken] = React.useState('');
-  React.useEffect(()=>{
-    setAccessToken(localStorage.getItem('access'))
-  },([]))
+  const accessToken = localStorage.getItem('access');
 
   const isAuthenticated = () => {
     return !!accessToken;
@@ -36,17 +40,33 @@ function App() {
     <BrowserRouter>
       <RedirectInterceptor/>
       <Routes>
-        <Route element={<PrivateRoute isAuthenticated={isAuthenticated()} />}>
-          <Route path='/' element={role === 'customer' && <HomePage />} />
-          {/* <Route path="contact" element={<Contact />} />
-          <Route path="*" element={<NoPage />} /> */}
+        {/* <Route element={<PrivateRoute isAuthenticated={isAuthenticated()} />}>
+          {role === "customer" && (
+            <Route>
+              <Route path="/" element={isAuthenticated() ? <HomePage /> : <Navigate to="/login" replace />} /> 
+              <Route path="/profile" element={isAuthenticated() ? <ProfileCustomer /> : <Navigate to="/login" replace />} /> 
+            </Route>
+          )}
+
+          {role === "business" && (
+            <Route>
+              <Route path="/" element={isAuthenticated() ? <HomePage /> : <Navigate to="/login" replace />} /> 
+              <Route path="/create-event" element={isAuthenticated() ? <CreateEvent /> : <Navigate to="/login" replace />} /> 
+            </Route>
+          )}
         </Route>
-        <Route path="/profile" element={isAuthenticated() ? <ProfileCustomer /> : <Navigate to="/login" replace />} />
-        <Route path="/create-event" element={isAuthenticated() ? <CreateEvent /> : <Navigate to="/login" replace />} />
-        <Route path="/sign-up" element={!isAuthenticated() ? <SignUp /> : <Navigate to="/" replace />} />
-        <Route path="/login" element={!isAuthenticated()  ? <Login /> : <Navigate to="/" replace />} />
+        <Route path="/sign-up" element={!isAuthenticated() && <SignUp />} />
+        <Route path="/login" element={!isAuthenticated()  && <Login /> } />
         <Route path='/otp/:slug' element={<OTP/>} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} /> */}
+        {publicRoutes.map((route, index) =>{
+          return <Route key={index} path={route.path} element={route.component}/>;
+        }
+        )}
+        {privateRoutes.map((route, index) =>{
+          return <Route key={index} path={route.path} element={route.component}/>;
+        }
+        )}
       </Routes>
     </BrowserRouter>
   )
