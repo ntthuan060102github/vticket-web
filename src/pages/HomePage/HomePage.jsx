@@ -12,6 +12,7 @@ import 'swiper/css/navigation';
 import SwiperCore from 'swiper';
 // // import required modules
 import { Autoplay, EffectCards } from 'swiper/modules';
+import "chart.js/auto";
 
 // import style css
 import './HomePage.css'

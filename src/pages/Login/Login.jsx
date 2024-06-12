@@ -16,6 +16,7 @@ function Login() {
 
 
     const handleChange = (event) =>{
+        setErrors([]);
         let value = event.target.value;
         let name = event.target.name;
  
@@ -29,6 +30,7 @@ function Login() {
 
     const handleSubmit = () =>{
         const newErrors = {};
+        setErrors([]);
 
         if (!validator.isEmail(accountInfo.username)) {
             newErrors["email"] = "Email không đúng định dạng";
@@ -60,7 +62,13 @@ function Login() {
                     localStorage.setItem("phone_number", response.data.data.profile.phone_number);
                     localStorage.setItem("status", response.data.data.profile.status);
                     localStorage.setItem("role", response.data.data.profile.role);
-                    navigate('/');
+                    if(response.data.data.profile.role === 'customer'){
+                        navigate('/');
+                    } else if(response.data.data.profile.role === 'business'){
+                        navigate('/dashboard-business');
+                    } else{
+                        navigate('/dashboard-admin');
+                    }
                 } else {
                     newErrors["login"] = response.data.message;
                     setErrors(newErrors);
