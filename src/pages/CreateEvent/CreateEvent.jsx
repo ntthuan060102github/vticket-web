@@ -5,6 +5,7 @@ import 'react-datetime/css/react-datetime.css';
 import { format } from 'date-fns';
 import moment from 'moment';
 import 'moment/locale/vi';
+import "chart.js/auto";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -215,11 +216,8 @@ function CreateEvent() {
 
   const handleAddBanner = (event) =>{
     const file = event.target.files[0];
-    
-    console.log(file);
     const formData = new FormData();
     formData.append('file', file);
-    console.log(formData.get("file"));
     axios({
       method: 'post',
       url: `${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/image`,
@@ -230,22 +228,14 @@ function CreateEvent() {
     })
       .then(function (response) {
         if (response.data.status === 1) {
-          console.log(response);
           setEventInfo((prevalue) => {
             return {
               ...prevalue,
               banner_url: response.data.data.url
             }
           })
-        } else {
-            console.log(response);
-            return response.data.message;
         }
       })
-      .catch(function (error) {
-          console.log(error);
-          return error;
-      });
   }
 
   const handleAddSeat = () => {
@@ -679,7 +669,6 @@ function CreateEvent() {
         if (response.data.status === 1) {
           setEventTopic(response.data.data);
         } else {
-          console.log(response);
           setErrors((prevalue) => {
             return {
               ...prevalue,

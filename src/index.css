@@ -27,10 +27,10 @@ html{
 }
 
 body {
-  min-height: 100vh;
-  overflow-x: hidden;
-  background-color: var(--white);
-  user-select: none;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  background-color: var(--white) !important;
+  user-select: none !important;
 }
 
 button{

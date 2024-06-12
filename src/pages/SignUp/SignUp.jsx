@@ -16,13 +16,15 @@ import validator from "validator";
 moment.locale('vi');
 function SignUp() {
 
-
+    const today= new Date();
+    const formattedDate = moment(today).format("YYYY-MM-DD");
+    const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
     const [accountInfo, setAccountInfo] = React.useState({
         email: "",
         first_name: "",
         last_name: "",
         gender: 1,
-        birthday: new Date(),
+        birthday: onlyFormattedDate,
         password: "",
         re_enter_password: "",
         role: "customer",
@@ -34,6 +36,7 @@ function SignUp() {
     const navigate = useNavigate();
 
     const handleChange = (event) => {
+        setErrors([]);
         const { name, value } = event.target;
 
         setAccountInfo((prevalue) => {
@@ -45,10 +48,9 @@ function SignUp() {
     }
 
     const handleDateChange = (date) => {
-        console.log(typeof(date));
+        setErrors([]);
         const formattedDate = moment(date).format("YYYY-MM-DD");
         const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
-        console.log(onlyFormattedDate);
         setAccountInfo((prevValue) => ({
             ...prevValue,
             birthday: onlyFormattedDate
@@ -63,8 +65,8 @@ function SignUp() {
     };
 
     const handleSubmit = () => {
-        console.log(accountInfo);
         const newErrors = {};
+        setErrors([]);
         if (!accountInfo.first_name) {
             newErrors["first_name"] ="Họ không được trống";
         }
@@ -97,14 +99,13 @@ function SignUp() {
             axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/account/register`, {
                 email: accountInfo.email,
                 first_name: accountInfo.first_name,
-                last_name: accountInfo.first_name,
+                last_name: accountInfo.last_name,
                 gender: accountInfo.gender,
                 birthday: accountInfo.birthday,
                 password: accountInfo.password,
                 role: accountInfo.role
             })
             .then(function (response) {
-                console.log(response);
                 if (response.data.status === 1) {
                     navigate(`/otp/${accountInfo.email}`);
                 } else {
