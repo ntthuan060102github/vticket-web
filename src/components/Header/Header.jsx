@@ -20,33 +20,56 @@ function Header() {
   const first_name = localStorage.getItem('first_name');
   const last_name = localStorage.getItem('last_name');
   const avatar_url = localStorage.getItem('avatar_url');
+  const role = localStorage.getItem('role');
+
+  const [searchKeyword, setSearchKeyword] = React.useState("");
 
   const handleLogout = () =>{
     localStorage.clear();
     navigate('/login');
   }
 
+  const handleSearch = () => {
+    if (searchKeyword.trim()) {
+      const encodedKeyword = encodeURI(searchKeyword.trim());
+      navigate(`/search?kw=${encodedKeyword}`);
+    }
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  }
+
   return (
     <div className="Header">
       <Link to={'/'}><img src="/assets/images/logo.png" alt="logo" className="Header__logo" /></Link>
-      <div className="Header__search">
-        <input type="text" className="Header__search--input" placeholder='Tìm kiếm...'/>
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="Header__search--icon"/>
-      </div>
+      {role === 'customer' && <div className="Header__search">
+        <input 
+          type="text" 
+          className="Header__search--input"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)} 
+          placeholder='Tìm kiếm...'
+          onKeyDown={handleKeyDown}
+        />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className="Header__search--icon" onClick={handleSearch}/>
+      </div>}
       {isAuthenticated === true ? 
       <div className='Header__btn'>
         <button className="Header__btn--sign_in">Đăng nhập</button>
         <button className="Header__btn--sign_up">Đăng ký</button>
       </div> :
       <div className="Header_user">
-        <h2 className="user_name">{first_name} {last_name}</h2>
+        {role === 'customer' ? <h2 className="user_name">{last_name} {first_name}</h2> : <h2 className="user_name">{first_name} {last_name}</h2>}
         <Dropdown className='user_action' autoClose="outside">
           <Dropdown.Toggle id="dropdown-basic">
-            <img src={avatar_url ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
+            <img src={avatar_url !== "null" ? avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="user_avt"/>
           </Dropdown.Toggle>
 
           <Dropdown.Menu className='dropdow_menu'>
-            <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>
+            {role !== 'admin' && <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>}
             <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

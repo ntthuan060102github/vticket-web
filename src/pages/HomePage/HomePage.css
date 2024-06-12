@@ -168,23 +168,30 @@
 .poster__top{
     grid-column: span 2;
     height: 300px;
-    border-radius: 0.5rem;
-    border: none;
 }
 
 .poster__bottom{
     grid-column: span 1;
     height: 200px;
-    border-radius: 0.3rem;
-    border: none;
 }
 
-.poster__top> img, .poster__bottom > img {
+.poster__top> img {
     display: block;
     width: 100%;
     height: 100%;
     object-position: center center;
-    object-fit: cover;/* Hoặc bất kỳ kiểu viền nào bạn muốn */
+    border-radius: 1rem;
+    border: solid 1px var(--gray--trans);
+}
+
+.poster__bottom > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-position: center center;
+    object-fit: cover;
+    border-radius: 0.8rem;
+    border: solid 1px var(--gray--trans);
 }
 
 .event{
@@ -216,7 +223,10 @@
     right: 10px;
     background-color: var(--gray--trans);
     border-radius: 0 0 20px 20px;
-    border: solid 1px var(--white);
+    border-top: solid 1px var(--gray);
+    border-left: solid 1px var(--white);
+    border-right: solid 1px var(--white);
+    border-bottom: solid 1px var(--white);
 }
 
 .event__month ,.event__year{
