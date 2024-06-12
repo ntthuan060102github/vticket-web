@@ -8,6 +8,7 @@ import {
   Router
 } from "react-router-dom";
 import axios from 'axios';
+import "chart.js/auto";
 
 import './App.css'
 import SignUp from "./pages/SignUp";

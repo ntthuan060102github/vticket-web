@@ -157,7 +157,7 @@ const TicketSelectionForm = ({ event }) => {
             <h3 className={errors["selected__seats_error"] && 'error-label'}>Chọn ghế cho {selectedTicketType.name}</h3>
             <Row>
               {selectedTicketType.seat_configurations.map(seat => {
-  
+                if(!seat.is_not_available){
                 return (
                 <Col key={seat.id} xs={1} className="mb-2">
                   <Form.Check 
@@ -167,7 +167,7 @@ const TicketSelectionForm = ({ event }) => {
                     checked={selectedSeats.includes(seat.id)}
                   />
                 </Col>
-              )})}
+              )}})}
             </Row>
             {errors["selected__seats_error"] && <span className="error">{errors["selected__seats_error"]}</span>}
           </div>

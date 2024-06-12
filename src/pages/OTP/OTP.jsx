@@ -38,7 +38,7 @@ function OTP() {
             })
             .then(function (response) {
                 if (response.data.status === 1) {
-                    navigate('/');
+                    navigate('/login');
                 } else {
                     newError["error_res"] = response.data.message;
                     setErrors(newError);

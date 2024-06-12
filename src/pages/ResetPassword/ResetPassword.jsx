@@ -70,7 +70,7 @@ function Reset_password() {
             .then(function (response) {
                 
                 if (response.data.status === 1) {
-                    navigate('/');
+                    navigate('/login');
                 } else {
                     newErrors["error_res"] = response.data.message;
                     setErrors(newErrors);

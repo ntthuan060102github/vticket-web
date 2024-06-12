@@ -85,7 +85,8 @@
 .EventDetail__detail, 
 .EventDetail__product_infor,
 .EventDetail__business_infor,
-.EventDetail__relative_event{
+.EventDetail__relative_event,
+.EventDetail_feedback{
     display: flex;
     align-items: center;
     padding: 0 40px;
@@ -126,7 +127,7 @@
     font-weight: bold;
 }
 
-.EventDetail__demo--buy_now{
+.EventDetail__demo--buy_now, .EventDetail__demo--support{
     display: flex;
     height: 40px;
     padding: 10px 20px;
@@ -167,7 +168,8 @@
 .EventDetail__detail--title,
 .EventDetail__product_infor--title,
 .EventDetail__business_infor--title,
-.EventDetail__relative_event--title{
+.EventDetail__relative_event--title,
+.EventDetail__feedback--title{
     font-size: 2rem;
     text-transform: uppercase;
     text-align: center;
@@ -251,6 +253,58 @@
     color: var(--background-color-1);
     width: 100%;
 }
+
+.EventDetail_feedback--wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    border-radius: 5px;
+    border: solid 1px var(--gray);
+    box-shadow: 0 -2px 20px 2px var(--gray);
+    user-select: none;
+}
+
+.Feedback__title, .Feedback__content{
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    gap: 10px;
+    font-size: 1.6rem;
+}
+
+.Feedback__rating_score{
+    display: flex;
+    align-items: center;
+    width: 400px;
+    gap: 20px;
+    font-size: 1.6rem;
+}
+
+.Feedback_form__input{
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.Feedback--submit_btn{
+    background-color: var(--background-color-1);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 20px;
+    color: var(--white);
+    width: fit-content;
+    font-size: 1.6rem;
+    border-radius: 5px;
+    border: none;
+}
+
+.error-label{
+    color: var(--red) !important;
+}
+
 
 
 
