@@ -115,6 +115,10 @@ function DashboardAdmin() {
         })
     }
   }
+
+  const labels = [];
+  const dataSold = [];
+  const dataRevenue = [];
   
   const [dataLineChart, setDataLineChart] = React.useState({});
 
