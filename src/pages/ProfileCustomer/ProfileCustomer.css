@@ -149,8 +149,7 @@
     display: flex;
     justify-content: center;
     background: var(--purple);
-    width: 100px;
-    padding: 10px 0;
+    padding: 10px 20px;
     border-radius: 10px;
     border: none;
     color: var(--white);
@@ -330,3 +329,24 @@ td, th {
     flex-direction: column;
     gap: 10px;
 }
+
+.event_name{
+    max-width: 150px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.fpt_ai_livechat_header_name{
+    font-size: 1.6rem !important;
+}
+
+.paid{
+    color: var(--green) !important;
+}
+
+.wait_to_paid{
+    color: var(--orange) !important;}
+
+.refund{
+    color: var(--red) !important;}

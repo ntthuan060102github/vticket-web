@@ -248,7 +248,7 @@
 }
 
 
-.Dashboard_business__infor_input--title{
+.Dashboard_business__infor_input--title, .Dashboard_business__event_management--title{
     font-size: 2rem;
     text-transform: uppercase;
     padding-left: 10px;
@@ -342,4 +342,29 @@
 .Report_chart_line{
     width: 100%;
     padding: 0 20px;
+}
+
+.Dashboard_business__event_management{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+    border-radius: 0 10px 10px 0;
+    border: solid 1px var(--black);
+    background-color: var(--white);
+}
+
+.Send_event_btn{
+    display: flex;
+    height: 40px;
+    padding-left: 20px;
+    width: 170px;
+    gap: 10px;
+    align-items: center;
+    background-color: var(--background-color-1);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 1.6rem;
+    border-radius: 0.5rem;
+    border: none;
 }

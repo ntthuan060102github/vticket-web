@@ -42,9 +42,33 @@ function Header() {
     }
   }
 
+  const handleRoutingDropDown = () =>{
+    if(role === 'customer')
+    {
+      return '/profile';
+    }else if(role === 'business')
+    {
+      return '/dashboard-business';
+    }else{
+      return '/dashboard-admin';
+    }
+  }
+
+  const handleReturnHome = () =>{
+    if(role === 'customer')
+    {
+      return '/';
+    }else if(role === 'business')
+    {
+      return '/dashboard-business';
+    }else{
+      return '/dashboard-admin';
+    }
+  }
+
   return (
     <div className="Header">
-      <Link to={'/'}><img src="/assets/images/logo.png" alt="logo" className="Header__logo" /></Link>
+      <Link to={handleReturnHome()}><img src="/assets/images/logo.png" alt="logo" className="Header__logo" /></Link>
       {role === 'customer' && <div className="Header__search">
         <input 
           type="text" 
@@ -69,7 +93,7 @@ function Header() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu className='dropdow_menu'>
-            {role !== 'admin' && <Dropdown.Item href="/profile">Thông tin cá nhân</Dropdown.Item>}
+            {role !== 'admin' && <Dropdown.Item href={handleRoutingDropDown()}>Thông tin cá nhân</Dropdown.Item>}
             <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

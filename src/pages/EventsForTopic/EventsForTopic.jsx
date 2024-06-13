@@ -13,10 +13,12 @@ import { APP_ENV } from "../../configs/app_config"
 import Header from '../../components/Header';
 import axios from 'axios';
 import Footer from '../../components/Footer';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 function EventsForTopic() {
   let { slug } = useParams();
+  let query = new URLSearchParams(useLocation().search);
+  const event_topic = query.get('event_topic');
 
   const [events, setEvents] = React.useState([])
 
@@ -35,9 +37,9 @@ function EventsForTopic() {
     <div className="EventsForTopic__wrapper">
       <Header/>
       <div className="EventsForTopic__events">
-        <h2 className="EventsForTopic__events--title">Sự kiện cần tìm</h2>
+        <h2 className="EventsForTopic__events--title">Các sự kiện thuộc thể loại {event_topic}</h2>
         <div className="EventsForTopic__events--container">
-          {events.map((event)=>{
+          {events.length !==0 ? (events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');
             return (
               <Link to={`/event-detail/${event.id}`} key={event?.id} className="event">
@@ -65,7 +67,9 @@ function EventsForTopic() {
                 </div>
                 <div className="event__title">{event?.name}</div>
               </Link>
-          )})}
+          )})) : (
+            <span className="Get_events_null">Không tìm thấy sự kiện nào thuộc thể loại này</span>
+          )}
         </div>
       </div>
       <Footer/>
