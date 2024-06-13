@@ -1,3 +1,4 @@
+import AllEventTopic from "../pages/AllEventTopic/AllEventTopic";
 import CreateEvent from "../pages/CreateEvent";
 import DashboardAdmin from "../pages/DashboardAdmin/DashboardAdmin";
 import DashboardBusiness from "../pages/DashboardBusiness";
@@ -27,6 +28,7 @@ const privateRoutes = [
     {path: '/event-detail/:slug', component: <EventDetail/>},
     {path: '/events-for-topic/:slug', component: <EventsForTopic/>},
     {path: '/search', component: <SearchPage/>},
+    {path: '/all-event-topic', component: <AllEventTopic/>},
     {path: '/payment-result', component: <PaymentResult/>},
 ];
 
