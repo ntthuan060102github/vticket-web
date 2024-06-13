@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faPencil, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faPencil, faPlus, faTableList, faUser } from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import './DashboardBusiness.css'
@@ -15,6 +15,7 @@ import { Form } from 'react-bootstrap';
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Footer from '../../components/Footer';
+import { Link } from 'react-router-dom';
 
 
 export const options = {
@@ -297,6 +298,9 @@ function DashboardBusiness() {
         })
     }
   }
+  
+
+  const [formattedNumberRevenue, setFormattedNumberRevenue] = React.useState(0); 
 
   const labels = [];
   const dataSold = [];
@@ -306,6 +310,9 @@ function DashboardBusiness() {
 
   React.useEffect(()=>{
     setStatisticArray(eventStatistic.statistic);
+    if(eventStatistic.total_revenue){
+      setFormattedNumberRevenue(eventStatistic.total_revenue.toLocaleString('en-US'));
+    }
   },[eventStatistic])
 
   React.useEffect(()=>{
@@ -358,6 +365,9 @@ function DashboardBusiness() {
             <li class={taskName === 'report' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('report')}>
               <FontAwesomeIcon icon={faChartLine} className="task_icon" />
               Thống kê doanh thu</li>
+            <li class={taskName === 'event management' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('event management')}>
+            <FontAwesomeIcon icon={faTableList} className="task_icon" />
+            Quản lý sự kiện</li>
           </ul>
         </div>
         {taskName === 'infor' && <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Dashboard_business__form'>
@@ -447,7 +457,7 @@ function DashboardBusiness() {
                 <span className="transaction_title">Vé đã bán</span>
               </div>
               <div className="Total_transaction">
-                <span className="transaction_amount">{eventStatistic.total_ticket_sold || 0}</span>
+                <span className="transaction_amount">{formattedNumberRevenue || 0} VND</span>
                 <span className="transaction_title">Tổng doanh thu</span>
               </div>
             </div> 
@@ -514,6 +524,13 @@ function DashboardBusiness() {
               {eventStatistic.length !== 0  && <Line options={options} data={dataLineChart} />}
             </div> 
           </div>}
+        {taskName === 'event management' && <div className="Dashboard_business__event_management">
+          <h2 className="Dashboard_business__event_management--title">Quản lý sự kiện</h2>  
+          <Link to='/create-event' className="Send_event_btn">
+              <FontAwesomeIcon icon={faPlus} className="icon_plus"/>
+              Gửi sự kiện
+          </Link>
+        </div>}
       </div>
       <Footer/>
     </div>

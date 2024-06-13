@@ -2,28 +2,31 @@ import axios from 'axios';
 import { useEffect, useRef } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 
-import VTICKET_API_SERVICE_INFOS from '../configs/api_infos'
-import { APP_ENV } from "../configs/app_config"
+import VTICKET_API_SERVICE_INFOS from '../configs/api_infos';
+import { APP_ENV } from '../configs/app_config';
 
 function AxiosProvider() {
   const requestInterceptorId = useRef(null);
   const responseInterceptorId = useRef(null);
   const navigate = useNavigate();
-  
-  useEffect(()=>{
+
+  const refreshAccessToken = async () => {
     let refresh = localStorage.getItem('refresh');
-    axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
+    try {
+      const response = await axios.post(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/token/refresh`, {
         refresh: refresh,
-      })
-      .then(function (response) {
-          if (response.data.status === 1) {
-              localStorage.setItem('access', response.data.data.access);
-              localStorage.setItem('refresh', response.data.data.refresh);
-          } else {
-            return response;
-          }
-      })
-  },[]);
+      });
+      if (response.data.status === 1) {
+        localStorage.setItem('access', response.data.data.access);
+        localStorage.setItem('refresh', response.data.data.refresh);
+        return response.data.data.access;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  };
 
   useEffect(() => {
     // Thiết lập interceptor cho các yêu cầu
@@ -31,7 +34,7 @@ function AxiosProvider() {
       // Thêm header vào config của yêu cầu
       let accessToken = localStorage.getItem('access');
       if (accessToken) {
-        config.headers['Authorization'] = localStorage.getItem('access');
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
       }
       return config;
     }, (error) => {
@@ -51,6 +54,15 @@ function AxiosProvider() {
               navigate(data?.data?.target, { replace: true });
               break;
             case 3:
+            case 8:
+              return refreshAccessToken().then((newAccessToken) => {
+                if (newAccessToken) {
+                  const config = response.config;
+                  config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                  return axios(config);
+                }
+                return Promise.reject(response);
+              });
             case 0:
             case 2:
             case 4:

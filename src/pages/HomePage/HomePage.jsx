@@ -118,7 +118,7 @@ function HomePage() {
       <div className="Homepage__outstanding_events">
         <div className="Homepage__outstanding_events--top">
           <h2 className="Homepage__outstanding_events--title">Sự kiện nổi bật</h2>
-          <div className='Homepage__outstanding_events--btn'>
+          {/* <div className='Homepage__outstanding_events--btn'>
             <button className="Homepage__outstanding_events--calendar">
               <FontAwesomeIcon icon={faCalendarDays} className="icon_calendar"/>
               Lịch sự kiện
@@ -127,7 +127,7 @@ function HomePage() {
               <FontAwesomeIcon icon={faPlus} className="icon_plus"/>
               Gửi sự kiện
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="Homepage__outstanding_events--container">
           {outstandingEvents.map((outstandingEvent,index)=>(          
@@ -187,16 +187,16 @@ function HomePage() {
           {topicTypes.map((eventTopic,index)=>{
             const class_name = (index === 1 || index === 5) ? 'event_topic_big' : 'event_topic_small';
             return (
-            <div className={class_name}>
+              <Link to={`/events-for-topic/${eventTopic.id}?event_topic=${eventTopic?.name}`} className={class_name}>
                 <img src={eventTopic?.symbolic_image_url} alt="banner eventTopic" className="event_topic__banner" />
                 <div className="event_topic__title">{eventTopic?.name}</div>
-            </div>
+            </Link>
           )})}
         </div>
-        <button className="Homepage__comming_soon_events--more_btn">
+        <Link to='/all-event-topic' className="Homepage__comming_soon_events--more_btn">
           <FontAwesomeIcon icon={faBars} className="icon_plus"/>
           Xem thêm các thể loại sự kiện
-        </button>
+        </Link>
       </div>
       <Footer/>
     </div>
