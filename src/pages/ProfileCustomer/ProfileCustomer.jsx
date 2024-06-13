@@ -13,8 +13,8 @@ import { APP_ENV } from "../../configs/app_config"
 import './ProfileCustomer.css'
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import { Alert, Form, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Alert, Form, Modal, Table } from 'react-bootstrap';
+import FeedbackForm from '../../components/FeedbackForm';
 
 function ProfileCustomer() {
   const [errors, setErrors] = React.useState([]);
@@ -54,6 +54,7 @@ function ProfileCustomer() {
   const [changePass, setChangePass] = React.useState({
     old_password: "",
     new_password: "",
+    re_new_password: "",
   });
 
   const [avatarURL,setAvatarURL] = React.useState(accountInfo.avatar_url);
@@ -228,6 +229,7 @@ function ProfileCustomer() {
     })
       .then(function (response) {
         if (response.data.status === 1) {
+          console.log(response);
           setTickets(response.data.data);
         } else {
           setErrors((prev) => ({...prev,"get_tickets": response.data.message}));
@@ -245,6 +247,10 @@ function ProfileCustomer() {
 
     if (!changePass.new_password) {
       newErrors["new_password"] = "Mật khẩu mới không được trống";
+    }
+
+    if (changePass.re_new_password !== changePass.new_password) {
+      newErrors["re_new_password"] = "Mật khẩu không trùng khớp";
     }
 
     if (Object.keys(newErrors).length !== 0) {
@@ -284,6 +290,18 @@ function ProfileCustomer() {
         });
     }
   }
+
+  const [selectedTicket, setSelectedTicket] = React.useState(null);
+  const [showModalFeedback, setShowModalFeedback] = React.useState(false);
+  const handleShowFeedback = (ticket) => {
+    setSelectedTicket(ticket);
+    setShowModalFeedback(true);
+  };
+
+  const handleCloseFeedback = () => {
+    setShowModalFeedback(false);
+    setSelectedTicket(null);
+  };
 
   return (
     <div className="Profile_customer__wrapper">
@@ -420,18 +438,46 @@ function ProfileCustomer() {
             <thead>
               <tr>
                 <th className="stt">STT</th>
+                <th className='event_name'>Tên sự kiện</th>
                 <th>Số ghế</th>
-                <th></th>
+                <th>Trạng thái</th>
+                <th>Đánh giá</th>
               </tr>
             </thead>
             <tbody>
               {tickets !== null && tickets.map((ticket, index) => {
+                let statusFormated = "";
+                let clasNameStatus = ticket.ticket_status;
+                if(ticket.ticket_status === 'paid')
+                {
+                  statusFormated = 'Đã thanh toán';
+                } else if(ticket.ticket_status === 'wait_to_paid')
+                {
+                  statusFormated = 'Chưa thanh toán'
+                } else 
+                {
+                  statusFormated = 'Đã hủy'
+                };
+                const isFeedbackable = (ticket.feedbackable !== 'false' && ticket.feedbackable !== null );
+                const buttonStyle = !isFeedbackable ? { pointerEvents: 'none' } : {};
                 return (
-                  <tr key={index}>
+                  <tr key={ticket.event_id}>
                     <td className="stt">{index}</td>
-                    <td>{ticket?.seat}</td>
+                    <td className='event_name'>{ticket?.event_name}</td>
+                    <td>{ticket?.seat_number}</td>
+                    <td className={clasNameStatus}>{statusFormated}</td>
                     <td>
-                      <Link to={`/event-detail/${ticket.event_id}?feedbackable=true`} className='Feedback_btn'>Đánh giá sự kiện</Link>
+                      <button className="EventDetail__feedback" onClick={() => handleShowFeedback(ticket)} style={buttonStyle}>
+                        Đánh giá sự kiện
+                      </button>
+                      <Modal show={showModalFeedback} onHide={handleCloseFeedback} size="xl">
+                        <Modal.Header closeButton>
+                          <Modal.Title>Đánh giá sự kiện</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <FeedbackForm event_id={selectedTicket?.event_id} event_name={selectedTicket?.event_name} feedbackable ={selectedTicket?.feedbackable}/>
+                        </Modal.Body>
+                      </Modal>
                     </td>
                   </tr>
                 );
@@ -466,6 +512,19 @@ function ProfileCustomer() {
               onChange={(e) => handleChangePass(e)} 
               autoComplete= "new-password"/>
             {errors["new_password"] && <span className="error">{errors["new_password"]}</span>}
+          </div>
+          <div className="Profile_customer__old_password">
+            <label htmlFor="re_new_password" className='Profile_customer_form__label'>Nhập lại mật khẩu</label>
+            <input
+              type="password"
+              id="re_new_password"
+              value={changePass.re_new_password}
+              name="re_new_password"
+              placeholder='Nhập lại mật khẩu...'
+              className={errors.re_new_password ? "Profile_customer_form__input error-input" : "Profile_customer_form__input normal-input"}
+              onChange={(e) => handleChangePass(e)} 
+              autoComplete= "new-password"/>
+            {errors["re_new_password"] && <span className="error">{errors["new_password"]}</span>}
           </div>
           {errors["change_pass"] && <span className="error">{errors["change_pass"]}</span>}
           {changedPass && <span className="successful">

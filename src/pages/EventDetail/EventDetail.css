@@ -127,6 +127,12 @@
     font-weight: bold;
 }
 
+.EventDetail__demo--btn{
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
 .EventDetail__demo--buy_now, .EventDetail__demo--support{
     display: flex;
     height: 40px;
@@ -259,7 +265,7 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    padding: 20px;
+    padding: 20px 40px;
     width: 100%;
     border-radius: 5px;
     border: solid 1px var(--gray);
@@ -304,6 +310,79 @@
 .error-label{
     color: var(--red) !important;
 }
+
+.Feedback__top{
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    font-size: 1.4rem;
+}
+.Feedback__user_avt{
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: solid 1px var(--gray--trans);
+}
+
+.Feedback__header{
+    display: flex;
+    flex-direction: column;
+}
+
+.Feedback__user_name{
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.Feedback_title{
+    color: var(--background-color-1);
+}
+
+.Feedback__body{
+    width: 100%;
+    padding: 0 70px;
+    font-size: 1.4rem;
+}
+
+.Feedback_content__value{
+    width: 100%;
+    background-color: var(--white) !important;
+    padding: 10px;
+}
+
+.Feedback_info{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.Feedback__reply_btn{
+    display: flex;
+    align-items: center;
+    background: transparent;
+    margin-left: 70px;
+    font-size: 1.4rem;
+}
+
+.not_click_reply{
+    margin-bottom: 20px;
+}
+
+.reply_acctive{
+    color: var(--background-color-1);
+}
+
+.Reply__content{
+    display: flex;
+    width: 100%;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-left: 90px;
+    padding-right: 70px;
+}
+
 
 
 

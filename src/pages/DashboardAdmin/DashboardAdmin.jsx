@@ -116,6 +116,8 @@ function DashboardAdmin() {
     }
   }
 
+  const [formattedNumberRevenue, setFormattedNumberRevenue] = React.useState(0); 
+
   const labels = [];
   const dataSold = [];
   const dataRevenue = [];
@@ -124,6 +126,9 @@ function DashboardAdmin() {
 
   React.useEffect(()=>{
     setStatisticArray(eventStatistic.statistic_by_day);
+    if(eventStatistic.total_revenue){
+      setFormattedNumberRevenue(eventStatistic.total_revenue.toLocaleString('en-US'));
+    }
   },[eventStatistic])
 
   React.useEffect(()=>{
@@ -185,7 +190,7 @@ function DashboardAdmin() {
                 <span className="transaction_title">Vé đã bán</span>
               </div>
               <div className="Total_transaction">
-                <span className="transaction_amount">{eventStatistic.total_ticket_sold || 0}</span>
+                <span className="transaction_amount">{formattedNumberRevenue || 0} VND</span>
                 <span className="transaction_title">Tổng doanh thu</span>
               </div>
             </div> 
