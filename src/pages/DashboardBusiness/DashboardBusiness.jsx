@@ -6,16 +6,17 @@ import { format } from 'date-fns';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faPencil, faPlus, faTableList, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faHeadset, faPencil, faPlus, faTableList, faUser } from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import './DashboardBusiness.css'
 import Header from '../../components/Header';
-import { Form } from 'react-bootstrap';
+import { Form, Modal, Table } from 'react-bootstrap';
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Footer from '../../components/Footer';
 import { Link } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 
 export const options = {
@@ -36,8 +37,11 @@ function DashboardBusiness() {
   const [errors, setErrors] = React.useState([]);
 
   const [changedIndex, setChangedIndex] = React.useState(0);
+  const [changedInfo, setChangedInfo] = React.useState(false);
   const [taskName, setTaskName] = React.useState("infor");
   const [events, setEvents] = React.useState([]);
+  const [eventsPagination, setEventsPagination] = React.useState([]);
+  const [supports, setSupports] = React.useState([]);
   const [event, setEvent] = React.useState([]);
   const [eventStatistic, setEventStatistic] = React.useState([]);
   const [statisticArray, setStatisticArray] = React.useState([]);
@@ -73,9 +77,7 @@ function DashboardBusiness() {
     })
     .then(function (response) {
         if (response.data.status === 1) {
-            setEvents(response.data.data.event);
-        } else {
-            setErrors(...errors, response.data.message);
+            setEvents(response.data?.data);
         }
     })
   },[]);
@@ -233,6 +235,10 @@ function DashboardBusiness() {
               avatar_url: avatarURL,
             }));
             setChangedIndex((prev) => prev + 1);
+            setChangedInfo(true);
+            setTimeout(() => {
+              setChangedInfo(false);
+            }, 1500);
           } else {
             newErrors["change_info"] = response.data.message;
             setErrors(newErrors);
@@ -328,12 +334,6 @@ function DashboardBusiness() {
     const data_line_chart = {
       labels: labels,
       datasets: [
-        // {
-        //   label: 'Số vé đã bán',
-        //   data: dataSold,
-        //   borderColor: 'rgb(58,55,193) ',
-        //   backgroundColor: 'rgb(241,90,36)',
-        // },
         {
           label: 'Số tiền giao dịch',
           data: dataRevenue,
@@ -347,7 +347,156 @@ function DashboardBusiness() {
     };
 
     setDataLineChart(data_line_chart);
-  },[statisticArray])
+  },[statisticArray]);
+
+
+  const [currentPage, setCurrentPage] = React.useState(0);
+  const [currentSupportPage, setCurrentSupportPage] = React.useState(0);
+  const eventsPerPage = 10;
+  const supportsPerPage = 10;
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+    setCurrentSupportPage(data.selected);
+  };
+
+  // const offset = currentPage * eventsPerPage;
+  // const offsetSupport = currentSupportPage * supportsPerPage;
+  // const currentEvents = events.slice(offset, offset + eventsPerPage);
+  // const currentSupports = supports.slice(offset, offset + supportsPerPage);
+  // const pageCount = Math.ceil(events.length / eventsPerPage);
+  // const pageSupportCount = Math.ceil(supports.length / supportsPerPage);
+
+  const [showResponse, setShowResponse] = React.useState(false);
+  const [sendResponse, setSendResponse] = React.useState(false);
+  const [responseSupport, setResponseSupport] = React.useState(
+    {
+      "content":"",
+      "request": "",
+    }
+  )
+  const handleShowResponse = (id) => {
+    setShowResponse(true);
+    setResponseSupport((prev) => ({
+      ...prev,
+      "request": id,
+    }))
+  };
+
+  const handleCloseResponse = () => setShowResponse(false);
+  const handleChangeResonse = (e) =>{
+    let value = e.target.value;
+    setResponseSupport((prev)=>({
+      ...prev,
+      "content": value,
+    }))
+  };
+
+  const handleSendResponse = () =>{
+    axios({
+        method: 'post',
+        url: `${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/support-response`,
+        data: {
+          content: responseSupport.content,
+          request: responseSupport.request,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(function (response) {
+          console.log(response);
+          if (response.data.status === 1) {
+            setResponseSupport(
+              {
+                "content":"",
+                "request": "",
+              }
+            );
+            setSendResponse(true);
+            setTimeout(() => {
+              setSendResponse(false);
+            }, 1500);
+            setTimeout(() => {
+              setShowResponse(false);
+            }, 2000);
+          }
+        })
+  }
+
+  const [pageNumSupport, setPageNumSupport] = React.useState(1);
+  const [pageNumEvent, setPageNumEvent] = React.useState(1);
+  const [pageSizeSupport, setPageSizeSupport] = React.useState(10);
+  const [pageSizeEvent, setPageSizeEvent] = React.useState(10);
+  const [numPagesSupport, setNumPagesSupport] = React.useState(2);
+  const [numPagesEvent, setNumPagesEvent] = React.useState(2);
+
+  React.useEffect(() => {
+    fetchEvents();
+  }, [pageNumEvent, pageSizeEvent]);
+
+  React.useEffect(() => {
+    fetchSupports();
+  }, [pageNumSupport, pageSizeSupport]);
+
+  const fetchEvents = async () => {
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event?page_num=${pageNumEvent}&page_size=${pageSizeEvent}`, {
+      page_num: pageNumEvent,
+      page_size: pageSizeEvent,
+    })
+    .then(function (response) {
+      console.log(response);
+      if (response.data.status === 1) {
+        setEventsPagination(response.data.data?.data);
+        setNumPagesEvent(response.data.data?.num_pages);
+      }
+    })
+  };
+
+  const fetchSupports = async () => {
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/support-request`, {
+    }).then(function (response) {
+      console.log(response);
+      if (response.data.status === 1) {
+        setSupports(response.data.data);
+        // setNumPagesSupport(response.data.data?.num_pages);
+      }
+    })
+  };
+
+  const handleEventPageChange = (newPageNum) => {
+    setPageNumEvent(newPageNum);
+  };
+
+  const handlePrevPageEvent = () => {
+    if(pageNumEvent - 1 > 0)
+    {
+      setPageNumEvent(pageNumEvent - 1);
+    }
+  };
+  const handleNextPageEvent = () => {
+    if(pageNumEvent + 1 <= numPagesEvent)
+    {
+      setPageNumEvent(pageNumEvent + 1);
+    }
+  };
+
+  const handleSupportPageChange = (newPageNum) => {
+    setPageNumSupport(newPageNum);
+  };
+
+  const handlePrevPageSupport = () => {
+    if(pageNumSupport - 1 > 0)
+    {
+      setPageNumSupport(pageNumSupport - 1);
+    }
+  };
+  const handleNextPageSupport = () => {
+    if(pageNumSupport + 1 <= numPagesSupport)
+    {
+      setPageNumSupport(pageNumSupport + 1);
+    }
+  };
 
   return (
     <div className="Dashboard_business__wrapper">
@@ -368,6 +517,9 @@ function DashboardBusiness() {
             <li class={taskName === 'event management' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('event management')}>
             <FontAwesomeIcon icon={faTableList} className="task_icon" />
             Quản lý sự kiện</li>
+            <li class={taskName === 'support' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('support')}>
+            <FontAwesomeIcon icon={faHeadset} className="task_icon" />
+            Hổ trợ</li>
           </ul>
         </div>
         {taskName === 'infor' && <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className='Dashboard_business__form'>
@@ -446,6 +598,9 @@ function DashboardBusiness() {
               onChange={handleChange}
               className={errors.phone_number ? "Dashboard_business_form__input error-input" : "Dashboard_business_form__input normal-input"} />
             {errors["phone_number"] && <span className="business_error">{errors["phone_number"]}</span>}
+            {changedInfo && <span className="successful">
+              Cập nhật thông tin tài khoản thành công!
+            </span>}
             <button className='Dashboard_business__form--submit_btn' onClick={handleSubmit}>Lưu</button>
           </div>
         </form>}
@@ -526,10 +681,117 @@ function DashboardBusiness() {
           </div>}
         {taskName === 'event management' && <div className="Dashboard_business__event_management">
           <h2 className="Dashboard_business__event_management--title">Quản lý sự kiện</h2>  
-          <Link to='/create-event' className="Send_event_btn">
-              <FontAwesomeIcon icon={faPlus} className="icon_plus"/>
-              Gửi sự kiện
-          </Link>
+          <div className="Send_event_btn__wrapper">
+            <Link to='/create-event' className="Send_event_btn">
+                <FontAwesomeIcon icon={faPlus} className="icon_plus"/>
+                Gửi sự kiện
+            </Link>
+          </div>
+          <div className='Dashboard_business__event_management--table'>
+            <Table striped bordered hover className='custome_table'>
+              <thead>
+                <tr className='table__title'>
+                  <th className="stt">STT</th>
+                  <th className='eventNameTitle'>Tên sự kiện</th>
+                  <th>Xem chi tiết</th>
+                </tr>
+              </thead>
+              <tbody>
+                {eventsPagination !== null && eventsPagination.map((event, index) => {
+                  return (
+                    <tr key={event.id}  className={`table__content_${index + 1}`}>
+                      <td className="stt">{(pageNumEvent - 1) * pageSizeEvent + index + 1}</td>
+                      <td className='eventNameContent'>{event?.name}</td>
+                      <td>
+                        <Link to={`/event-detail/${event.id}`} className="EventDetail__btn">
+                          Xem chi tiết sự kiện
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+          <div className="pagination_events">
+            <button className="pagination__previous" onClick={handlePrevPageEvent}>← Quay lại</button>
+            {numPagesEvent !== 0 && Array(numPagesEvent).fill(0).map((_, index) => (
+              <button key={index} onClick={() => handleEventPageChange(index + 1)} className={(index + 1) === pageNumEvent ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
+                {index + 1}
+              </button>))}
+            <button className="pagination__previous" onClick={handleNextPageEvent}>Tiếp theo →</button>
+          </div>      
+        </div>}
+        {taskName === 'support' && <div className="Dashboard_business__support">
+          <h2 className="Dashboard_business__support--title">Hổ trợ</h2>  
+          <div className='Dashboard_business__support--table'>
+            <Table striped bordered hover className='custome_table'>
+              <thead>
+                <tr className='table__title'>
+                  <th className="stt">STT</th>
+                  <th className='eventNameTitle_support'>Tên sự kiện</th>
+                  <th>Tiêu đề</th>
+                  <th>Nội dung</th>
+                  <th>Phản hồi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {supports !== null && supports.map((support, index) => {
+                  return (
+                    <tr key={support.id}  className={`table__content_${index + 1}`}>
+                      <td className="stt">{(pageNumSupport - 1) * pageSizeSupport + index + 1}</td>
+                      <td className='eventNameContent_support'></td>
+                      <td>{support?.title}</td>
+                      <td>{support?.content}</td>
+                      <td>
+                        <button className="Response_support_btn" onClick={() => handleShowResponse(support.id)}>
+                          Phản hồi
+                        </button>
+                        <Modal show={showResponse} onHide={handleCloseResponse} size="xl">
+                          <Modal.Header closeButton>
+                            <Modal.Title>Phản hồi đánh giá</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className='response_support_wrapper'>
+                              <label htmlFor="content" className='support_form__label'>Nội dung phản hồi</label>
+                              <textarea
+                                type="text"
+                                id="content"
+                                value={responseSupport.content}
+                                name="content"
+                                placeholder='Nhập nội dung...'
+                                className={errors.support_response_content ? "support_form__input error-input" : "support_form__input normal-input"}
+                                onChange={(e) => handleChangeResonse(e)} 
+                                rows={4}
+                                cols={40}
+                              />
+                              {errors["support_response_content"] && <span className="error">{errors["support_response_content"]}</span>}
+                            </div>
+                            <div className='Response_support_send_btn__wrapper'>
+                              {sendResponse && <span className="successful">
+                                Gửi phản hồi thành công!
+                              </span>}
+                              <button className="Response_support_send_btn" onClick={() => handleSendResponse()}>
+                                Gửi phản hồi
+                              </button>
+                            </div>
+                          </Modal.Body>
+                        </Modal>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+          <div className="pagination_supports">
+            <button className="pagination__previous" onClick={handlePrevPageSupport}>← Quay lại</button>
+            {numPagesSupport !== 0 && Array(numPagesSupport).fill(0).map((_, index) => (
+              <button key={index} onClick={() => handleSupportPageChange(index + 1)} className={(index + 1) === pageNumSupport ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
+                {index + 1}
+              </button>))}
+            <button className="pagination__previous" onClick={handleNextPageSupport}>Tiếp theo →</button>
+          </div> 
         </div>}
       </div>
       <Footer/>

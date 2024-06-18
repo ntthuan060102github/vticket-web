@@ -289,3 +289,148 @@
     padding: 0 20px;
     margin-bottom: 40px;
 }
+
+.Dashboard_admin__user_management--title{
+    font-size: 2rem;
+    text-transform: uppercase;
+    padding-left: 10px;
+    font-weight: bold;
+    color: var(--white);
+    background: var(--nav-top-gradient);
+    width: 100%;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 8px 0 0;
+}
+
+.Dashboard_admin__user_management{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-direction: column;
+    width: 80%;
+    border-radius: 0 10px 10px 0;
+    border: solid 1px var(--black);
+    background-color: var(--white);
+}
+.Dashboard_admin__user_management--table{
+    width: 100%;
+    min-height: 400px;
+    padding: 0 20px;
+}
+
+.Dashboard_admin__user_management > .pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.6rem;
+    color: var(--black);
+}
+.lastNameTitle, .lastNameContent{
+    width: 80px !important; 
+    max-width: 80px; 
+    min-width: 80px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
+}
+
+
+.firstNameTitle, .firstNameContent{
+    width: 80px !important; 
+    max-width: 80px; 
+    min-width: 80px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
+}
+
+.table_email{
+    width: 200px !important; 
+    max-width: 200px; 
+    min-width: 200px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
+}
+
+.table_status{
+    width: 150px !important; 
+    max-width: 150px; 
+    min-width: 150px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
+
+}
+
+.ACTIVED{
+    color: var(--green) !important;
+}
+
+.UNVERIFIED{
+    color: var(--background-color-1) !important;
+}
+
+.BLOCKED{
+    color: var(--red) !important;
+}
+
+.user_block_btn{
+    background-color: transparent;
+    color: var(--red) !important;
+}
+
+.user_verify_btn{
+    background-color: transparent;
+    color: var(--background-color-1) !important;
+}
+
+.user_unblock_btn{
+    background-color: transparent;
+    color: var(--green) !important;
+}
+
+.pagination_users{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.pagination__previous, .pagination__previous{
+    display: flex;
+    background-color: transparent;
+    padding: 5px;
+    align-items: center;
+    font-size: 1.6rem;
+}
+
+.pagination__previous:hover, .pagination__previous:hover{
+    color: var(--background-color-1);
+}
+
+.pagination__page_num--active{
+    display: flex;
+    background: var(--nav-top-gradient);
+    color: var(--white);
+    font-size: 1.6rem;
+    padding: 5px;
+    align-items: center;
+}
+
+.pagination__page_num--unactive{
+    display: flex;
+    background-color: transparent;
+    font-size: 1.6rem;
+    padding: 5px;
+    align-items: center;
+}
+
+

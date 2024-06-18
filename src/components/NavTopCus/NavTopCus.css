@@ -19,6 +19,7 @@
     height: 100%;
     gap: 20px;
     align-items: center;
+    justify-content: space-between;
 }
 
 .me-auto > a{
@@ -85,6 +86,17 @@
     font-size: 1.6rem;
     color: var(--black);
     padding: 5px 10px;
+}
+
+.link_to_event_for_topic{
+    background-color: transparent;
+    font-size: 1.6rem;
+    color: var(--white);
+}
+
+.nav_event_topic{
+    display: flex;
+    gap: 20px;
 }
 
 /* .NavTopCus__sign_in, .NavTopCus__sign_up{

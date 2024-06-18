@@ -24,12 +24,25 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CreateEvent() {
 
-  const dateCurrent = new Date();
-  var now = dayjs();
+  const [dateCurrent, setDateCurrent] = React.useState(new Date());
+  const [now, setNow] = React.useState(dayjs());
   const [startTimeDayjs, setStartTimeDayjs] = React.useState(now);
-  const defaultTimeFormat = now.format('HH:mm:ss');
-  const formattedDateCurrent = moment(dateCurrent).format("YYYY-MM-DD");
-  const onlyFormattedDateCurrent = new Date(formattedDateCurrent).toISOString().split('T')[0];
+  const [defaultTimeFormat, setDefaultTimeFormat] = React.useState(now.format('HH:mm:ss'));
+  const [formattedDateCurrent, setFormattedDateCurrent] = React.useState(moment(dateCurrent).format("YYYY-MM-DD"));
+  const [onlyFormattedDateCurrent, setOnlyFormattedDateCurrent] = React.useState(new Date(formattedDateCurrent).toISOString().split('T')[0]);
+
+  React.useEffect(() =>{
+    setStartTimeDayjs(now);
+    setDefaultTimeFormat(now.format('HH:mm:ss'));
+  },[now]);
+
+  React.useEffect(() =>{
+    setFormattedDateCurrent(moment(dateCurrent).format("YYYY-MM-DD"));
+  },[dateCurrent]);
+
+  React.useEffect(() =>{
+    setOnlyFormattedDateCurrent(new Date(formattedDateCurrent).toISOString().split('T')[0]);
+  },[formattedDateCurrent]);
 
   const [eventInfo, setEventInfo] = React.useState({
     "ticket_types": [],
@@ -47,20 +60,6 @@ function CreateEvent() {
   const [eventTopic, setEventTopic] = React.useState([]);
 
   const [ticketTypes, setTicketTypes] = React.useState([
-    // {
-    //   description: "VIP",
-    //   price: "100000",
-    //   seat_configurations: [],
-    //   ticket_type_details: [],
-    //   name: "Loại VIP",
-    // },
-    // {
-    //   description: "Premium",
-    //   price: "100000",
-    //   seat_configurations: [],
-    //   ticket_type_details: [],
-    //   name: "Loại Premium",
-    // }
   ]);
   const [ticket_Type, setTicket_Type] = React.useState({
     "name": "",
@@ -215,6 +214,7 @@ function CreateEvent() {
   };
 
   const handleAddBanner = (event) =>{
+    setErrors([]);
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
@@ -239,6 +239,7 @@ function CreateEvent() {
   }
 
   const handleAddSeat = () => {
+    setErrors([]);
     const newErrors = {};
     setErrors([]);
 
@@ -477,6 +478,7 @@ function CreateEvent() {
   }
 
   const handlePrevTask = () => {
+    setErrors([]);
     if (taskName === "ticket_type_input") {
       setTaskName("event_input")
     } else if (taskName === "service_input") {
@@ -487,6 +489,7 @@ function CreateEvent() {
   }
 
   const handleChange = (event, nameObject) => {
+    setErrors([]);
     let value = event.target.value;
     let name = event.target.name;
 
@@ -553,6 +556,7 @@ function CreateEvent() {
   }
 
   const handleChangeNumber = (event, nameObject) => {
+    setErrors([]);
     const stringValue = event.target.value;
     const sanitizedValue = stringValue.replace(/[^0-9.]/g, ''); // Loại bỏ tất cả ký tự không phải số hoặc dấu chấm
     const value = parseFloat(sanitizedValue);
@@ -585,6 +589,7 @@ function CreateEvent() {
   }
 
   const handleDateChange = (date, name) => {
+    setErrors([]);
     const formattedDate = moment(date).format("YYYY-MM-DD");
     const onlyFormattedDate = new Date(formattedDate).toISOString().split('T')[0];
     setEventInfo((prevValue) => ({
@@ -609,18 +614,23 @@ function CreateEvent() {
     }));
   }
 
+  const [eventSended, setEventSended] = React.useState(false);
+
   const handleSubmit = () => {
     const newErrors = {};
     setErrors([]);
 
-    if (seatConfigurations.length === 0) {
-      newErrors["seat_list_error"] = "Danh sách ghế không được trống";
-      setErrors((prevalue) => {
-        return {
-          ...prevalue,
-          seat_list_error: "Danh sách ghế không được trống"
-        }
-      });
+    const updatedTickets = [...ticketTypes];
+    for (var i = 0; i < updatedTickets.length; i++) {
+      if (updatedTickets[i].seat_configurations.length === 0) {
+        newErrors["seat_list_error"] = "Danh sách ghế cho từng loại vé không được trống";
+        setErrors((prevalue) => {
+          return {
+            ...prevalue,
+            seat_list_error: "Danh sách ghế cho từng loại vé không được trống"
+          }
+        });
+      }
     }
 
     if (Object.keys(newErrors).length === 0) {
@@ -636,7 +646,51 @@ function CreateEvent() {
         banner_url: eventInfo.banner_url,
       })
         .then(function (response) {
+          console.log(response);
           if (response.data.status === 1) {
+            setEventSended(true);
+            setTimeout(() => {
+              setEventSended(false);
+            }, 1500);
+            setTimeout(() => {
+              setTaskName('event_input');
+              setNow(dayjs());
+              setDateCurrent(new Date());
+              setEventInfo({
+                "ticket_types": [],
+                "event_topics": [],
+                "name": "",
+                "description": "",
+                "start_date": onlyFormattedDateCurrent,
+                "end_date": onlyFormattedDateCurrent,
+                "start_time": defaultTimeFormat,
+                "location": "",
+                "banner_url": ""
+              });
+              setTicketTypes([]);
+              setTicketTypeDetails([]);
+              setSeatConfigurations([]);
+              setBannerFile();
+              setTicket_Type({
+                  "name": "",
+                  "description": "",
+                  "price": 5000,
+                  "ticket_type_details": [],
+                  "seat_configurations": [],
+                });
+              setTicketTypeDetail({
+                  "name": "",
+                  "description": "",
+                  "fee_type": "",
+                  "fee_value": 0,
+                });
+              setSeatConfigurationList([]);
+              setSeatConfiguration({
+                  "position": "",
+                  "start_seat_number": 1,
+                  "end_seat_number": 1
+                });
+            }, 2000);
           } else {
             setErrors((prevalue) => {
               return {
@@ -699,6 +753,16 @@ function CreateEvent() {
       event_topics: selectedOptions.map(option => option.value)
     }));
   };
+
+  const deleteTicketType = (index) =>{
+    const updatedTickets = [...ticketTypes];
+    for (var i = 0; i < updatedTickets.length; i++) {
+      if (i === index) {
+        updatedTickets.splice(i, 1);
+      }
+    }
+    setTicketTypes(updatedTickets);
+  }
 
   return (
     <div className="Create_event__wrapper">
@@ -853,9 +917,27 @@ function CreateEvent() {
               <button type="button" className='Create_event__form--submit_btn' onClick={addTicketType}>Thêm</button>
               <h3 className="List_ticket_type__title">Danh sách các loại vé</h3>
               <div className="form__list">
-                {ticketTypes !== null && ticketTypes.map((ticket, index) => {
-                  return (<span key={index}> {ticket?.name}</span>);
-                })}
+              <Table striped bordered hover className='custome_table'>
+                <thead>
+                  <tr className='table__title'>
+                    <th className="name_ticket">Tên</th>
+                    <th className='price_ticket'>Giá</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {ticketTypes !== null && ticketTypes.map((ticket, index) => {
+                      return (
+                      <tr key={index}  className={`list_ticket`}>
+                        <td className="stt">{ticket?.name}</td>
+                        <td className='name_ticket'>{ticket?.price.toLocaleString('en-US')} VND</td>
+                        <td className='price_ticket'>
+                          <button type="button" className='btn btn-danger remove_ticket_btn' onClick={() => deleteTicketType(index)}>Xóa</button>
+                        </td>
+                      </tr>
+                    )})}
+                </tbody>
+              </Table>
               </div>
               {errors["ticket_type_list_error"] && <span className="error">{errors["ticket_type_list_error"]}</span>}
               <div className="form__btn">
@@ -1050,15 +1132,6 @@ function CreateEvent() {
                           placeholder='Ghế bắt đầu'
                           className={errors.seat_configuration_end_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
                         />
-                        {/* <input
-                          type="text"
-                          id="end_seat_number"
-                          name="end_seat_number"
-                          placeholder='Ghế kết thúc'
-                          value={seatConfiguration.end_seat_number}
-                          className={errors.seat_configuration_end_seat_error ? "form_input_seat error-input" : "form_input_seat normal-input"}
-                          onChange={(event) => handleChange(event, 'seat input')}
-                        /> */}
                         {errors["seat_configuration_end_seat_error"] && <span className="error">{errors["seat_configuration_end_seat_error"]}</span>}
                       </div>
                     </div>
@@ -1096,6 +1169,9 @@ function CreateEvent() {
                   </div>
                 }
               </div>
+              {!eventSended && <span className="successful">
+                Thêm sự kiện thành công!
+              </span>}
               <div className="form__btn">
                 <button type="button" className='Create_event__form--submit_btn return' onClick={handlePrevTask}>Trở về</button>
                 <button type="submit" className='Create_event__form--submit_btn' onClick={handleSubmit}>Gửi sự kiện</button>
