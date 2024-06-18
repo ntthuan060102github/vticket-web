@@ -36,6 +36,7 @@ SwiperCore.use([EffectCards]);
 function EventDetail() {
   let { slug } = useParams();
   const feedback_replyable = localStorage.getItem('feedback_replyable');
+  const role = localStorage.getItem('role');
   const [errors, setErrors] = React.useState([]);
   const [orgInfo, setOrgInfo] = React.useState([]);
   const [relatedEvents, setRelatedEvents] = React.useState([]);
@@ -59,7 +60,7 @@ function EventDetail() {
     }
   )
 
-  const [selectedFeedback, setSelectedFeedback] = React.useState({})
+  // const [selectedFeedback, setSelectedFeedback] = React.useState({})
 
   
   const [isAPIResponsed, setIsAPIResponsed ] = React.useState(eventDetail.id !== '');
@@ -70,15 +71,15 @@ function EventDetail() {
   const [showModalSupport, setShowModalSupport] = React.useState(false);
   const [showReply, setShowReply] = React.useState(false);
   const [isReplied, setIsReplied] = React.useState(false);
+  const [feedbackReplied, setFeedbackReplied] = React.useState(false);
 
   const handleShow = () => setShowModal(true);
   const handleShowSupport = () => setShowModalSupport(true);
-  const handleShowReply = (feedback) => {
+  const handleShowReply = (id) => {
     setShowReply(!showReply);
-    setSelectedFeedback(feedback);
     setFeedbackReply((prev) => ({
       ...prev,
-      "feedback": feedback.id,
+      "feedback": id,
     }))
   };
   
@@ -138,7 +139,7 @@ function EventDetail() {
     axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${slug}/feedback`, {
     })
     .then(function (response) {
-      if (response.data.status === 1) {  
+      if (response.data.status === 1) {
         setFeedbacks(response.data.data.feedbacks);
       }
     })
@@ -158,10 +159,30 @@ function EventDetail() {
   const repliedStyle = isReplied  ? { pointerEvents: 'none' }: {};
   const inputStyle = { pointerEvents: 'none' };
 
+  const handleSendReply = () =>{
+    axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/feedback-reply`, {
+      content: feedbackReply.content,
+      feedback: feedbackReply.feedback,
+    })
+    .then(function (response) {
+      if (response.data.status === 1) {    
+        setFeedbackReplied(true);
+        setTimeout(() => {
+          setFeedbackReplied(false);
+          setShowReply(false);
+        }, 1500);
+        setFeedbackReply((prev)=>({
+          ...prev,
+          "content": "",
+        }))
+      }
+    })
+  }
+
   return (
     <div className="EventDetail__wrapper">
       <Header/>
-      <NavTopCus/>
+      {/* <NavTopCus/> */}
       <div className="EventDetail__slide">
         <Swiper
           spaceBetween={40}
@@ -186,7 +207,7 @@ function EventDetail() {
         <div className='EventDetail__demo--wrapper'>
           <div className="EventDetail__demo--top">
             <h2 className="EventDetail__demo--title">{eventDetail?.name}</h2>
-            <div className="EventDetail__demo--btn">
+            {role ==="customer" && <div className="EventDetail__demo--btn">
               <button className="EventDetail__demo--buy_now" onClick={handleShow}>
                 Mua ngay
                 <FontAwesomeIcon icon={faPaperPlane} className="icon_buy_now"/>
@@ -208,10 +229,10 @@ function EventDetail() {
                   <Modal.Title>Hổ trợ</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <SupportForm event={eventDetail} />
+                  <SupportForm event={eventDetail}  handleCloseSupport={handleCloseSupport} />
                 </Modal.Body>
               </Modal>
-            </div>
+            </div>}
           </div>
           <div className="EventDetail__demo--container">
             <span className="EventDetail__demo--infor">
@@ -293,7 +314,7 @@ function EventDetail() {
                   style={inputStyle}
                 />
               </div>
-              {feedback_replyable === "true" && (<button className={!showReply ? "Feedback__reply_btn not_click_reply" : "Feedback__reply_btn reply_acctive"} onClick={handleShowReply} style={buttonStyle}>
+              {feedback_replyable === "true" && (<button className={!showReply ? "Feedback__reply_btn not_click_reply" : "Feedback__reply_btn reply_acctive"} onClick={() => handleShowReply(feedback.id)} style={buttonStyle}>
                 Phản hồi
               </button>)}
               {showReply && 
@@ -315,6 +336,12 @@ function EventDetail() {
                 {errors["feedback_reply_content"] && <span className="error">{errors["feedback_reply_content"]}</span>}
               </div>
               }
+              {feedbackReplied && <span className="successful">
+                Gửi phản hồi thành công!
+              </span>}
+              {showReply && <button className="Send_reply_btn" onClick={handleSendReply}>
+                Gửi phản hồi
+              </button>}
             </div>)})}
           {/* <div className="Feedback__title">
             <label htmlFor="title" className='Feedback_form__label'>Vấn đề cần đánh giá</label>
@@ -401,10 +428,10 @@ function EventDetail() {
                 </Link>
               )})}
             </div>
-            <button className="EventDetail__relative_event--more_btn">
+            {/* <button className="EventDetail__relative_event--more_btn">
               <FontAwesomeIcon icon={faBars} className="icon_plus"/>
               Xem thêm các sự kiện liên quan
-            </button>
+            </button> */}
         </div>
       </div>
       <Footer/>

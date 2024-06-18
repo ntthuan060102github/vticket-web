@@ -7,8 +7,24 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import './NavTopCus.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos';
+import { APP_ENV } from '../../configs/app_config';
+import { Link } from 'react-router-dom';
 
-function NavTopCus() {
+function NavTopCus({eventTopics}) {
+
+  // const [eventTopics, setEventTopics] =React.useState([]);
+
+  // React.useEffect(() => {
+  //   axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event-topic`, {
+  //   })
+  //   .then(function (response) {
+  //     if (response.data.status === 1) {
+  //       setEventTopics(response.data.data);
+  //     }
+  //   })
+  // }, []);
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary Nav_top_cus">
@@ -17,9 +33,13 @@ function NavTopCus() {
         {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Vé ca nhạc</Nav.Link>
-            <Nav.Link href="#link">Văn hóa nghệ thuật</Nav.Link>
-            <Nav.Link href="#link">Thể thao</Nav.Link>
+            <div className='nav_event_topic'>
+              {eventTopics && eventTopics.map((eventTopic,index)=>{
+                if(index <3){
+                return(
+                <Link key={index} to={`/events-for-topic/${eventTopic.id}?event_topic=${eventTopic?.name}`} className="link_to_event_for_topic">{eventTopic?.name}</Link>
+              )}})};
+            </div>
             <Dropdown className='nav_dropdown'>
               <Dropdown.Toggle id="dropdown-basic">
                 Chọn địa điểm
