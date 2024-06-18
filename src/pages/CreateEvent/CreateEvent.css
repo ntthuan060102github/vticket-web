@@ -47,14 +47,27 @@
     font-weight: bold;
 }
 
-.Create_event__service_input,
-.Create_event__seat_class_input{
+.Create_event__service_input{
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
     justify-content: center;
 }
+
+.Create_event__seat_class_input{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.Create_event__seat_class_input > .successful{
+    font-size: 1.6rem;
+}
+
 
 .Create_event__service_input--top, .Create_event__seat_class_input--top{
     display: flex;
@@ -145,8 +158,27 @@
     border: solid 1px var(--black);
     flex-direction: column;
     gap: 10px;
-    padding: 10px 20px;
     overflow: auto; 
+}
+
+.name_ticket{
+    width: 80px !important; 
+    max-width: 80px; 
+    min-width: 80px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
+}
+
+.price_ticket{
+    width: 80px !important; 
+    max-width: 80px; 
+    min-width: 80px; 
+    text-overflow: ellipsis;  
+    white-space: nowrap;
+    overflow: hidden;
+    word-wrap: 'break-word';
 }
 
 .form__list_full{
@@ -156,6 +188,12 @@
     border-radius: 5px;
     border: solid 1px var(--black);
     overflow: auto; 
+}
+
+.remove_ticket_btn{
+    display: flex !important;
+    padding: 5px 10px !important;
+    font-size: 1.6rem !important;
 }
 
 .form__seat_range{

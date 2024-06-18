@@ -6,7 +6,7 @@ import './SupportForm.css';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos';
 import { APP_ENV } from "../../configs/app_config";
 
-const SupportForm = ({ event }) => {
+const SupportForm = ({ event, handleCloseSupport }) => {
   const [supportRequest, setSupportRequest] = useState({
     "title": "",
     "content":"",
@@ -53,6 +53,15 @@ const SupportForm = ({ event }) => {
             setTimeout(() => {
               setSupported(false);
             }, 1500);
+            
+            setTimeout(() => {
+              setSupportRequest((prev)=>({
+                ...prev,
+                "title": "",
+                "content":"",
+              }));
+              handleCloseSupport();
+            }, 2000);
           } else {
             setErrors((prevalue) => {
               return {

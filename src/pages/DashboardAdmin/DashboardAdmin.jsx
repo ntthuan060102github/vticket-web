@@ -9,12 +9,15 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine} from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import './DashboardAdmin.css'
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { Table } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
+import { Link } from 'react-router-dom';
 
 
 export const options = {
@@ -163,7 +166,114 @@ function DashboardAdmin() {
     };
 
     setDataLineChart(data_line_chart);
-  },[statisticArray])
+  },[statisticArray]);
+
+  const [users, setUsers] = React.useState([{}]);
+
+  // const [currentPage, setCurrentPage] = React.useState(1);
+  // const [pageCount, setPageCount] = React.useState(currentPage + 1);
+  // const usersPerPage = 10;
+
+  // const handlePageClick = (data) => {
+  //   setCurrentPage(data.selected);
+  //   setPageCount(data.selected);
+  // };
+
+  // const offset = (currentPage - 1) * usersPerPage;
+
+  const [blockUser, setBlockUser] = React.useState(false);
+  const [unlockUser, setUnlockUser] = React.useState(false);
+
+  const [pageNum, setPageNum] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [numPages, setNumPages] = React.useState(0);
+
+  React.useEffect(() => {
+    fetchUsers();
+  }, [pageNum, pageSize]);
+
+  const fetchUsers = async () => {
+    axios({
+      method: 'get',
+      url: `${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/user?page_num=${pageNum}&page_size=${pageSize}`,
+      data: {
+        page_num: pageNum,
+        page_size: pageSize,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(function (response) {
+      console.log(response);
+      if (response.data.status === 1) {
+        setUsers(response.data.data?.data);
+        setNumPages(response.data.data?.num_pages);
+      }
+    })
+  };
+
+  const handlePageChange = (newPageNum) => {
+    setPageNum(newPageNum);
+  };
+
+  const handlePrevPage = () => {
+    if(pageNum - 1 > 0)
+    {
+      setPageNum(pageNum - 1);
+    }
+  };
+  const handleNextPage = () => {
+    if(pageNum + 1 <= numPages)
+    {
+      setPageNum(pageNum + 1);
+    }
+  };
+
+
+
+  // React.useEffect(()=>{
+  //   axios.get(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/user?page_num=${currentPage}&page_size=${usersPerPage}`, {
+  //     page_num: currentPage,
+  //     page_size: usersPerPage,
+  //   })
+  //   .then(function (response) {
+  //     console.log(response);
+  //     if (response.data.status === 1) {
+  //       setUsers(response.data.data.data);
+  //     }
+  //   })
+  // },[blockUser, unlockUser, currentPage]);
+
+  const handleBlockUser = (id) =>{
+    axios.get(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/user/${id}/lock`, {
+    })
+    .then(function (response) {
+      console.log(response);
+      if (response.data.status === 1) {
+        setBlockUser(true);
+        setTimeout(() => {
+          setBlockUser(false);
+        }, 1500);
+      }
+    })
+  };
+
+  const handleUnblockUser = (id) =>{
+    axios.get(`${VTICKET_API_SERVICE_INFOS.account[APP_ENV].domain}/user/${id}/unlock`, {
+    })
+    .then(function (response) {
+      console.log(response);
+      if (response.data.status === 1) {
+        setUnlockUser(true);
+        setTimeout(() => {
+          setUnlockUser(false);
+        }, 1500);
+      }
+    })
+  };
+
+  
 
   return (
     <div className="Dashboard_admin__wrapper">
@@ -175,12 +285,12 @@ function DashboardAdmin() {
             <h2 className="Sidebar__name">{firstName} {lastName}</h2>
           </div>
           <ul class="Sidebar__menu">
-            {/* <li class={taskName === 'infor' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('infor')}>
-              <FontAwesomeIcon icon={faUser} className="task_icon" />
-              Thông tin cá nhân</li> */}
             <li class={taskName === 'report' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('report')}>
               <FontAwesomeIcon icon={faChartLine} className="task_icon" />
               Thống kê doanh thu</li>
+            <li class={taskName === 'user management' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('user management')}>
+              <FontAwesomeIcon icon={faPeopleGroup} className="task_icon" />
+              Quản lý tài khoản</li>
           </ul>
         </div>
         {taskName === 'report' && <div className="Dashboard_admin__report">
@@ -197,7 +307,7 @@ function DashboardAdmin() {
             <div className="Select_event_time">
               <div className="Select_time">
                 <div className='Select_start_date'>
-                  <label htmlFor="start_date" className='Dashboard_business_form__label'>Ngày bắt đầu</label>
+                  <label htmlFor="start_date" className='Dashboard_admin_form__label'>Ngày bắt đầu</label>
                   <Datetime
                     id="start_date"
                     value={format(eventAndTime.start_date, "dd-MM-yyyy")}
@@ -209,12 +319,12 @@ function DashboardAdmin() {
                     renderMonth={(props, month) => <td {...props}>Thg {month + 1}</td>}
                     placeholderText="Chọn ngày sinh"
                     isValidDate={isValidStartDateEvent}
-                    className={errors.revenue_start_date ? "Dashboard_business_form__input_date error-input" : "Dashboard_business_form__input_date normal-input"}
+                    className={errors.revenue_start_date ? "Dashboard_admin_form__input_date error-input" : "Dashboard_admin_form__input_date normal-input"}
                   />
-                  {errors["revenue_start_date"] && <span className="business_error">{errors["revenue_start_date"]}</span>}
+                  {errors["revenue_start_date"] && <span className="admin_error">{errors["revenue_start_date"]}</span>}
                 </div>
                 <div className='Select_start_date'>
-                  <label htmlFor="end_date" className='Dashboard_business_form__label'>Ngày kết thúc</label>
+                  <label htmlFor="end_date" className='Dashboard_admin_form__label'>Ngày kết thúc</label>
                   <Datetime
                     id="end_date"
                     value={format(eventAndTime.end_date, "dd-MM-yyyy")}
@@ -226,9 +336,9 @@ function DashboardAdmin() {
                     renderMonth={(props, month) => <td {...props}>Thg {month + 1}</td>}
                     placeholderText="Chọn ngày sinh"
                     isValidDate={isValidEndDateEvent}
-                    className={errors.revenue_end_date ? "Dashboard_business_form__input_date error-input" : "Dashboard_business_form__input_date normal-input"}
+                    className={errors.revenue_end_date ? "Dashboard_admin_form__input_date error-input" : "Dashboard_admin_form__input_date normal-input"}
                   />
-                  {errors["revenue_end_date"] && <span className="business_error">{errors["revenue_end_date"]}</span>}
+                  {errors["revenue_end_date"] && <span className="admin_error">{errors["revenue_end_date"]}</span>}
                 </div>
               </div>
               <button className="See_revenue" onClick={handleSeeRevenue}>Xem thống kê doanh thu</button>
@@ -237,6 +347,83 @@ function DashboardAdmin() {
               {eventStatistic.length !== 0 && <Line options={options} data={dataLineChart} />}
             </div> 
           </div>}
+        {taskName === 'user management' && <div className="Dashboard_admin__user_management">
+        <h2 className="Dashboard_admin__user_management--title">Quản lý tài khoản</h2>  
+        <div className='Dashboard_admin__user_management--table'>
+          <Table striped bordered hover className='custome_table'>
+            <thead>
+              <tr className='table__title'>
+                <th className="stt">STT</th>
+                <th className='lastNameTitle'>Họ</th>
+                <th className='firstNameTitle'>Tên</th>
+                <th className='table_email'>Email</th>
+                <th className='table_status'>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users && users.map((User, index) => {
+                let status = "";
+                let class_name_status =  User.status;
+                if(User.status === 'ACTIVED'){
+                  status = "Đang hoạt động";
+                }else if(User.status === "UNVERIFIED"){
+                  status = "Chưa kích hoạt";
+                }else{
+                  status = "Đã khóa";
+                }
+                return (
+                  <tr key={User.id}  className={`table__content_${index + 1}`}>
+                    <td className="stt">{(pageNum - 1) * pageSize + index + 1}</td>
+                    <td className='lastNameContent'>{User?.first_name}</td>
+                    <td className='firstNameContent'>{User?.last_name}</td>
+                    <td className='table_email'>{User?.email}</td>
+                    <td className={`${class_name_status} table_status`}>{status}</td>
+                    <td>
+                      {User.status === 'ACTIVED' && <button className="user_block_btn" onClick={() => handleBlockUser(User.id)}>
+                        Khóa tài khoản
+                      </button>}
+                      {/* {User.status === 'UNVERIFIED' && <Link to={`/OTP/${User?.email}`} className="user_verify_btn">
+                        Kích hoạt tài khoản
+                      </Link>} */}
+                      {User.status === 'BLOCKED' && <button className="user_unblock_btn" onClick={() => handleUnblockUser(User.id)}>
+                        Mở khóa tài khoản
+                      </button>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+        <div className="pagination_users">
+        <button className="pagination__previous" onClick={handlePrevPage}>← Quay lại</button>
+        {numPages !== 0 && Array(numPages).fill(0).map((_, index) => (
+          <button key={index} onClick={() => handlePageChange(index + 1)} className={(index + 1) === pageNum ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
+            {index + 1}
+          </button>))}
+        <button className="pagination__previous" onClick={handleNextPage}>Tiếp theo →</button>
+        </div>
+        {/* <ReactPaginate
+          previousLabel={'← Quay lại'}
+          nextLabel={'Tiếp theo →'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName={'pagination'}
+          subContainerClassName={'pages pagination'}
+          activeClassName={'active'}
+        /> */}
+        {blockUser && <span className="successful">
+            Khóa tài khoản thành công!
+          </span>}
+        {unlockUser && <span className="successful">
+          Mở khóa tài khoản thành công!
+        </span>}
+        </div>}
       </div>
       <Footer/>
     </div>

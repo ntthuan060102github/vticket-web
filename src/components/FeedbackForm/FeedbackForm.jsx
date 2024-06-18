@@ -7,7 +7,7 @@ import './FeedbackForm.css';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos';
 import { APP_ENV } from "../../configs/app_config";
 
-const FeedbackForm = ({ event_id, event_name, feedbackable }) => {
+const FeedbackForm = ({ event_id, event_name, feedbackable, handleCloseFeedback }) => {
   console.log(event_id, event_name, feedbackable);
   const [feedback, setFeedback] = React.useState(
     {
@@ -26,6 +26,7 @@ const FeedbackForm = ({ event_id, event_name, feedbackable }) => {
   const [supported, setSupported] = React.useState(false);
 
   const setRating = (newRating) =>{
+    setErrors([]);
     setFeedback((prev) => ({
       ...prev,
       rating_score: newRating,
@@ -33,6 +34,7 @@ const FeedbackForm = ({ event_id, event_name, feedbackable }) => {
   }
 
   const handleChange = (e) =>{
+    setErrors([]);
     let name = e.target.name;
     let value = e.target.value;
     setFeedback((prev)=>({
@@ -75,7 +77,11 @@ const FeedbackForm = ({ event_id, event_name, feedbackable }) => {
               setTimeout(() => {
                 setFeedbacked(false);
               }, 1500);
-              setIsFeedbackable(false);
+              setIsFeedbackable(false)
+              setTimeout(() => {
+                handleCloseFeedback();
+              }, 2000);
+
             } else {
               setErrors((prevalue) => {
                 return {
