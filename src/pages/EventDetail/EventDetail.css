@@ -336,6 +336,7 @@
 }
 
 .Feedback_title{
+    font-weight: 500;
     color: var(--background-color-1);
 }
 
@@ -382,6 +383,17 @@
     padding-left: 90px;
     padding-right: 70px;
 }
+
+.Send_reply_btn{
+    display: flex;
+    width: fit-content;
+    font-size: 1.4rem;
+    background-color: var(--background-color-1);
+    color: var(--white);
+    padding: 10px;
+    margin-left: 90px;
+}
+
 
 
 

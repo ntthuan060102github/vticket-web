@@ -1,24 +1,24 @@
 const VTICKET_API_SERVICE_INFOS = {
     account: {
         staging: {
-            domain: "https://vticket-account-service.onrender.com/apis/vticket-account-service/v1"
+            domain: "https://vticket-account-service-vnse.onrender.com/apis/vticket-account-service/v1"
         },
         production: {
-            domain: "https://vticket-account-service.onrender.com/apis/vticket-account-service/v1"
+            domain: "https://vticket-account-service-vnse.onrender.com/apis/vticket-account-service/v1"
         },
         local: {
-            domain: "https://vticket-account-service.onrender.com/apis/vticket-account-service/v1"
+            domain: "https://vticket-account-service-vnse.onrender.com/apis/vticket-account-service/v1"
         }
     },
     event: {
         staging: {
-            domain: "https://vticket-event-service.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
         },
         production: {
-            domain: "https://vticket-event-service.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
         },
         local: {
-            domain: "https://vticket-event-service.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
         }
     },
     logging: {
@@ -34,13 +34,13 @@ const VTICKET_API_SERVICE_INFOS = {
     },
     payment: {
         staging: {
-            domain: "https://vticket-payment-service.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
         },
         production: {
-            domain: "https://vticket-payment-service.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
         },
         local: {
-            domain: "https://vticket-payment-service.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
         }
     },
 }

@@ -43,7 +43,7 @@ function SearchPage() {
       <div className="SearchPage__events">
         <h2 className="SearchPage__events--title">Sự kiện cần tìm</h2>
         <div className="SearchPage__events--container">
-          {events.map((event)=>{
+          {events.length !== 0 ? events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');
             return (
               <Link to={`/event-detail/${event.id}`} key={event?.id} className="event">
@@ -71,7 +71,9 @@ function SearchPage() {
                 </div>
                 <div className="event__title">{event?.name}</div>
               </Link>
-          )})}
+          )}): (
+            <span className="Get_events_null">Không tìm thấy sự kiện nào</span>
+          )}
         </div>
       </div>
       <Footer/>

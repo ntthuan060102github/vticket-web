@@ -475,7 +475,7 @@ function ProfileCustomer() {
                           <Modal.Title>Đánh giá sự kiện</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                          <FeedbackForm event_id={selectedTicket?.event_id} event_name={selectedTicket?.event_name} feedbackable ={selectedTicket?.feedbackable}/>
+                          <FeedbackForm event_id={selectedTicket?.event_id} event_name={selectedTicket?.event_name} feedbackable ={selectedTicket?.feedbackable} handleCloseFeedback={handleCloseFeedback}/>
                         </Modal.Body>
                       </Modal>
                     </td>

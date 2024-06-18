@@ -67,7 +67,7 @@ function HomePage() {
   return (
     <div className="Homepage__wrapper">
       <Header/>
-      <NavTopCus/>
+      <NavTopCus eventTopics={topicTypes}/>
       <div className="Homepage__slide">
         <Swiper
           spaceBetween={40}
