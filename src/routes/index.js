@@ -1,4 +1,5 @@
 import AllEventTopic from "../pages/AllEventTopic/AllEventTopic";
+import CreateDiscount from "../pages/CreateDiscount/CreateDiscount";
 import CreateEvent from "../pages/CreateEvent";
 import DashboardAdmin from "../pages/DashboardAdmin/DashboardAdmin";
 import DashboardBusiness from "../pages/DashboardBusiness";
@@ -25,8 +26,9 @@ const privateRoutes = [
     {path: '/dashboard-business', component: <DashboardBusiness/>},
     {path: '/dashboard-admin', component: <DashboardAdmin/>},
     {path: '/create-event', component: <CreateEvent/>},
-    {path: '/event-detail/:slug', component: <EventDetail/>},
-    {path: '/events-for-topic/:slug', component: <EventsForTopic/>},
+    {path: '/create-discount', component: <CreateDiscount/>},
+    {path: '/event-detail/:id', component: <EventDetail/>},
+    {path: '/events-for-topic/:id', component: <EventsForTopic/>},
     {path: '/search', component: <SearchPage/>},
     {path: '/all-event-topic', component: <AllEventTopic/>},
     {path: '/payment-result', component: <PaymentResult/>},

@@ -1169,7 +1169,7 @@ function CreateEvent() {
                   </div>
                 }
               </div>
-              {!eventSended && <span className="successful">
+              {eventSended && <span className="successful">
                 Thêm sự kiện thành công!
               </span>}
               <div className="form__btn">

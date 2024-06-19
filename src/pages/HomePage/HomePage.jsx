@@ -187,7 +187,12 @@ function HomePage() {
           {topicTypes.map((eventTopic,index)=>{
             const class_name = (index === 1 || index === 5) ? 'event_topic_big' : 'event_topic_small';
             return (
-              <Link to={`/events-for-topic/${eventTopic.id}?event_topic=${eventTopic?.name}`} className={class_name}>
+              <Link 
+                key={eventTopic.id}
+                to={`/events-for-topic/${eventTopic.id}`} 
+                state= {{ eventTopic: eventTopic?.name }}
+                className={class_name}
+                >
                 <img src={eventTopic?.symbolic_image_url} alt="banner eventTopic" className="event_topic__banner" />
                 <div className="event_topic__title">{eventTopic?.name}</div>
             </Link>
