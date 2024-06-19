@@ -40,47 +40,6 @@
     object-position: center center;
 }
 
-.Slide__title{
-    font-size: 3rem;
-    color: var(--white);
-    width: 400px;
-    text-shadow: 2px 2px 4px #000000;
-}
-
-.Slide__location{
-    display: flex;
-    background-color: rgba(51,51,51,.55);
-    border-radius: 5px;
-    border: none;
-    padding: 0 40px 0 20px ;
-}
-
-.Slide__date{
-    display: flex;
-    flex-direction: column;
-    padding: 10px 20px;
-    align-items: center;
-    gap: 10px;
-}
-
-.Slide__day, .Slide__month, .Slide__year{
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--white);
-}
-
-.Slide__address{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-}
-
-.Slide__place, .Slide__time{
-    font-size: 1.6rem;
-    color: var(--white);
-}
-
 .EventDetail__demo, 
 .EventDetail__detail, 
 .EventDetail__product_infor,
