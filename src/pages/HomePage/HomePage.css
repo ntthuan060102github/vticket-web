@@ -70,8 +70,14 @@
     gap: 10px;
 }
 
-.Slide__day, .Slide__month, .Slide__year{
-    font-size: 2.5rem;
+.Slide__day{
+    font-size: 6rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.Slide__month, .Slide__year{
+    font-size: 2rem;
     font-weight: 600;
     color: var(--white);
 }
@@ -236,7 +242,7 @@
 }
 
 .event__day{
-    font-size: 2rem;
+    font-size: 4.2rem;
     font-weight: 600;
     color: var(--white);
 }

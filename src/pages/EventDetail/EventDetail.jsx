@@ -34,7 +34,7 @@ import SupportForm from '../../components/SupportForm';
 SwiperCore.use([EffectCards]);
 
 function EventDetail() {
-  let { slug } = useParams();
+  let { id } = useParams();
   const feedback_replyable = localStorage.getItem('feedback_replyable');
   const role = localStorage.getItem('role');
   const [errors, setErrors] = React.useState([]);
@@ -97,7 +97,7 @@ function EventDetail() {
   }
 
   React.useEffect(() => {
-    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${slug}`, {
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${id}`, {
     })
     .then(function (response) {
       if (response.data.status === 1) {               
@@ -136,7 +136,7 @@ function EventDetail() {
       });
     });
 
-    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${slug}/feedback`, {
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/${id}/feedback`, {
     })
     .then(function (response) {
       if (response.data.status === 1) {
@@ -182,7 +182,6 @@ function EventDetail() {
   return (
     <div className="EventDetail__wrapper">
       <Header/>
-      {/* <NavTopCus/> */}
       <div className="EventDetail__slide">
         <Swiper
           spaceBetween={40}

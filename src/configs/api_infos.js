@@ -12,13 +12,13 @@ const VTICKET_API_SERVICE_INFOS = {
     },
     event: {
         staging: {
-            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
         },
         production: {
-            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
         },
         local: {
-            domain: "https://vticket-event-service-uoew.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
         }
     },
     logging: {
@@ -34,13 +34,13 @@ const VTICKET_API_SERVICE_INFOS = {
     },
     payment: {
         staging: {
-            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-9i2q.onrender.com/apis/vticket-payment-service/v1"
         },
         production: {
-            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-9i2q.onrender.com/apis/vticket-payment-service/v1"
         },
         local: {
-            domain: "https://vticket-payment-service-584m.onrender.com/apis/vticket-payment-service/v1"
+            domain: "https://vticket-payment-service-9i2q.onrender.com/apis/vticket-payment-service/v1"
         }
     },
 }
