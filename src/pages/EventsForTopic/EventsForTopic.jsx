@@ -16,28 +16,29 @@ import Footer from '../../components/Footer';
 import { Link, useLocation, useParams } from 'react-router-dom';
 
 function EventsForTopic() {
-  let { slug } = useParams();
-  let query = new URLSearchParams(useLocation().search);
-  const event_topic = query.get('event_topic');
+  let { id } = useParams();
+  // let query = new URLSearchParams(useLocation().search);
+  const location = useLocation();
+  const { eventTopic } = location.state || "";
 
   const [events, setEvents] = React.useState([])
 
   React.useEffect(() => {
-    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event-topic/${slug}/events`, {
-      id:slug,
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event-topic/${id}/events`, {
+      id:id,
     })
     .then(function (response) {
       if (response.data.status === 1) {
         setEvents(response.data.data);
       }
     })
-  }, [slug]);
+  }, [id]);
 
   return (
     <div className="EventsForTopic__wrapper">
       <Header/>
       <div className="EventsForTopic__events">
-        <h2 className="EventsForTopic__events--title">Các sự kiện thuộc thể loại {event_topic}</h2>
+        <h2 className="EventsForTopic__events--title">Các sự kiện thuộc thể loại {eventTopic}</h2>
         <div className="EventsForTopic__events--container">
           {events.length !==0 ? (events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');

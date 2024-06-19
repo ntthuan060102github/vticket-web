@@ -1,0 +1,102 @@
+.Create_discount__wrapper{
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.Create_discount {
+    display: flex;
+    width:100%;
+    margin-top: 40px;
+    justify-content: center;
+    position: relative;
+    clear: both;
+}
+
+.Create_discount__form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 100px 0 100px;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.Create_discount__infor_discount_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+    width: 500px !important;
+    border-radius: 5px;
+    padding: 20px 50px;
+    border: solid 1px var(--black);
+}
+
+.Create_discount__infor_discount_input > .css-b62m3t-container{
+    width: 500px !important;
+    padding: 20px 50px;
+    border: none !important;
+}
+
+.Create_discount_form__select > .css-13cymwt-control{
+    width: 100% !important;
+    height: 100% !important;
+    border: solid 2px var(--black) !important;
+}
+
+.Create_discount_form__select{
+    width: 100%;
+    font-size: 1.6rem !important;
+}
+
+.Create_discount__infor_discount_input--title{
+    text-transform: uppercase;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.Create_discount_form__label{
+    width: 100%;
+}
+
+.Create_discount_form__input{
+    display: flex;
+    width: 100% !important;
+    padding: 10px 20px;
+    font-size: 1.6rem !important;
+    border-radius: 5px !important;
+}
+
+.Create_discount_form__input > .form-control{
+    border: none !important;
+    font-size: 1.6rem !important;
+}
+
+.Create_discount__form--submit_btn{
+    display: flex;
+    justify-content: center;
+    background: var(--purple);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    color: var(--white);
+    font-size: 1.6rem;
+}
+
+.css-13cymwt-control{
+}
+
+.css-10o2lyd-MuiStack-root{
+    width: 100% !important;
+}
+
+.css-1nmdiq5-menu{
+    width: 400px !important;
+}
+
+
+.MuiMultiSectionDigitalClockSection-root{
+    width: 100px !important;
+}

@@ -90,33 +90,6 @@
     border-top: solid 1px var(--gray);
 }
 
-.event__date{
-    display: flex;
-    flex-direction: column;
-    padding: 5px 10px;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    right: 10px;
-    background-color: var(--gray--trans);
-    border-radius: 0 0 20px 20px;
-    border-top: solid 1px var(--gray);
-    border-left: solid 1px var(--white);
-    border-right: solid 1px var(--white);
-    border-bottom: solid 1px var(--white);
-}
-
-.event__month ,.event__year{
-    font-size: 1.4rem;
-    color: var(--white);
-}
-
-.event__day{
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--white);
-}
-
 .event__info{
     display: flex;
     justify-content: space-around;

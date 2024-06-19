@@ -694,6 +694,8 @@ function DashboardBusiness() {
                   <th className="stt">STT</th>
                   <th className='eventNameTitle'>Tên sự kiện</th>
                   <th>Xem chi tiết</th>
+                  <th>Tạo mã giảm giá</th>
+                  <th>Chỉnh sửa</th>
                 </tr>
               </thead>
               <tbody>
@@ -704,7 +706,17 @@ function DashboardBusiness() {
                       <td className='eventNameContent'>{event?.name}</td>
                       <td>
                         <Link to={`/event-detail/${event.id}`} className="EventDetail__btn">
-                          Xem chi tiết sự kiện
+                          Xem chi tiết
+                        </Link>
+                      </td>
+                      <td>
+                        <Link to={"/create-discount"} state={{eventID : event.id}} className="EventDetail__btn">
+                          Tạo mã giảm giá
+                        </Link>
+                      </td>
+                      <td>
+                        <Link to={"/update-event"} state={{eventID : event.id}} className="EventDetail__btn">
+                          Chỉnh sửa
                         </Link>
                       </td>
                     </tr>
