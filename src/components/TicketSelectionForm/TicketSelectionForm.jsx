@@ -151,7 +151,7 @@ const TicketSelectionForm = ({ event }) => {
   const [discountCode, setDiscountCode] = useState('');
   const [billValue, setBillValue] = useState(0);
   const [tax, setTax] = useState([]);
-  const [discountID, setDiscountID] = useState("");
+  const [discountID, setDiscountID] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
 
   const handleSelectDiscount = (discount) => {
