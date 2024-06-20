@@ -207,7 +207,7 @@ function EventDetail() {
           <div className="EventDetail__demo--top">
             <h2 className="EventDetail__demo--title">{eventDetail?.name}</h2>
             {role ==="customer" && <div className="EventDetail__demo--btn">
-              <button className="EventDetail__demo--buy_now" onClick={handleShow}>
+              <button className="EventDetail__demo--buy_now" onClick={handleShow} style={buttonStyle}>
                 Mua ngay
                 <FontAwesomeIcon icon={faPaperPlane} className="icon_buy_now"/>
               </button>

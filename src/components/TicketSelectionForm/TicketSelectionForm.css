@@ -23,6 +23,24 @@
     margin-bottom: 20px;
 }
 
+.payment_top{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.payment_amount{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment_discount{
+    display: flex;
+    flex-direction: column;
+    margin-right: 40px;
+}
+
 .selectSeatForm > .btn , .paymentForm > .btn{
     display: flex;
     padding: 10px 30px;
@@ -31,12 +49,53 @@
     margin: auto;
 }
 
+.Select_ticket, .Select_seat{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .rdt > .form-control, .Select_seat > .form-control, .Select_ticket > .form-control{
     font-size: 1.6rem !important;
 }
 
+.Select_ticket > .form-control{
+    width: 500px !important;
+}
+
 .total_amount{
-    color: var(--green);
+    color: var(--background-color-1);
+}
+
+.tax{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+.tax_detail{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 40px;
+}
+
+.tax_title{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-weight: bold;
+}
+
+.origin_amount,
+.discount,
+.total_amount,
+.payment_method{
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    align-items: center;
 }
 
 .total_amount > b{
@@ -53,4 +112,65 @@
 
 .error-label{
     color: var(--red);
+}
+
+.form-control{
+    width: 300px !important;
+    font-size: 1.6rem !important;
+}
+
+.Form_discount{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.form-label{
+    width: 100%;
+}
+
+.select_discount_btn{
+    display: flex;
+    padding: 10px 20px;
+    font-size: 1.6rem;
+    width: fit-content;
+}
+
+.display_selected_discount{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.display_selected_discount__title{
+    font-size: 1.4rem;
+}
+
+.amount_origin{
+    color: var(--purple);
+}
+
+.amount_increase{
+    font-weight: normal;
+    color: var(--green);
+}
+
+.amount_decide{
+    color: var(--red);
+}
+
+.payment_amount__title{
+    width: 300px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--background-color-1);
+}
+
+.vnpay_logo{
+    height: 20px;
+    object-fit: contain;
 }
