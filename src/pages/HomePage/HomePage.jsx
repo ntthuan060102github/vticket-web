@@ -131,15 +131,15 @@ function HomePage() {
         </div>
         <div className="Homepage__outstanding_events--container">
           {outstandingEvents.map((outstandingEvent,index)=>(          
-            <Link to={`/event-detail/${outstandingEvent.id}`} key={index}  
-              className={index < 2 ? 'poster__top' : 'poster__bottom'} >
-              <img 
-                src={outstandingEvent.banner_url} 
-                alt={`poster + ${index + 1}`} 
-                // className={index < 2 ? 'poster__top' : 'poster__bottom'} 
-                // onClick={handleNavigateEventDetail(outstandingEvents?.id)}
-              />
-            </Link>
+                <Link to={`/event-detail/${outstandingEvent.id}`} key={index}  
+                  className={index < 2 ? 'poster__top' : 'poster__bottom'} >
+                  <img 
+                    src={outstandingEvent.banner_url} 
+                    alt={`poster + ${index + 1}`} 
+                    // className={index < 2 ? 'poster__top' : 'poster__bottom'} 
+                    // onClick={handleNavigateEventDetail(outstandingEvents?.id)}
+                  />
+                </Link>
           ))}
         </div>
       </div>
@@ -176,10 +176,10 @@ function HomePage() {
               </Link>
           )})}
         </div>
-        <button className="Homepage__comming_soon_events--more_btn">
+        <Link to={'/upcomming-events'} className="Homepage__comming_soon_events--more_btn">
           <FontAwesomeIcon icon={faBars} className="icon_plus"/>
           Xem thêm các sự kiện sắp diễn ra
-        </button>
+        </Link>
       </div>
       <div className="Homepage__event_topics">
         <h2 className="Homepage__event_topics--title">Thể loại sự kiện</h2>

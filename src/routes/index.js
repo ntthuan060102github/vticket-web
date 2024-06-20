@@ -13,6 +13,7 @@ import ProfileCustomer from "../pages/ProfileCustomer";
 import ResetPassword from "../pages/ResetPassword";
 import SearchPage from "../pages/SearchPage";
 import SignUp from "../pages/SignUp";
+import UpcommingEvents from "../pages/UpcommingEvents/UpcommingEvents";
 
 const publicRoutes = [
     {path: '/sign-up', component: <SignUp/>},
@@ -27,9 +28,11 @@ const privateRoutes = [
     {path: '/dashboard-admin', component: <DashboardAdmin/>},
     {path: '/create-event', component: <CreateEvent/>},
     {path: '/create-discount', component: <CreateDiscount/>},
+    {path: '/create-discount', component: <CreateDiscount/>},
     {path: '/event-detail/:id', component: <EventDetail/>},
     {path: '/events-for-topic/:id', component: <EventsForTopic/>},
     {path: '/search', component: <SearchPage/>},
+    {path: '/upcomming-events', component: <UpcommingEvents/>},
     {path: '/all-event-topic', component: <AllEventTopic/>},
     {path: '/payment-result', component: <PaymentResult/>},
 ];

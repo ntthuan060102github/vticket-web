@@ -35,12 +35,12 @@ function NavTopCus({eventTopics}) {
           <Nav className="me-auto">
             <div className='nav_event_topic'>
               {eventTopics && eventTopics.map((eventTopic,index)=>{
-                if(index <3){
+                if(index <5){
                 return(
                 <Link key={index} to={`/events-for-topic/${eventTopic.id}?event_topic=${eventTopic?.name}`} className="link_to_event_for_topic">{eventTopic?.name}</Link>
               )}})};
             </div>
-            <Dropdown className='nav_dropdown'>
+            {/* <Dropdown className='nav_dropdown'>
               <Dropdown.Toggle id="dropdown-basic">
                 Chọn địa điểm
               </Dropdown.Toggle>
@@ -50,7 +50,7 @@ function NavTopCus({eventTopics}) {
                 <Dropdown.Item href="#/action-2">Hà Nội</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Đà Nẵng</Dropdown.Item>
               </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
             {/* <NavDropdown title="Chọn địa điểm" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">TP. Hồ Chí Minh</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
