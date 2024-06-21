@@ -321,6 +321,7 @@ td, th {
     border-radius: 0 10px 10px 0;
     border: solid 1px var(--black);
     background-color: var(--white);
+    padding-bottom: 40px;
 }
 
 .Profile_customer__old_password, .Profile_customer__new_password{
