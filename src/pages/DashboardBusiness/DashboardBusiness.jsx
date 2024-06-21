@@ -428,8 +428,8 @@ function DashboardBusiness() {
   const [pageNumEvent, setPageNumEvent] = React.useState(1);
   const [pageSizeSupport, setPageSizeSupport] = React.useState(10);
   const [pageSizeEvent, setPageSizeEvent] = React.useState(10);
-  const [numPagesSupport, setNumPagesSupport] = React.useState(2);
-  const [numPagesEvent, setNumPagesEvent] = React.useState(2);
+  const [numPagesSupport, setNumPagesSupport] = React.useState(1);
+  const [numPagesEvent, setNumPagesEvent] = React.useState(0);
 
   React.useEffect(() => {
     fetchEvents();
@@ -695,7 +695,7 @@ function DashboardBusiness() {
                   <th className='eventNameTitle'>Tên sự kiện</th>
                   <th>Xem chi tiết</th>
                   <th>Tạo mã giảm giá</th>
-                  <th>Chỉnh sửa</th>
+                  {/* <th>Chỉnh sửa</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -714,11 +714,11 @@ function DashboardBusiness() {
                           Tạo mã giảm giá
                         </Link>
                       </td>
-                      <td>
+                      {/* <td>
                         <Link to={"/update-event"} state={{eventID : event.id}} className="EventDetail__btn">
                           Chỉnh sửa
                         </Link>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })}
