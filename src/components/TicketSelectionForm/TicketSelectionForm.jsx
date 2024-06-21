@@ -112,7 +112,7 @@ const TicketSelectionForm = ({ event }) => {
       .then(function (response) {
         console.log(response);
         if (response.data.status === 1) {
-          setDiscounts(response.data.data?.promotions)
+          setDiscounts(response.data.data)
         }
       })
   },[bookingID])
@@ -156,7 +156,7 @@ const TicketSelectionForm = ({ event }) => {
 
   const handleSelectDiscount = (discount) => {
     setSelectedDiscount(discount);
-    setDiscountCode(discount.title);
+    setDiscountCode(discount.pretty_name?.short_content);
     setDiscountID(discount.id);
     setShowModal(false);
     axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/ticket/pay/preview`, {
@@ -272,10 +272,10 @@ const TicketSelectionForm = ({ event }) => {
               {selectedDiscount && (
                 <div className="display_selected_discount">
                   <h5 className='display_selected_discount__title'>Thông tin mã giảm giá đã chọn:</h5>
-                  <p>Tiêu đề: {selectedDiscount.title}</p>
-                  <p>Mô tả: {selectedDiscount.desc}</p>
+                  <p>Tiêu đề: {selectedDiscount.pretty_name?.short_content}</p>
+                  <p>Mô tả: {selectedDiscount.pretty_name?.long_content}</p>
                   <p>Số lượng: {selectedDiscount.quantity}</p>
-                  <p>Giảm: {selectedDiscount.amount} VND</p>
+                  <p>Giảm: {selectedDiscount.evaluation_value} VND</p>
                 </div>
               )}
 
