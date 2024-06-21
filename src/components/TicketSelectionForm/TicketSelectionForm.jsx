@@ -159,9 +159,12 @@ const TicketSelectionForm = ({ event }) => {
     setDiscountCode(discount.pretty_name?.short_content);
     setDiscountID(discount.id);
     setShowModal(false);
+  };
+
+  useEffect(()=>{
     axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/ticket/pay/preview`, {
       booking_id: bookingID,
-      discount: discountID
+      discount: discountID,
     })
       .then(function (response) {
         console.log(response);
@@ -172,15 +175,7 @@ const TicketSelectionForm = ({ event }) => {
           setOrigin(response.data.data?.calculate_detail?.origin);
         } 
       })
-      .catch(function (error) {
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            ticket_payment_error: error
-          }
-        });
-      });
-  };
+  },[discountID])
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
