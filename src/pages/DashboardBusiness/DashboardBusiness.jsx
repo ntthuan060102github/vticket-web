@@ -752,7 +752,7 @@ function DashboardBusiness() {
                   return (
                     <tr key={support.id}  className={`table__content_${index + 1}`}>
                       <td className="stt">{(pageNumSupport - 1) * pageSizeSupport + index + 1}</td>
-                      <td className='eventNameContent_support'></td>
+                      <td className='eventNameContent_support'>{support?.event_name}</td>
                       <td>{support?.title}</td>
                       <td>{support?.content}</td>
                       <td>
