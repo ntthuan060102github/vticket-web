@@ -24,18 +24,43 @@ function SearchPage() {
   const query = useQuery();
   const kw = query.get('kw');
 
-  const [events, setEvents] = React.useState([])
+  const [events, setEvents] = React.useState([]);
+
+  const [pageNum, setPageNum] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(12);
+  const [numPages, setNumPages] = React.useState(0);
+  
+
+  const handlePageChange = (newPageNum) => {
+    setPageNum(newPageNum);
+  };
+
+  const handlePrevPage = () => {
+    if(pageNum - 1 > 0)
+    {
+      setPageNum(pageNum - 1);
+    }
+  };
+  const handleNextPage = () => {
+    if(pageNum + 1 <= numPages)
+    {
+      setPageNum(pageNum + 1);
+    }
+  };
 
   React.useEffect(() => {
-    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/search?kw=${kw}`, {
+    axios.get(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event/search?page_num=${pageNum}&page_size=${pageSize}&kw=${kw}`, {
+      page_num: pageNum,
+      page_size: pageSize,
       kw:kw,
     })
     .then(function (response) {
       if (response.data.status === 1) {
-        setEvents(response.data.data);
+        setEvents(response.data.data?.data);
+        setNumPages(response.data.data?.num_pages);
       }
     })
-  }, [kw]);
+  }, [kw, pageNum]);
 
   return (
     <div className="SearchPage__wrapper">
@@ -43,11 +68,11 @@ function SearchPage() {
       <div className="SearchPage__events">
         <h2 className="SearchPage__events--title">Sự kiện cần tìm</h2>
         <div className="SearchPage__events--container">
-          {events.length !== 0 ? events.map((event)=>{
+          {events ? events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');
             return (
               <Link to={`/event-detail/${event.id}`} key={event?.id} className="event">
-                <img src={event?.banner_url} alt="banner event" className="event__banner" />
+                <img src={event.banner_url !== "" ? event.banner_url: "/assets/images/logo.png"} alt="banner event" className="event__banner" />
                 <div className="event__date">
                     <span className="event__month">Tháng {month}</span>
                     <span className="event__day">{day}</span>
@@ -74,6 +99,14 @@ function SearchPage() {
           )}): (
             <span className="Get_events_null">Không tìm thấy sự kiện nào</span>
           )}
+        </div>
+        <div className="pagination_search_events">
+        <button className="pagination__previous" onClick={handlePrevPage}>← Quay lại</button>
+        {numPages !== 0 && Array(numPages).fill(0).map((_, index) => (
+          <button key={index} onClick={() => handlePageChange(index + 1)} className={(index + 1) === pageNum ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
+            {index + 1}
+          </button>))}
+        <button className="pagination__previous" onClick={handleNextPage}>Tiếp theo →</button>
         </div>
       </div>
       <Footer/>
