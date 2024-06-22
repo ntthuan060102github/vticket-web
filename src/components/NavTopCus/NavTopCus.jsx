@@ -37,7 +37,11 @@ function NavTopCus({eventTopics}) {
               {eventTopics && eventTopics.map((eventTopic,index)=>{
                 if(index <5){
                 return(
-                <Link key={index} to={`/events-for-topic/${eventTopic.id}?event_topic=${eventTopic?.name}`} className="link_to_event_for_topic">{eventTopic?.name}</Link>
+                <Link 
+                  key={index} 
+                  to={`/events-for-topic/${eventTopic.id}`} 
+                  state= {{ eventTopic: eventTopic?.name }} 
+                  className="link_to_event_for_topic">{eventTopic?.name}</Link>
               )}})};
             </div>
             {/* <Dropdown className='nav_dropdown'>
