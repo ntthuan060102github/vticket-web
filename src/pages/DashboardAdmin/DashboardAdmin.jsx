@@ -9,7 +9,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faDesktop, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
 import VTICKET_API_SERVICE_INFOS from '../../configs/api_infos'
 import { APP_ENV } from "../../configs/app_config"
 import './DashboardAdmin.css'
@@ -35,7 +35,7 @@ export const options = {
 
 function DashboardAdmin() {
   const [errors, setErrors] = React.useState([]);
-  const [taskName, setTaskName] = React.useState("report");
+  const [taskName, setTaskName] = React.useState("system monitoring");
   
   const [eventStatistic, setEventStatistic] = React.useState([]);
   const [statisticArray, setStatisticArray] = React.useState([]);
@@ -190,7 +190,7 @@ function DashboardAdmin() {
 
   React.useEffect(() => {
     fetchUsers();
-  }, [pageNum, pageSize]);
+  }, [pageNum, pageSize, blockUser, unlockUser]);
 
   const fetchUsers = async () => {
     axios({
@@ -285,6 +285,9 @@ function DashboardAdmin() {
             <h2 className="Sidebar__name">{firstName} {lastName}</h2>
           </div>
           <ul class="Sidebar__menu">
+            <li class={taskName === 'system monitoring' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('system monitoring')}>
+              <FontAwesomeIcon icon={faDesktop} className="task_icon" />
+              Giám sát hệ thống</li>
             <li class={taskName === 'report' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('report')}>
               <FontAwesomeIcon icon={faChartLine} className="task_icon" />
               Thống kê doanh thu</li>
@@ -293,6 +296,12 @@ function DashboardAdmin() {
               Quản lý tài khoản</li>
           </ul>
         </div>
+        {taskName === 'system monitoring' && <div className="Dashboard_admin__system_monitoring">
+          <iframe
+            className='system_monitoring__content'
+            src="https://4448jllf.status.cron-job.org/">
+          </iframe>
+          </div>}
         {taskName === 'report' && <div className="Dashboard_admin__report">
           <div className="Report_data">
               <div className="Total_ticket_solds">
@@ -396,6 +405,12 @@ function DashboardAdmin() {
             </tbody>
           </Table>
         </div>
+        {blockUser && <span className="successful">
+            Khóa tài khoản thành công!
+          </span>}
+        {unlockUser && <span className="successful">
+          Mở khóa tài khoản thành công!
+        </span>}
         <div className="pagination_users">
         <button className="pagination__previous" onClick={handlePrevPage}>← Quay lại</button>
         {numPages !== 0 && Array(numPages).fill(0).map((_, index) => (
@@ -417,12 +432,7 @@ function DashboardAdmin() {
           subContainerClassName={'pages pagination'}
           activeClassName={'active'}
         /> */}
-        {blockUser && <span className="successful">
-            Khóa tài khoản thành công!
-          </span>}
-        {unlockUser && <span className="successful">
-          Mở khóa tài khoản thành công!
-        </span>}
+        
         </div>}
       </div>
       <Footer/>

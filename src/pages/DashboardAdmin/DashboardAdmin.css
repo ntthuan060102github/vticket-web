@@ -433,4 +433,18 @@
     align-items: center;
 }
 
+.Dashboard_admin__system_monitoring{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-direction: column;
+    width: 80%;
+    border-radius: 0 10px 10px 0;
+    border: solid 1px var(--black);
+    background-color: var(--white);
+}
 
+.system_monitoring__content{
+    width: 100%;
+    height: 100vh;
+}
