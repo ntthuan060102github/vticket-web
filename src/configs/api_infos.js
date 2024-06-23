@@ -12,13 +12,13 @@ const VTICKET_API_SERVICE_INFOS = {
     },
     event: {
         staging: {
-            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-e1wz.onrender.com/apis/vticket-event-service/v1"
         },
         production: {
-            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-e1wz.onrender.com/apis/vticket-event-service/v1"
         },
         local: {
-            domain: "https://vticket-event-service-xfgd.onrender.com/apis/vticket-event-service/v1"
+            domain: "https://vticket-event-service-e1wz.onrender.com/apis/vticket-event-service/v1"
         }
     },
     logging: {
