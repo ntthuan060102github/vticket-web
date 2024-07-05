@@ -480,3 +480,9 @@ color: var(--background-color-1);
     gap: 10px;
     margin-bottom: 20px;
 }
+
+.Sidebar_business__name{
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1.25rem;
+}

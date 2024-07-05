@@ -55,6 +55,14 @@ function CreateEvent() {
     "location": "",
     "banner_url": ""
   });
+  React.useEffect(() =>{
+    setEventInfo((prevalue) => {
+      return {
+        ...prevalue,
+        start_time: defaultTimeFormat
+      }
+    })
+  },[defaultTimeFormat]);
   const [bannerFile, setBannerFile] = React.useState();
 
   const [eventTopic, setEventTopic] = React.useState([]);
@@ -73,7 +81,7 @@ function CreateEvent() {
   const [ticketTypeDetail, setTicketTypeDetail] = React.useState({
     "name": "",
     "description": "",
-    "fee_type": "",
+    "fee_type": "percent",
     "fee_value": 0,
   });
 
@@ -533,14 +541,14 @@ function CreateEvent() {
       setEventInfo((prevalue) => {
         return {
           ...prevalue,
-          name: value
+          "name": value
         }
       })
     } else if (nameObject === 'ticket input') {
       setTicket_Type((prevalue) => {
         return {
           ...prevalue,
-          name: value
+          "name": value
         }
       });
 
@@ -549,7 +557,7 @@ function CreateEvent() {
       setTicketTypeDetail((prevalue) => {
         return {
           ...prevalue,
-          name: value
+          "name": value
         }
       })
     }
@@ -606,17 +614,33 @@ function CreateEvent() {
   };
 
   const onTimeChangeHandler = (val) => {
-    const formattedTime = val.format('HH:mm:ss');
-    setStartTimeDayjs(val);
-    setEventInfo((prevValue) => ({
-      ...prevValue,
-      start_time: formattedTime,
-    }));
-  }
+    if (dayjs(val).isValid()) {
+      const formattedTime = dayjs(val).format('HH:mm:ss');
+      setStartTimeDayjs(dayjs(val));
+      setEventInfo((prevValue) => ({
+        ...prevValue,
+        start_time: formattedTime,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        event_time_error: null,
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        event_time_error: 'Invalid time format',
+      }));
+    }
+  };
 
   const [eventSended, setEventSended] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false); 
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Ngăn chặn hành động submit mặc định của form
+    if (isSubmitting) return; // Kiểm tra xem đã submit chưa
+
+    setIsSubmitting(true);
     const newErrors = {};
     setErrors([]);
 
@@ -634,6 +658,12 @@ function CreateEvent() {
     }
 
     if (Object.keys(newErrors).length === 0) {
+      console.log(eventInfo.start_time);
+      let isoDate = eventInfo.start_time;
+      let dateStartTime = new Date(isoDate);
+
+      // Chuyển đổi thành định dạng hh:mm:ss
+      let formattedTime = format(dateStartTime, 'HH:mm:ss');
       axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event`, {
         ticket_types: eventInfo.ticket_types,
         event_topics: eventInfo.event_topics,
@@ -641,12 +671,11 @@ function CreateEvent() {
         description: eventInfo.description,
         start_date: eventInfo.start_date,
         end_date: eventInfo.end_date,
-        start_time: (eventInfo.start_time).format('HH:mm:ss'),
+        start_time: formattedTime,
         location: eventInfo.location,
         banner_url: eventInfo.banner_url,
       })
         .then(function (response) {
-          console.log(response);
           if (response.data.status === 1) {
             setEventSended(true);
             setTimeout(() => {
@@ -670,7 +699,7 @@ function CreateEvent() {
               setTicketTypes([]);
               setTicketTypeDetails([]);
               setSeatConfigurations([]);
-              setBannerFile();
+              setBannerFile(null);
               setTicket_Type({
                   "name": "",
                   "description": "",
@@ -690,6 +719,7 @@ function CreateEvent() {
                   "start_seat_number": 1,
                   "end_seat_number": 1
                 });
+              setIsSubmitting(false);
             }, 2000);
           } else {
             setErrors((prevalue) => {
@@ -762,6 +792,16 @@ function CreateEvent() {
       }
     }
     setTicketTypes(updatedTickets);
+  }
+
+  const deleteTicketTypeDetail = (index) =>{
+    const updatedTicketTypeDetails = [...ticketTypeDetails];
+    for (var i = 0; i < updatedTicketTypeDetails.length; i++) {
+      if (i === index) {
+        updatedTicketTypeDetails.splice(i, 1);
+      }
+    }
+    setTicketTypeDetails(updatedTicketTypeDetails);
   }
 
   return (
@@ -1015,7 +1055,7 @@ function CreateEvent() {
                       placeholder='Chọn loại giá dịch vụ'
                       onChange={(event) => handleChange(event, 'service input')}
                     >
-                      <option value="persent">Tính theo phần trăm</option>
+                      <option value="percent">Tính theo phần trăm</option>
                       <option value="cash">Tính theo giá trị cố định</option>
                     </select>
                     {errors["ticket_type_detail_fee_type_error"] && <span className="error">{errors["ticket_type_detail_fee_type_error"]}</span>}
@@ -1034,9 +1074,25 @@ function CreateEvent() {
                     <button type="button" className='Create_event__form--submit_btn' onClick={handleAddService}>Thêm</button>
                     <h3 className="form__list--title">Danh sách các dịch vụ</h3>
                     <div className="form__list">
-                      {ticketTypeDetails !== null && ticketTypeDetails.map((ticket, index) => {
-                        return (<span key={index}> {ticket?.name}</span>);
-                      })}
+                    <Table striped bordered hover className='custome_table'>
+                      <thead>
+                        <tr className='table__title'>
+                          <th className="name_ticket">Tên</th>
+                          <th>Hành động</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {ticketTypeDetails !== null && ticketTypeDetails.map((ticketTypeDetail, index) => {
+                            return (
+                            <tr key={index}  className={`list_ticket`}>
+                              <td className="stt">{ticketTypeDetail?.name}</td>
+                              <td className='price_ticket'>
+                                <button type="button" className='btn btn-danger remove_ticket_btn' onClick={() => deleteTicketTypeDetail(index)}>Xóa</button>
+                              </td>
+                            </tr>
+                          )})}
+                      </tbody>
+                    </Table>
                     </div>
                   </div>
                 }
@@ -1174,7 +1230,7 @@ function CreateEvent() {
               </span>}
               <div className="form__btn">
                 <button type="button" className='Create_event__form--submit_btn return' onClick={handlePrevTask}>Trở về</button>
-                <button type="submit" className='Create_event__form--submit_btn' onClick={handleSubmit}>Gửi sự kiện</button>
+                <button type="submit" className='Create_event__form--submit_btn' onClick={e => handleSubmit(e)}>Gửi sự kiện</button>
               </div>
             </div>
           }

@@ -84,6 +84,8 @@
     border-left: solid 4px var(--background-color-1);
     padding-left: 10px;
     font-weight: bold;
+    width: 80rem;
+    height: 5rem;
 }
 
 .EventDetail__demo--btn{
@@ -143,7 +145,9 @@
 }
 
 .EventDetail__detail--description{
+    white-space: pre-wrap;
     font-size: 1.6rem;
+    padding-bottom: 10px;
 }
 
 .ticket{
@@ -179,8 +183,17 @@
 .bussiness_image{
     height: 160px;
     object-fit: contain;
+    padding: 10px;
     border-radius: 10px;
     border: solid 1px var(--gray);
+}
+
+.business_name{
+    font-size: 3rem;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    color: var(--purple);
 }
 
 .EventDetail__relative_event--container{

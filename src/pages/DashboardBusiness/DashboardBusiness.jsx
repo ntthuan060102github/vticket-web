@@ -264,7 +264,7 @@ function DashboardBusiness() {
     }
   }
 
-  const handleSeeRevenue = () =>{   
+  const handleSeeRevenue = () =>{ 
     const newErrors = {};
     setErrors([]);
 
@@ -505,7 +505,7 @@ function DashboardBusiness() {
         <div className="Dashboard_business__sidebar">
           <div className="Sidebar__avt_name">
             <img src={accountInfo.avatar_url ? accountInfo.avatar_url : "/assets/images/avatar_default.png"} alt="User Avatar" className="Sidebar_avt" />
-            <h2 className="Sidebar__name">{firstName} {lastName}</h2>
+            <h2 className="Sidebar_business__name">{firstName} {lastName}</h2>
           </div>
           <ul class="Sidebar__menu">
             <li class={taskName === 'infor' ? "Sidebar__menu--item_active" : "Sidebar__menu--item"} onClick={()=>setTaskName('infor')}>
@@ -601,7 +601,7 @@ function DashboardBusiness() {
             {changedInfo && <span className="successful">
               Cập nhật thông tin tài khoản thành công!
             </span>}
-            <button className='Dashboard_business__form--submit_btn' onClick={handleSubmit}>Lưu</button>
+            <button className='Dashboard_business__form--submit_btn' onClick={e => handleSubmit}>Lưu</button>
           </div>
         </form>}
         {taskName === 'report' && <div className="Dashboard_business__report">

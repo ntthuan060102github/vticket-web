@@ -83,7 +83,8 @@ function DashboardAdmin() {
     }));
   }
 
-  const handleSeeRevenue = () =>{   
+  const handleSeeRevenue = () =>{ 
+    console.log(1);  
     const newErrors = {};
     setErrors([]);
 
@@ -112,6 +113,7 @@ function DashboardAdmin() {
         },
       })
         .then(function (response) {
+          console.log(response);
           if (response.data.status === 1) {
             setEventStatistic(response.data.data);
           }
