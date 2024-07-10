@@ -282,7 +282,7 @@ const TicketSelectionForm = ({ event }) => {
               />
             </div>
           </div>
-          <Button variant="primary" onClick={handlePayment}>Thanh toán</Button>
+          <Button className="payment_btn" variant="primary" onClick={handlePayment}>Thanh toán</Button>
         </div>
       }
     </Container>

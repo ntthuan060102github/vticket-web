@@ -35,7 +35,6 @@ SwiperCore.use([EffectCards]);
 
 function EventDetail() {
   let { id } = useParams();
-  const feedback_replyable = localStorage.getItem('feedback_replyable');
   const role = localStorage.getItem('role');
   const [errors, setErrors] = React.useState([]);
   const [orgInfo, setOrgInfo] = React.useState([]);
@@ -155,7 +154,7 @@ function EventDetail() {
   }
 
   const buttonStyle = !isAPIResponsed ? { pointerEvents: 'none' } : {};
-  const replyStyle = feedback_replyable !== "true" ? { pointerEvents: 'none' } : {};
+  const replyStyle = role !== "business" ? { pointerEvents: 'none' } : {};
   const repliedStyle = isReplied  ? { pointerEvents: 'none' }: {};
   const inputStyle = { pointerEvents: 'none' };
 
@@ -313,7 +312,7 @@ function EventDetail() {
                   style={inputStyle}
                 />
               </div>
-              {feedback_replyable === "true" && (<button className={!showReply ? "Feedback__reply_btn not_click_reply" : "Feedback__reply_btn reply_acctive"} onClick={() => handleShowReply(feedback.id)} style={buttonStyle}>
+              {role === "business" && (<button className={!showReply ? "Feedback__reply_btn not_click_reply" : "Feedback__reply_btn reply_acctive"} onClick={() => handleShowReply(feedback.id)} style={buttonStyle}>
                 Phản hồi
               </button>)}
               {showReply && 
