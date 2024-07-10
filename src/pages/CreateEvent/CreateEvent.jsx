@@ -100,7 +100,7 @@ function CreateEvent() {
   const [selectedIndex, setSelectedIndex] = React.useState("");
 
 
-  const addTicketType = () => {
+  const addTicketType = React.useCallback(() => {
     const newErrors = {};
     setErrors([]);
 
@@ -159,7 +159,7 @@ function CreateEvent() {
         "seat_configurations": [],
       });
     }
-  };
+  }, [ticket_Type, ticketTypes]);
 
   const handleAddService = () => {
     const newErrors = {};
@@ -638,9 +638,7 @@ function CreateEvent() {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Ngăn chặn hành động submit mặc định của form
-    if (isSubmitting) return; // Kiểm tra xem đã submit chưa
-
-    setIsSubmitting(true);
+    // if (isSubmitting) return; // Kiểm tra xem đã submit chưa
     const newErrors = {};
     setErrors([]);
 
@@ -676,6 +674,7 @@ function CreateEvent() {
         banner_url: eventInfo.banner_url,
       })
         .then(function (response) {
+          console.log(response);
           if (response.data.status === 1) {
             setEventSended(true);
             setTimeout(() => {
@@ -700,13 +699,6 @@ function CreateEvent() {
               setTicketTypeDetails([]);
               setSeatConfigurations([]);
               setBannerFile(null);
-              setTicket_Type({
-                  "name": "",
-                  "description": "",
-                  "price": 5000,
-                  "ticket_type_details": [],
-                  "seat_configurations": [],
-                });
               setTicketTypeDetail({
                   "name": "",
                   "description": "",
