@@ -159,9 +159,9 @@
 }
 
 .name_ticket{
-    width: 80px !important; 
-    max-width: 80px; 
-    min-width: 80px; 
+    width: 150px !important; 
+    max-width: 150px; 
+    min-width: 150px; 
     text-overflow: ellipsis;  
     white-space: nowrap;
     overflow: hidden;
@@ -237,7 +237,9 @@
 }
 
 .stt{
-    width: 50px;
+    width: 50px!important; 
+    max-width: 50px; 
+    min-width: 50px; 
 }
 
 .title{

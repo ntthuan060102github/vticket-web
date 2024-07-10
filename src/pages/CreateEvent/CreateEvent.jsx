@@ -222,12 +222,13 @@ function CreateEvent() {
     return floatValue >= 5000 && floatValue <= 1000000000;
   };
 
-  const handleAddBanner = (event) =>{
+  const handleAddBanner = (event) => {
     setErrors([]);
     const file = event.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
-    axios({
+  
+    return axios({
       method: 'post',
       url: `${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/image`,
       data: {image: formData.get("file")},
@@ -235,17 +236,122 @@ function CreateEvent() {
         'Content-Type': 'multipart/form-data',
       },
     })
-      .then(function (response) {
-        if (response.data.status === 1) {
-          setEventInfo((prevalue) => {
-            return {
+    .then(function (response) {
+      if (response.data.status === 1) {
+        setEventInfo((prevalue) => ({
+          ...prevalue,
+          banner_url: response.data.data.url
+        }));
+        return true; // Trả về true nếu thành công
+      } else {
+        return false; // Trả về false nếu không thành công
+      }
+    })
+    .catch(function (error) {
+      setErrors((prevalue) => ({
+        ...prevalue,
+        banner_upload_error: error.message
+      }));
+      return false; // Trả về false nếu có lỗi
+    });
+  };
+  
+  const handleNextTask = async () => {
+    const newErrors = {};
+    setErrors([]);
+  
+    if (taskName === "event_input") {
+      if (!eventInfo.name) {
+        newErrors["event_name_error"] = "Tên sự kiện không được để trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_name_error: "Tên sự kiện không được để trống"
+        }));
+      }
+  
+      if (!eventInfo.description) {
+        newErrors["event_description_error"] = "Mô tả sự kiện không được để trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_description_error: "Mô tả sự kiện không được để trống"
+        }));
+      }
+  
+      if (eventInfo.start_date > eventInfo.end_date) {
+        newErrors["event_date_error"] = "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_date_error: "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc"
+        }));
+      }
+  
+      if (!eventInfo.start_time) {
+        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được để trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_time_error: "Thời gian bắt đầu sự kiện không được để trống"
+        }));
+      }
+  
+      const currentTime = dayjs();
+      const startTime = dayjs(`${eventInfo.start_date} ${eventInfo.start_time}`, 'YYYY-MM-DD HH:mm:ss');
+  
+      if (eventInfo.start_date === onlyFormattedDateCurrent && startTime.isBefore(currentTime)) {
+        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_time_error: "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại"
+        }));
+      }
+  
+      if (!eventInfo.location) {
+        newErrors["event_location_error"] = "Nơi diễn ra sự kiện không được để trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_location_error: "Nơi diễn ra sự kiện không được để trống"
+        }));
+      }
+  
+      if (Object.values(eventInfo.event_topics).length === 0) {
+        newErrors["event_topics_error"] = "Chủ đề sự kiện không được để trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          event_topics_error: "Chủ đề sự kiện không được để trống"
+        }));
+      }
+  
+      if (Object.values(newErrors).length === 0) {
+        // Nếu không có lỗi nào, kiểm tra banner_url
+        if (!eventInfo.banner_url) {
+          const bannerUploadSuccess = await handleAddBanner(); // Chờ banner upload
+          if (!bannerUploadSuccess) {
+            newErrors["event_banner_error"] = "Không thể tải lên banner";
+            setErrors((prevalue) => ({
               ...prevalue,
-              banner_url: response.data.data.url
-            }
-          })
+              event_banner_error: "Không thể tải lên banner"
+            }));
+            return; // Nếu upload không thành công, không chuyển tab
+          }
         }
-      })
-  }
+        setTaskName("ticket_type_input");
+      }
+  
+    } else if (taskName === "ticket_type_input") {
+      if (ticketTypes.length === 0) {
+        newErrors["ticket_type_list_error"] = "Danh sách loại vé không được trống";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          ticket_type_list_error: "Danh sách loại vé không được trống"
+        }));
+      }
+      if (Object.values(newErrors).length === 0) {
+        setTaskName("service_input");
+      }
+    } else if (taskName === "service_input") {
+      setTaskName("seat_class_input");
+    }
+  };
+  
 
   const handleAddSeat = () => {
     setErrors([]);
@@ -376,114 +482,114 @@ function CreateEvent() {
     });
   }, [ticketTypes]);
 
-  const handleNextTask = () => {
-    const newErrors = {};
-    setErrors([]);
-    if (taskName === "event_input") {
-      if (!eventInfo.name) {
-        newErrors["event_name_error"] = "Tên sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_name_error: "Tên sự kiện không được để trống"
-          }
-        });
-      }
+  // const handleNextTask = () => {
+  //   const newErrors = {};
+  //   setErrors([]);
+  //   if (taskName === "event_input") {
+  //     if (!eventInfo.name) {
+  //       newErrors["event_name_error"] = "Tên sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_name_error: "Tên sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      if (!eventInfo.description) {
-        newErrors["event_description_error"] = "Mô tả sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_description_error: "Mô tả sự kiện không được để trống"
-          }
-        });
-      }
+  //     if (!eventInfo.description) {
+  //       newErrors["event_description_error"] = "Mô tả sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_description_error: "Mô tả sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      if (eventInfo.start_date > eventInfo.end_date) {
-        newErrors["event_date_error"] = "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_date_error: "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc"
-          }
-        });
-      }
+  //     if (eventInfo.start_date > eventInfo.end_date) {
+  //       newErrors["event_date_error"] = "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_date_error: "Ngày bắt đầu sự kiện không được lớn hơn ngày kết thúc"
+  //         }
+  //       });
+  //     }
 
-      if (!eventInfo.start_time) {
-        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_time_error: "Thời gian bắt đầu sự kiện không được để trống"
-          }
-        });
-      }
+  //     if (!eventInfo.start_time) {
+  //       newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_time_error: "Thời gian bắt đầu sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      const currentTime = dayjs();
-      const startTime = dayjs(`${eventInfo.start_date} ${eventInfo.start_time}`, 'YYYY-MM-DD HH:mm:ss');
+  //     const currentTime = dayjs();
+  //     const startTime = dayjs(`${eventInfo.start_date} ${eventInfo.start_time}`, 'YYYY-MM-DD HH:mm:ss');
 
-      if (eventInfo.start_date === onlyFormattedDateCurrent && startTime.isBefore(currentTime)) {
-        newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_time_error: "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại"
-          }
-        });
-      }
+  //     if (eventInfo.start_date === onlyFormattedDateCurrent && startTime.isBefore(currentTime)) {
+  //       newErrors["event_time_error"] = "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_time_error: "Thời gian bắt đầu sự kiện không được nhỏ hơn thời gian hiện tại"
+  //         }
+  //       });
+  //     }
 
-      if (!eventInfo.location) {
-        newErrors["event_location_error"] = "Nơi diễn ra sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_location_error: "Nơi diễn ra sự kiện không được để trống"
-          }
-        });
-      }
+  //     if (!eventInfo.location) {
+  //       newErrors["event_location_error"] = "Nơi diễn ra sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_location_error: "Nơi diễn ra sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      if (!eventInfo.banner_url) {
-        newErrors["event_banner_error"] = "Banner sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_banner_error: "Banner sự kiện không được để trống"
-          }
-        });
-      }
+  //     if (!eventInfo.banner_url) {
+  //       newErrors["event_banner_error"] = "Banner sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_banner_error: "Banner sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      if (Object.values(eventInfo.event_topics).length === 0) {
-        newErrors["event_topics_error"] = "Chủ đề sự kiện không được để trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            event_topics_error: "Chủ đề sự kiện không được để trống"
-          }
-        });
-      }
+  //     if (Object.values(eventInfo.event_topics).length === 0) {
+  //       newErrors["event_topics_error"] = "Chủ đề sự kiện không được để trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           event_topics_error: "Chủ đề sự kiện không được để trống"
+  //         }
+  //       });
+  //     }
 
-      if (Object.values(newErrors).length === 0) {
-        setTaskName("ticket_type_input")
-      }
+  //     if (Object.values(newErrors).length === 0) {
+  //       setTaskName("ticket_type_input")
+  //     }
 
-    } else if (taskName === "ticket_type_input") {
-      if (ticketTypes.length === 0) {
-        newErrors["ticket_type_list_error"] = "Danh sách loại vé không được trống";
-        setErrors((prevalue) => {
-          return {
-            ...prevalue,
-            ticket_type_list_error: "Danh sách loại vé không được trống"
-          }
-        });
-      }
-      if (Object.values(newErrors).length === 0) {
-        setTaskName("service_input")
-      }
-    } else if (taskName === "service_input") {
-      setTaskName("seat_class_input")
-    }
-  }
+  //   } else if (taskName === "ticket_type_input") {
+  //     if (ticketTypes.length === 0) {
+  //       newErrors["ticket_type_list_error"] = "Danh sách loại vé không được trống";
+  //       setErrors((prevalue) => {
+  //         return {
+  //           ...prevalue,
+  //           ticket_type_list_error: "Danh sách loại vé không được trống"
+  //         }
+  //       });
+  //     }
+  //     if (Object.values(newErrors).length === 0) {
+  //       setTaskName("service_input")
+  //     }
+  //   } else if (taskName === "service_input") {
+  //     setTaskName("seat_class_input")
+  //   }
+  // }
 
   const handlePrevTask = () => {
     setErrors([]);
@@ -983,9 +1089,9 @@ function CreateEvent() {
                     {ticketTypes !== null && ticketTypes.map((ticket, index) => {
                       return (
                       <tr key={index}  className={`list_ticket`}>
-                        <td className="stt">{ticket?.name}</td>
-                        <td className='name_ticket'>{ticket?.price.toLocaleString('en-US')} VND</td>
-                        <td className='price_ticket'>
+                        <td className="name_ticket">{ticket?.name}</td>
+                        <td className='price_ticket'>{ticket?.price.toLocaleString('en-US')} VND</td>
+                        <td>
                           <button type="button" className='btn btn-danger remove_ticket_btn' onClick={() => deleteTicketType(index)}>Xóa</button>
                         </td>
                       </tr>
@@ -1010,7 +1116,7 @@ function CreateEvent() {
                       </tr>
                       <tr>
                         <th className="stt">STT</th>
-                        <th>Tên loại vé</th>
+                        <th className="name_ticket">Tên loại vé</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1018,7 +1124,7 @@ function CreateEvent() {
                         return (
                           <tr key={index} onClick={() => handleSelected(ticket, index)}>
                             <td className="stt">{index}</td>
-                            <td>{ticket?.name}</td>
+                            <td className="name_ticket">{ticket?.name}</td>
                           </tr>
                         );
                       })}

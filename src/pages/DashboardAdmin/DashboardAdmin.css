@@ -404,7 +404,7 @@
     margin-bottom: 20px;
 }
 
-.pagination__previous, .pagination__previous{
+.pagination__previous, .pagination__next{
     display: flex;
     background-color: transparent;
     padding: 5px;
@@ -412,7 +412,7 @@
     font-size: 1.6rem;
 }
 
-.pagination__previous:hover, .pagination__previous:hover{
+.pagination__previous:hover, .pagination__next:hover{
     color: var(--background-color-1);
 }
 

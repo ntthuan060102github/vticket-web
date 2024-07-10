@@ -60,6 +60,8 @@ function ProfileCustomer() {
   const [avatarURL,setAvatarURL] = React.useState(accountInfo.avatar_url);
 
   const [tickets, setTickets] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const ticketsPerPage = 10;
 
 
   const handleChange = (event) => {
@@ -302,6 +304,26 @@ function ProfileCustomer() {
     setShowModalFeedback(false);
     setSelectedTicket(null);
   };
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+  const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="Profile_customer__wrapper">
@@ -434,57 +456,69 @@ function ProfileCustomer() {
         </form>}
         {taskName === 'ticket management' && <div className="Customer_ticket_management">
           <h2 className="Profile_customer__infor_input--title">Danh sách vé</h2> 
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th className="stt">STT</th>
-                <th className='event_name'>Tên sự kiện</th>
-                <th>Số ghế</th>
-                <th>Trạng thái</th>
-                <th>Đánh giá</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tickets !== null && tickets.map((ticket, index) => {
-                let statusFormated = "";
-                let clasNameStatus = ticket.ticket_status;
-                if(ticket.ticket_status === 'paid')
-                {
-                  statusFormated = 'Đã thanh toán';
-                } else if(ticket.ticket_status === 'wait_to_paid')
-                {
-                  statusFormated = 'Chưa thanh toán'
-                } else 
-                {
-                  statusFormated = 'Đã hủy'
-                };
-                const isFeedbackable = (ticket.feedbackable !== 'false' && ticket.feedbackable !== null );
-                const buttonStyle = !isFeedbackable ? { pointerEvents: 'none' } : {};
-                return (
-                  <tr key={ticket.event_id}>
-                    <td className="stt">{index}</td>
-                    <td className='event_name'>{ticket?.event_name}</td>
-                    <td>{ticket?.seat_number}</td>
-                    <td className={clasNameStatus}>{statusFormated}</td>
-                    <td>
-                      <button className="EventDetail__feedback" onClick={() => handleShowFeedback(ticket)} style={buttonStyle}>
-                        Đánh giá sự kiện
-                      </button>
-                      <Modal show={showModalFeedback} onHide={handleCloseFeedback} size="xl">
-                        <Modal.Header closeButton>
-                          <Modal.Title>Đánh giá sự kiện</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          <FeedbackForm event_id={selectedTicket?.event_id} event_name={selectedTicket?.event_name} feedbackable ={selectedTicket?.feedbackable} handleCloseFeedback={handleCloseFeedback}/>
-                        </Modal.Body>
-                      </Modal>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </div> }
+<div className='Profile_customer__ticket_management--table'>
+            <Table striped bordered hover>
+              <thead>
+                <tr className='table__title'>
+                  <th className="stt">STT</th>
+                  <th className='event_name'>Tên sự kiện</th>
+                  <th>Số ghế</th>
+                  <th>Trạng thái</th>
+                  <th>Đánh giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentTickets !== null && currentTickets.map((ticket, index) => {
+                  let statusFormated = "";
+                  let clasNameStatus = ticket.ticket_status;
+                  if(ticket.ticket_status === 'paid')
+                  {
+                    statusFormated = 'Đã thanh toán';
+                  } else if(ticket.ticket_status === 'wait_to_paid')
+                  {
+                    statusFormated = 'Chưa thanh toán'
+                  } else 
+                  {
+                    statusFormated = 'Đã hủy'
+                  };
+                  const isFeedbackable = (ticket.feedbackable !== 'false' && ticket.feedbackable !== null );
+                  const buttonStyle = !isFeedbackable ? { pointerEvents: 'none' } : {};
+                  return (
+                    <tr key={ticket.event_id}>
+                      <td className="stt">{index}</td>
+                      <td className='event_name'>{ticket?.event_name}</td>
+                      <td>{ticket?.seat_number}</td>
+                      <td className={clasNameStatus}>{statusFormated}</td>
+                      <td>
+                        <button className="EventDetail__feedback" onClick={() => handleShowFeedback(ticket)} style={buttonStyle}>
+                          Đánh giá sự kiện
+                        </button>
+                        <Modal show={showModalFeedback} onHide={handleCloseFeedback} size="xl">
+                          <Modal.Header closeButton>
+                            <Modal.Title>Đánh giá sự kiện</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <FeedbackForm event_id={selectedTicket?.event_id} event_name={selectedTicket?.event_name} feedbackable ={selectedTicket?.feedbackable} handleCloseFeedback={handleCloseFeedback}/>
+                          </Modal.Body>
+                        </Modal>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+</div>
+          <div className="pagination_tickets">
+            <button className="pagination__previous" onClick={handlePrevPage} disabled={currentPage === 1}>← Quay lại</button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button key={index + 1} onClick={() => handlePageChange(index + 1)} className={(index + 1) === currentPage ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
+                {index + 1}
+              </button>
+            ))}
+            <button className="pagination__next" onClick={handleNextPage} disabled={currentPage === totalPages}>Tiếp theo →</button>
+          </div> 
+        </div>
+        }
         {taskName === 'change password' && <div className="Customer_change_password">
           <h2 className="Profile_customer__infor_input--title">Thay đổi mật khẩu</h2> 
           <div className="Profile_customer__old_password">
