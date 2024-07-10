@@ -695,44 +695,45 @@ function CreateEvent() {
               setEventSended(false);
             }, 1500);
             setTimeout(() => {
-              setTaskName('event_input');
-              setNow(dayjs());
-              setDateCurrent(new Date());
-              setEventInfo({
-                "ticket_types": [],
-                "event_topics": [],
-                "name": "",
-                "description": "",
-                "start_date": onlyFormattedDateCurrent,
-                "end_date": onlyFormattedDateCurrent,
-                "start_time": defaultTimeFormat,
-                "location": "",
-                "banner_url": ""
-              });
-              setTicketTypeDetails([]);
-              setSeatConfigurations([]);
-              setTicket_Type({
-                "name": "",
-                "description": "",
-                "price": 5000,
-                "ticket_type_details": [],
-                "seat_configurations": [],
-              });
-              setTicketTypes([]);
-              setBannerFile(null);
-              setTicketTypeDetail({
-                  "name": "",
-                  "description": "",
-                  "fee_type": "",
-                  "fee_value": 0,
-                });
-              setSeatConfigurationList([]);
-              setSeatConfiguration({
-                  "position": "",
-                  "start_seat_number": 1,
-                  "end_seat_number": 1
-                });
-              setIsSubmitting(false);
+              // setTaskName('event_input');
+              // setNow(dayjs());
+              // setDateCurrent(new Date());
+              // setEventInfo({
+              //   "ticket_types": [],
+              //   "event_topics": [],
+              //   "name": "",
+              //   "description": "",
+              //   "start_date": onlyFormattedDateCurrent,
+              //   "end_date": onlyFormattedDateCurrent,
+              //   "start_time": defaultTimeFormat,
+              //   "location": "",
+              //   "banner_url": ""
+              // });
+              // setTicketTypeDetails([]);
+              // setSeatConfigurations([]);
+              // setTicket_Type({
+              //   "name": "",
+              //   "description": "",
+              //   "price": 5000,
+              //   "ticket_type_details": [],
+              //   "seat_configurations": [],
+              // });
+              // setTicketTypes([]);
+              // setBannerFile(null);
+              // setTicketTypeDetail({
+              //     "name": "",
+              //     "description": "",
+              //     "fee_type": "",
+              //     "fee_value": 0,
+              //   });
+              // setSeatConfigurationList([]);
+              // setSeatConfiguration({
+              //     "position": "",
+              //     "start_seat_number": 1,
+              //     "end_seat_number": 1
+              //   });
+              // setIsSubmitting(false);
+              window.location.reload();
             }, 2000);
           } else {
             setErrors((prevalue) => {
