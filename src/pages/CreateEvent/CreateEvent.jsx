@@ -104,6 +104,7 @@ function CreateEvent() {
     const newErrors = {};
     setErrors([]);
 
+    console.log(ticket_Type);
     const listTicket = [...ticketTypes]
 
     for (var i = 0; i < listTicket.length; i++) {
@@ -119,7 +120,7 @@ function CreateEvent() {
     }
 
 
-    if (!ticket_Type.name) {
+    if (ticket_Type.name === "") {
       newErrors["ticket_type_name_error"] = "Tên loại vé không được để trống";
       setErrors((prevalue) => {
         return {
@@ -129,7 +130,7 @@ function CreateEvent() {
       });
     }
 
-    if (!ticket_Type.description) {
+    if (ticket_Type.description === "") {
       newErrors["ticket_type_description_error"] = "Mô tả loại vé không được để trống";
       setErrors((prevalue) => {
         return {
@@ -375,7 +376,6 @@ function CreateEvent() {
     });
   }, [ticketTypes]);
 
-
   const handleNextTask = () => {
     const newErrors = {};
     setErrors([]);
@@ -501,6 +501,8 @@ function CreateEvent() {
     let value = event.target.value;
     let name = event.target.name;
 
+    console.log(ticket_Type);
+
     if (nameObject === 'event input') {
       setEventInfo((prevalue) => {
         return {
@@ -515,7 +517,6 @@ function CreateEvent() {
           [name]: value
         }
       });
-
 
     } else if (nameObject === 'service input') {
       setTicketTypeDetail((prevalue) => {
@@ -657,11 +658,24 @@ function CreateEvent() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log(eventInfo.start_time);
-      let isoDate = eventInfo.start_time;
-      let dateStartTime = new Date(isoDate);
+      let formattedTime = eventInfo.start_time;
 
-      // Chuyển đổi thành định dạng hh:mm:ss
-      let formattedTime = format(dateStartTime, 'HH:mm:ss');
+    // Kiểm tra xem start_time có ở dạng HH:mm:ss không
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+    if (!timeRegex.test(formattedTime)) {
+      // Nếu không đúng định dạng HH:mm:ss, chuyển đổi lại
+      let dateStartTime = new Date(eventInfo.start_time);
+      if (isNaN(dateStartTime)) {
+        newErrors["start_time_error"] = "Thời gian bắt đầu không hợp lệ";
+        setErrors((prevalue) => ({
+          ...prevalue,
+          start_time_error: "Thời gian bắt đầu không hợp lệ"
+        }));
+        setIsSubmitting(false);
+        return;
+      }
+      formattedTime = format(dateStartTime, 'HH:mm:ss');
+    }
       axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/event`, {
         ticket_types: eventInfo.ticket_types,
         event_topics: eventInfo.event_topics,
@@ -695,9 +709,16 @@ function CreateEvent() {
                 "location": "",
                 "banner_url": ""
               });
-              setTicketTypes([]);
               setTicketTypeDetails([]);
               setSeatConfigurations([]);
+              setTicket_Type({
+                "name": "",
+                "description": "",
+                "price": 5000,
+                "ticket_type_details": [],
+                "seat_configurations": [],
+              });
+              setTicketTypes([]);
               setBannerFile(null);
               setTicketTypeDetail({
                   "name": "",
