@@ -58,7 +58,10 @@ function SearchPage() {
     .then(function (response) {
       if (response.data.status === 1) {
         setEvents(response.data.data?.data);
-        setNumPages(response.data.data?.num_pages);
+        const eventList = response.data.data.data;
+        if(eventList.length !==0){
+          setNumPages(response.data.data?.num_pages);
+        }
         setLoading(false);
       }
     })
@@ -70,7 +73,7 @@ function SearchPage() {
       <div className="SearchPage__events">
         <h2 className="SearchPage__events--title">Sự kiện cần tìm</h2>
         <div className="SearchPage__events--container">
-        {!loading && (events ? events.map((event)=>{
+        {!loading && (events.length !==0 ? events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');
             return (
               <Link to={`/event-detail/${event.id}`} key={event?.id} className="event">
