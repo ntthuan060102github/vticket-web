@@ -185,7 +185,6 @@
     border-radius: 5px;
     border: solid 1px var(--black);
     overflow: auto; 
-    padding: 10px;
 }
 
 .remove_ticket_btn{

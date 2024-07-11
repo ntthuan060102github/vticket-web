@@ -1318,9 +1318,6 @@ function CreateEvent() {
                         <Table striped bordered hover>
                           <thead>
                             <tr>
-                              <th className="title" colSpan={4}>Danh sách các loại vé</th>
-                            </tr>
-                            <tr>
                               <th className="stt">STT</th>
                               <th>Hàng ghế</th>
                               <th>Ghế bắt đầu</th>
