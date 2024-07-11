@@ -163,8 +163,7 @@ function CreateDiscount() {
         if (Object.keys(newErrors).length !== 0) {
             setErrors(newErrors);
         } else {
-
-        console.log(discountInfo);
+            console.log(discountInfo);
           axios.post(`${VTICKET_API_SERVICE_INFOS.event[APP_ENV].domain}/promotion`, {
             discount_type: discountInfo.discount_type,
             discount_value: discountInfo.discount_value,
@@ -338,7 +337,7 @@ function CreateDiscount() {
                     {discountPosted && <span className="successful">
                         Thêm mã khuyến mãi thành công!
                     </span>}
-                    <button type="button" className='Create_discount__form--submit_btn' onClick={() => handleSubmit}>Tạo mã giảm giá</button>
+                    <button type="button" className='Create_discount__form--submit_btn' onClick={() => handleSubmit()}>Tạo mã giảm giá</button>
                 </div>
             </div>
         </div>
