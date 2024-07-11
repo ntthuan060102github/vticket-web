@@ -105,14 +105,14 @@ function SearchPage() {
             <span className="Get_events_null">Không tìm thấy sự kiện nào</span>
           ))}
         </div>
-        <div className="pagination_search_events">
+        {numPages !== 0 &&<div className="pagination_search_events">
         <button className="pagination__previous" onClick={handlePrevPage}>← Quay lại</button>
         {numPages !== 0 && Array(numPages).fill(0).map((_, index) => (
           <button key={index} onClick={() => handlePageChange(index + 1)} className={(index + 1) === pageNum ? 'pagination__page_num--active' : 'pagination__page_num--unactive'}>
             {index + 1}
           </button>))}
         <button className="pagination__previous" onClick={handleNextPage}>Tiếp theo →</button>
-        </div>
+        </div>}
       </div>
       <Footer/>
     </div>
