@@ -298,6 +298,7 @@ function DashboardBusiness() {
         },
       })
         .then(function (response) {
+          console.log(response);
           if (response.data.status === 1) {
             setEventStatistic(response.data.data);
           }
@@ -323,7 +324,7 @@ function DashboardBusiness() {
 
   React.useEffect(()=>{
     if(statisticArray && statisticArray.length > 0) {
-      for(var i = 1; i< statisticArray.length; i++){
+      for(var i = 0; i< statisticArray.length; i++){
         labels.push(statisticArray[i].date);
         dataSold.push(statisticArray[i].ticket_sold);
         dataRevenue.push(statisticArray[i].revenue);
