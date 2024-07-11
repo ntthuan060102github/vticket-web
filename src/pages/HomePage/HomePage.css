@@ -167,7 +167,7 @@
     margin-top: 20px;
     width: 100%;
     flex-wrap: wrap;
-    grid-template-columns: repeat(4);
+    grid-template-columns: repeat(3);
     justify-content: space-between;
     grid-gap: 20px;
 }
@@ -330,7 +330,7 @@
 }
 
 .event_topic_big{
-    width: 560px;
+    width: 48%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -338,7 +338,7 @@
 }
 
 .event_topic_small{
-    width: 300px;
+    width: 24%;
     position: relative;
     display: flex;
     flex-direction: column;

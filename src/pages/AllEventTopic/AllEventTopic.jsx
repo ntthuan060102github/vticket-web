@@ -33,7 +33,7 @@ function AllEventTopic() {
         <h2 className="AllEventTopic__event_topics--title">Danh sách thể loại sự kiện</h2>
         <div className="AllEventTopic__event_topics--container">
           {eventTopics && eventTopics.map((eventTopic,index)=>{
-            const class_name = (index%2 !== 0 && index%3 !== 0) ? 'event_topic__big' : 'event_topic__small';
+            const class_name = (index%2 !== 0 && index%3 !== 0) ? 'event_topic_big' : 'event_topic_small';
             return (
               <Link 
               key={eventTopic.id}

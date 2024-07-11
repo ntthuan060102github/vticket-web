@@ -18,7 +18,6 @@
     width: 100%;
     min-height: 300px;
     flex-wrap: wrap;
-    grid-template-columns: repeat(4);
     justify-content: space-between;
     grid-gap: 20px;
 }
@@ -152,21 +151,21 @@
     text-align: center;
 }
 
-.event_topic__big{
-    width: 560px;
+/* .AllEventTopic__event_topics--container> .event_topic__big{
+    width: 39%;
     position: relative;
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
-.event_topic__small{
+.AllEventTopic__event_topics--container> .event_topic__small{
     width: 300px;
     position: relative;
     display: flex;
     flex-direction: column;
     position: relative;
-}
+} */
 
 .event_topic__banner{
     width: 100%;
