@@ -29,6 +29,7 @@ function SearchPage() {
   const [pageNum, setPageNum] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(12);
   const [numPages, setNumPages] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
   
 
   const handlePageChange = (newPageNum) => {
@@ -58,6 +59,7 @@ function SearchPage() {
       if (response.data.status === 1) {
         setEvents(response.data.data?.data);
         setNumPages(response.data.data?.num_pages);
+        setLoading(false);
       }
     })
   }, [kw, pageNum]);
@@ -68,7 +70,7 @@ function SearchPage() {
       <div className="SearchPage__events">
         <h2 className="SearchPage__events--title">Sự kiện cần tìm</h2>
         <div className="SearchPage__events--container">
-          {events ? events.map((event)=>{
+        {!loading && (events ? events.map((event)=>{
             let [year, month, day] = event.start_date.split('-');
             return (
               <Link to={`/event-detail/${event.id}`} key={event?.id} className="event">
@@ -98,7 +100,7 @@ function SearchPage() {
               </Link>
           )}): (
             <span className="Get_events_null">Không tìm thấy sự kiện nào</span>
-          )}
+          ))}
         </div>
         <div className="pagination_search_events">
         <button className="pagination__previous" onClick={handlePrevPage}>← Quay lại</button>
