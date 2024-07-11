@@ -159,6 +159,7 @@
     grid-template-columns: repeat(4);
     row-gap: auto;
     grid-gap: 20px;
+    justify-content: space-between;
 }
 
 .Homepage__event_topics--container{
@@ -201,8 +202,8 @@
     border: solid 1px var(--gray--trans);
 }
 
-.event{
-    width: 290px;
+.Homepage__comming_soon_events--container > .event{
+    width: 23%;
     position: relative;
     display: flex;
     flex-direction: column;

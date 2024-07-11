@@ -206,6 +206,10 @@
     grid-gap: 20px;
 }
 
+.justy-bet{
+    justify-content: space-between;
+}
+
 .EventDetail__relative_event--more_btn{
     background-color: var(--background-color-1);
     display: flex;
@@ -308,7 +312,7 @@
 }
 
 .Feedback_title{
-    font-weight: 500;
+    font-size: 1.4rem;
     color: var(--background-color-1);
 }
 
@@ -321,10 +325,16 @@
 .Feedback_content__value{
     width: 100%;
     background-color: var(--white) !important;
-    padding: 10px;
 }
 
 .Feedback_info{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.Feedback_request{
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -366,6 +376,29 @@
     margin-left: 90px;
 }
 
+.Feedback_reply__body{
+    margin-left: 70px;
+    padding: 10px;
+    font-size: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px var(--gray);
+    background-color: var(--gray--trans);
+    margin-bottom: 10px;
+}
+
+.Feedback_reply_content__value{
+    width: 100%;
+}
+
+.Feedback_reply__title{
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.Feedback_info > .successful{
+    padding-left: 100px;
+}
 
 
 
