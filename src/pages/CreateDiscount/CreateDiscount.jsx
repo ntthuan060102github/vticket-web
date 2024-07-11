@@ -22,7 +22,6 @@ import { APP_ENV } from "../../configs/app_config";
 function CreateDiscount() {
     const location = useLocation();
     const { eventID } = location.state || "";
-    console.log(eventID);
 
     const [dateCurrent, setDateCurrent] = React.useState(new Date());
     const [formattedDateCurrent, setFormattedDateCurrent] = React.useState(moment(dateCurrent).format("YYYY-MM-DD"));
@@ -188,12 +187,12 @@ function CreateDiscount() {
               setTimeout(() => {
                 setDateCurrent(new Date());
                 setDiscountInfo({
-                    "discount_type": "",
+                    "discount_type": "percent",
                     "discount_value": 1,
                     "maximum_reduction_amount": 1,
                     "quantity": 1,
-                    "evaluation_field": "",
-                    "condition": "",
+                    "evaluation_field": "total_bill",
+                    "condition": "gt",
                     "evaluation_value": 1,
                     "start_date": onlyFormattedDateCurrent,
                     "end_date": onlyFormattedDateCurrent,
@@ -339,7 +338,7 @@ function CreateDiscount() {
                     {discountPosted && <span className="successful">
                         Thêm mã khuyến mãi thành công!
                     </span>}
-                    <button type="button" className='Create_discount__form--submit_btn' onClick={() => handleSubmit()}>Tạo mã giảm giá</button>
+                    <button type="button" className='Create_discount__form--submit_btn' onClick={() => handleSubmit}>Tạo mã giảm giá</button>
                 </div>
             </div>
         </div>
